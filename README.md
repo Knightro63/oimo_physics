@@ -38,37 +38,6 @@ If there is no shapes or type in the ObjectConfigure class it will not work. If 
     name: 'sphere'
   )) as OIMO.RigidBody);
 ```
-
-### WorldConfig
-
-The Oimo World is the main scene that has all of the objects that will be manipulated to the scene. To get started add the oimo world then all of the objects in it.
-
-If there is no shapes or type in the ObjectConfigure class it will not work. If you need a RigidBody use shapes. If you need a Joint use type.
-
-```dart
-  WorldConfigure(isStat:true, scale:100.0);
-
-  OIMO.ShapeConfig config = OIMO.ShapeConfig(
-    friction: 0.4,
-    belongsTo: 1,
-  );
-
-  world!.add(OIMO.ObjectConfigure(
-    shapes: [OIMO.Shapes.box],
-    size:[400, 40, 400], 
-    position:[0,-20,0], 
-    shapeConfig:config
-  ));
-  
-  bodys.add(world!.add(OIMO.ObjectConfigure(
-    shapes:[OIMO.Shapes.sphere], 
-    size:[w*0.5,w*0.5,w*0.5], 
-    position:[x,y,z], 
-    move:true, 
-    shapeConfig:config,
-    name: 'sphere'
-  )) as OIMO.RigidBody);
-```
 ## Contributing
 
 Feel free to propose changes by creating a pull request.
