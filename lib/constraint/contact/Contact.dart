@@ -1,17 +1,14 @@
 import 'dart:math' as Math;
-import 'ContactLink.dart';
-import '../../shape/Shape.dart';
-import '../../core/RigidBody.dart';
-import 'ImpulseBuffer.dart';
-import 'ContactManifold.dart';
-import 'ManifoldPoint.dart';
-import 'ContactConstraint.dart';
-import '../../collision/narrowphase/CollisionDetector.dart';
+import 'contact_link.dart';
+import '../../shape/shape.dart';
+import '../../core/rigid_body.dart';
+import 'impulse_buffer.dart';
+import 'contact_manifold.dart';
+import 'manifold_point.dart';
+import 'contact_constraint.dart';
+import '../../collision/narrowphase/collision_detector.dart';
 
-/**
-* A contact is a pair of shapes whose axis-aligned bounding boxes are overlapping.
-* @author saharan
-*/
+// * A contact is a pair of shapes whose axis-aligned bounding boxes are overlapping.
 class Contact{
   Contact(){  
     points = manifold.points;

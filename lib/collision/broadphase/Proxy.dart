@@ -1,16 +1,11 @@
-import '../../core/Utils.dart';
-import '../../math/AABB.dart';
-import '../../shape/Shape.dart';
+import '../../core/utils.dart';
+import '../../math/aabb.dart';
+import '../../shape/shape.dart';
 
 int count = 0;
-int ProxyIdCount() { return count++; }
+int proxyIdCount() { return count++; }
 
-/**
- * A proxy is used for broad-phase collecting pairs that can be colliding.
- *
- * @author lo-th
- */
-
+//  * A proxy is used for broad-phase collecting pairs that can be colliding.
 class Proxy{
   Proxy(this.shape){
     aabb = shape.aabb;

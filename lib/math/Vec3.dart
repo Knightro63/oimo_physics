@@ -1,6 +1,6 @@
-import 'Mat33.dart';
-import 'Quat.dart';
-import 'Math.dart';
+import 'mat33.dart';
+import 'quat.dart';
+import 'math.dart';
 import 'dart:math' as math;
 
 class Vec3{
@@ -275,7 +275,7 @@ class Vec3{
 
   @override
   String toString(){
-    return"Vec3["+x.toStringAsFixed(4)+", "+y.toStringAsFixed(4)+", "+z.toStringAsFixed(4)+"]";
+    return"Vec3[${x.toStringAsFixed(4)}, ${y.toStringAsFixed(4)}, ${z.toStringAsFixed(4)}]";
   }
 
   Vec3 multiplyScalar (double scalar ) {

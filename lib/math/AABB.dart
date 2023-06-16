@@ -1,13 +1,7 @@
 import 'dart:math' as Math;
-import 'Vec3.dart';
+import 'vec3.dart';
 
-/**
- * An axis-aligned bounding box.
- *
- * @author saharan
- * @author lo-th
- */
-
+// * An axis-aligned bounding box.
 // AABB aproximation
 double AABB_PROX = 0.005;
 
@@ -63,7 +57,7 @@ class AABB{
 	AABB combine(AABB aabb1,AABB aabb2 ) {
 		List<double> a = aabb1.elements;
 		List<double> b = aabb2.elements;
-		List<double> te = this.elements;
+		List<double> te = elements;
 
 		te[0] = a[0] < b[0] ? a[0] : b[0];
 		te[1] = a[1] < b[1] ? a[1] : b[1];
@@ -94,13 +88,8 @@ class AABB{
 		return x>=te[0] && x<=te[3] && y>=te[1] && y<=te[4] && z>=te[2] && z<=te[5];
 	}
 
-	/**
-	 * Set the AABB from an array
-	 * of vertices. From THREE.
-	 * @author WestLangley
-	 * @author xprogram
-	 */
-
+	//  * Set the AABB from an array
+	//  * of vertices. From THREE.
 	void setFromPoints(List<Vec3> arr){
 		makeEmpty();
 		for(int i = 0; i < arr.length; i++){

@@ -1,8 +1,6 @@
-import '../collision/broadphase/BroadPhase.dart';
-
-import '../math/Math.dart';
-import '../constants.dart';
-import '../core/World.dart';
+import '../collision/broadphase/broad_phase.dart';
+import '../math/math.dart';
+import '../core/world.dart';
 
 void printError(String clazz,String msg ){
   print("[OIMO] $clazz: $msg");
@@ -24,7 +22,7 @@ class InfoDisplay{
 
   late BroadPhase broadPhase;
 
-  String version = REVISION;
+  String version = '1.0.9';
 
   double fps = 0;
   int tt = 0;
@@ -35,22 +33,22 @@ class InfoDisplay{
   int totalTime = 0;
   int updateTime = 0;
 
-  int MaxBroadPhaseTime = 0;
-  int MaxNarrowPhaseTime = 0;
-  int MaxSolvingTime = 0;
-  int MaxTotalTime = 0;
-  int MaxUpdateTime = 0;
+  int maxBroadPhaseTime = 0;
+  int maxNarrowPhaseTime = 0;
+  int maxSolvingTime = 0;
+  int maxTotalTime = 0;
+  int maxUpdateTime = 0;
 
   void setTime([int? n]){
     times[ n ?? 0 ] = DateTime.now().millisecondsSinceEpoch;
   }
 
   void resetMax(){
-    MaxBroadPhaseTime = 0;
-    MaxNarrowPhaseTime = 0;
-    MaxSolvingTime = 0;
-    MaxTotalTime = 0;
-    MaxUpdateTime = 0;
+    maxBroadPhaseTime = 0;
+    maxNarrowPhaseTime = 0;
+    maxSolvingTime = 0;
+    maxTotalTime = 0;
+    maxUpdateTime = 0;
   }
 
   void calcBroadPhase () {
@@ -72,11 +70,11 @@ class InfoDisplay{
     if(tt == 100 )resetMax();
 
     if(tt > 100 ){
-      if(broadPhaseTime > MaxBroadPhaseTime ) MaxBroadPhaseTime = broadPhaseTime;
-      if(narrowPhaseTime > MaxNarrowPhaseTime ) MaxNarrowPhaseTime = narrowPhaseTime;
-      if(solvingTime > MaxSolvingTime ) MaxSolvingTime = solvingTime;
-      if(totalTime > MaxTotalTime ) MaxTotalTime = totalTime;
-      if(updateTime > MaxUpdateTime ) MaxUpdateTime = updateTime;
+      if(broadPhaseTime > maxBroadPhaseTime ) maxBroadPhaseTime = broadPhaseTime;
+      if(narrowPhaseTime > maxNarrowPhaseTime ) maxNarrowPhaseTime = narrowPhaseTime;
+      if(solvingTime > maxSolvingTime ) maxSolvingTime = solvingTime;
+      if(totalTime > maxTotalTime ) maxTotalTime = totalTime;
+      if(updateTime > maxUpdateTime ) maxUpdateTime = updateTime;
     }
 
     upfps();
@@ -102,11 +100,11 @@ class InfoDisplay{
       "paircheck ${parent.broadPhase.numPairChecks}<br>",
       "island &nbsp;&nbsp;&nbsp;${parent.numIslands}<br><br>",
       "Time in milliseconds<br><br>",
-      "broadphase &nbsp;${Math.fix(broadPhaseTime.toDouble())} | ${Math.fix(MaxBroadPhaseTime.toDouble())}<br>",
-      "narrowphase ${Math.fix(narrowPhaseTime.toDouble())} | ${Math.fix(MaxNarrowPhaseTime.toDouble())}<br>",
-      "solving &nbsp;&nbsp;&nbsp;&nbsp;${Math.fix(solvingTime.toDouble())} |  ${Math.fix(MaxSolvingTime.toDouble())}<br>",
-      "total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${Math.fix(totalTime.toDouble())} | ${Math.fix(MaxTotalTime.toDouble())}<br>",
-      "updating &nbsp;&nbsp;&nbsp;${Math.fix(updateTime.toDouble())} |  ${Math.fix(MaxUpdateTime.toDouble())}<br>"
+      "broadphase &nbsp;${Math.fix(broadPhaseTime.toDouble())} | ${Math.fix(maxBroadPhaseTime.toDouble())}<br>",
+      "narrowphase ${Math.fix(narrowPhaseTime.toDouble())} | ${Math.fix(maxNarrowPhaseTime.toDouble())}<br>",
+      "solving &nbsp;&nbsp;&nbsp;&nbsp;${Math.fix(solvingTime.toDouble())} |  ${Math.fix(maxSolvingTime.toDouble())}<br>",
+      "total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${Math.fix(totalTime.toDouble())} | ${Math.fix(maxTotalTime.toDouble())}<br>",
+      "updating &nbsp;&nbsp;&nbsp;${Math.fix(updateTime.toDouble())} |  ${Math.fix(maxUpdateTime.toDouble())}<br>"
     ].join("\n");
     return info;
   }

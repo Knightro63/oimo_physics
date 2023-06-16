@@ -1,13 +1,7 @@
-import '../../../math/AABB.dart';
-import './DBVTNode.dart';
+import '../../../math/aabb.dart';
+import './dbvt_node.dart';
 
-/**
- * A dynamic bounding volume tree for the broad-phase algorithm.
- *
- * @author saharan
- * @author lo-th
- */
-
+//  * A dynamic bounding volume tree for the broad-phase algorithm.
 class DBVT{
   DBVT();
 

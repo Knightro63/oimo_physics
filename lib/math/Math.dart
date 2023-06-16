@@ -1,17 +1,17 @@
 import 'dart:math' as math;
-import 'Vec3.dart';
+import 'vec3.dart';
 
 class Math {
   static double degtorad = 0.0174532925199432957;
   static double radtodeg = 57.295779513082320876;
-  static double PI       = 3.141592653589793;
-  static double TwoPI    = 6.283185307179586;
-  static double PI90     = 1.570796326794896;
-  static double PI270    = 4.712388980384689;
+  static double pi       = 3.141592653589793;
+  static double twoPi    = 6.283185307179586;
+  static double pi90     = 1.570796326794896;
+  static double pi270    = 4.712388980384689;
 
-  static double INF      = double.maxFinite;
-  static double EPZ      = 0.00001;
-  static double EPS2     = 0.000001;
+  static double inf      = double.maxFinite;
+  static double epz      = 0.00001;
+  static double eps2     = 0.000001;
 
   static double lerp(double  x, double y, double t ) { 
     return ( 1 - t ) * x + t * y; 

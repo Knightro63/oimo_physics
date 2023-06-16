@@ -1,4 +1,9 @@
-# oimo_physics
+# oimo\_physics
+
+[![Pub Version](https://img.shields.io/pub/v/oimo_physics)](https://pub.dev/packages/oimo_physics)
+[![analysis](https://github.com/Knightro63/apple_vision/actions/workflows/flutter.yml/badge.svg)](https://github.com/Knightro63/apple_vision/actions/)
+[![Star on Github](https://img.shields.io/github/stars/Knightro63/apple_vision.svg?style=flat&logo=github&colorB=deeppink&label=stars)](https://github.com/Knightro63/oimo_physics)
+[![License: BSD](https://img.shields.io/badge/license-BSD-purple.svg)](https://opensource.org/licenses/BSD)
 
 A Flutter plugin designed for three_dart and three_dart_jsm to allow users to add a simple physics engine to their 3D  project.
 
@@ -38,9 +43,17 @@ If there is no shapes or type in the ObjectConfigure class it will not work. If 
     name: 'sphere'
   )) as OIMO.RigidBody);
 ```
+
+## Example
+
+Find the example app [here](https://github.com/Knightro63/oimo_physics/tree/main/example).
+
 ## Contributing
 
-Feel free to propose changes by creating a pull request.
+Contributions are welcome.
+In case of any problems look at [existing issues](https://github.com/Knightro63/oimo_physics/issues), if you cannot find anything related to your problem then open an issue.
+Create an issue before opening a [pull request](https://github.com/Knightro63/oimo_physics/pulls) for non trivial fixes.
+In case of trivial fixes open a [pull request](https://github.com/Knightro63/oimo_physics/pulls) directly.
 
 ## Additional Information
 

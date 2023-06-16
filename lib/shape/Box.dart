@@ -1,14 +1,9 @@
-import 'MassInfo.dart';
-import 'ShapeConfig.dart';
-import '../math/AABB.dart';
-import 'Shape.dart';
+import 'mass_info.dart';
+import 'shape_config.dart';
+import '../math/aabb.dart';
+import 'shape.dart';
 
-//  *
 //  * Box shape.
-//  * @author saharan
-//  * @author lo-th
-//  *
-
 class Box extends Shape{
   Box(ShapeConfig config, this.width,this.height,this.depth):super(config){
     halfWidth = width * 0.5;

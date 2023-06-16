@@ -1,13 +1,9 @@
 import 'dart:math' as Math;
-import 'ShapeConfig.dart';
-import '../math/AABB.dart';
-import 'Shape.dart';
+import 'shape_config.dart';
+import '../math/aabb.dart';
+import 'shape.dart';
 
-/**
- * Sphere shape
- * @author saharan
- * @author lo-th
- */
+// * Sphere shape
 class Sphere extends Shape{
   Sphere(ShapeConfig config, this.radius):super(config) {
     type = Shapes.sphere;

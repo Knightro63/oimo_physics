@@ -1,13 +1,11 @@
-import 'MassInfo.dart';
-import 'ShapeConfig.dart';
-import '../math/AABB.dart';
-import 'Shape.dart';
-import '../math/Vec3.dart';
+import 'mass_info.dart';
+import 'shape_config.dart';
+import '../math/aabb.dart';
+import 'shape.dart';
+import '../math/vec3.dart';
 
-/**
- * Plane shape.
- * @author lo-th
- */
+
+// * Plane shape.
 class Plane extends Shape{
   Plane(ShapeConfig config, [Vec3? normal]):super(config){
     this.normal = normal ?? Vec3( 0, 1, 0 );

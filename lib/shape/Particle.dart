@@ -1,12 +1,9 @@
-import 'MassInfo.dart';
-import 'ShapeConfig.dart';
-import 'Shape.dart';
-import '../math/Vec3.dart';
+import 'mass_info.dart';
+import 'shape_config.dart';
+import 'shape.dart';
+import '../math/vec3.dart';
 
-/**
- * A Particule shape
- * @author lo-th
- */
+// * A Particule shape
 class Particle extends Shape{
   Particle(ShapeConfig config, this.normal):super(config){
     type = Shapes.particle;

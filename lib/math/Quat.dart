@@ -1,6 +1,6 @@
-import 'Math.dart';
-import 'Mat33.dart';
-import 'Vec3.dart';
+import 'math.dart';
+import 'mat33.dart';
+import 'vec3.dart';
 import 'dart:math' as math;
 
 class Quat{
@@ -65,7 +65,7 @@ class Quat{
     var vx = Vec3();
     var r = v1.dot( v2 ) + 1;
 
-    if ( r < Math.EPS2 ) {
+    if ( r < Math.eps2 ) {
       r = 0;
       if (v1.x.abs() >v1.z.abs() ){ vx.set( - v1.y, v1.x, 0 );}
       else{ vx.set( 0, - v1.z, v1.y );}
@@ -177,7 +177,7 @@ class Quat{
 
   @override
   String toString(){
-    return"Quat["+x.toStringAsFixed(4)+", ("+y.toStringAsFixed(4)+", "+z.toStringAsFixed(4)+", "+w.toStringAsFixed(4)+")]";
+    return"Quat[(${x.toStringAsFixed(4)},${y.toStringAsFixed(4)},${z.toStringAsFixed(4)},${w.toStringAsFixed(4)})]";
   }
 
   Quat setFromEuler(double x, double y, double z){

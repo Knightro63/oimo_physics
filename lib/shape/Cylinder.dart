@@ -1,16 +1,11 @@
-import 'MassInfo.dart';
-import 'ShapeConfig.dart';
-import '../math/AABB.dart';
-import 'Shape.dart';
+import 'mass_info.dart';
+import 'shape_config.dart';
+import '../math/aabb.dart';
+import 'shape.dart';
 import 'dart:math' as Math;
-import '../math/Math.dart';
-import '../math/Vec3.dart';
+import '../math/vec3.dart';
 
-/**
- * Cylinder shape
- * @author saharan
- * @author lo-th
- */
+// * Cylinder shape
 class Cylinder extends Shape{
   Cylinder(ShapeConfig config, this.radius, this.height ):super(config) {
     type = Shapes.cylinder;

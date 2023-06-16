@@ -1,17 +1,12 @@
-import '../../core/World.dart';
-import '../Constraint.dart';
-import 'JointLink.dart';
-import 'JointConfig.dart';
-import '../../math/Vec3.dart';
+import '../../core/world.dart';
+import '../constraint.dart';
+import 'joint_link.dart';
+import 'joint_config.dart';
+import '../../math/vec3.dart';
 
 enum JointType{none,distance,socket,hinge,wheel,slider,prismatic}
 
-/**
- * Joints are used to constrain the motion between two rigid bodies.
- *
- * @author saharan
- * @author lo-th
- */
+// * Joints are used to constrain the motion between two rigid bodies.
 class Joint extends Constraint{
   Joint(this.config):super(){
     b1Link = JointLink(this);

@@ -1,15 +1,10 @@
-import '../core/RigidBody.dart';
-import '../core/Utils.dart';
-import '../core/Core.dart';
-import '../core/World.dart';
+import '../core/rigid_body.dart';
+import '../core/utils.dart';
+import '../core/core.dart';
+import '../core/world.dart';
 
-/**
- * The base class of all type of the constraints.
- *
- * @author saharan
- * @author lo-th
- */
 
+// * The base class of all type of the constraints.
 class Constraint extends Core{
   Constraint();
   // parent world of the constraint.

@@ -1,24 +1,18 @@
-import 'MassInfo.dart';
-import '../core/Utils.dart';
-import '../constraint/Constraint.dart';
-import '../math/Vec3.dart';
-import '../math/Mat33.dart';
-import '../math/AABB.dart';
-import 'ShapeConfig.dart';
-import '../core/RigidBody.dart';
-import '../constraint/contact/ContactLink.dart';
-import '../collision/broadphase/Proxy.dart';
+import 'package:oimo_physics/collision/broadphase/proxy.dart';
+import 'package:oimo_physics/constraint/contact/contact_link.dart';
+import 'package:oimo_physics/core/rigid_body.dart';
+import 'package:oimo_physics/math/aabb.dart';
+import 'package:oimo_physics/math/mat33.dart';
+import 'package:oimo_physics/math/vec3.dart';
+import 'package:oimo_physics/shape/shape_config.dart';
+
+import 'mass_info.dart';
+import '../core/utils.dart';
 
 var count = 0;
-int ShapeIdCount() { return count++; }
+int shapeIdCount() { return count++; }
 
-/**
- * A shape is used to detect collisions of rigid bodies.
- *
- * @author saharan
- * @author lo-th
- */
-
+// * A shape is used to detect collisions of rigid bodies.
 class Shape{
   Shape(ShapeConfig config){
     relativePosition = Vec3().copy( config.relativePosition );
@@ -33,7 +27,7 @@ class Shape{
   }
   Shapes type = Shapes.none;
   // global identification of the shape should be unique to the shape.
-  int id = ShapeIdCount();
+  int id = shapeIdCount();
   // previous shape in parent rigid body. Used for fast interations.
   Shape? prev;
   // next shape in parent rigid body. Used for fast interations.

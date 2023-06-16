@@ -1,8 +1,8 @@
-import 'MassInfo.dart';
-import 'ShapeConfig.dart';
-import '../math/AABB.dart';
-import '../math/Vec3.dart';
-import 'Shape.dart';
+import 'mass_info.dart';
+import 'shape_config.dart';
+import '../math/aabb.dart';
+import '../math/vec3.dart';
+import 'shape.dart';
 
 class Face{
   Face(this.a,this.b,this.c);
@@ -11,10 +11,7 @@ class Face{
   Vec3 c;
 }
 
-/**
- * A tetra shape.
- * @author xprogram
- */
+//  * A tetra shape.
 class Tetra extends Shape{
   Tetra(ShapeConfig config, Vec3 p1, Vec3 p2, Vec3 p3, Vec3 p4 ):super(config){
     type = Shapes.tetra;

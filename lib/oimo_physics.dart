@@ -1,17 +1,17 @@
 library omio_physics;
 
-export 'math/AABB.dart';
-export 'math/Vec3.dart';
-export 'math/Mat33.dart';
-export 'math/Quat.dart';
+export 'math/aabb.dart';
+export 'math/vec3.dart';
+export 'math/mat33.dart';
+export 'math/quat.dart';
 
-export 'core/World.dart';
-export 'core/RigidBody.dart';
+export 'core/world.dart';
+export 'core/rigid_body.dart';
 
-export 'shape/ShapeConfig.dart';
-export 'shape/Shape.dart';
-export 'shape/Box.dart';
-export 'shape/Sphere.dart';
-export 'shape/Plane.dart';
-export 'shape/Cylinder.dart';
-export 'shape/Particle.dart';
+export 'shape/shape_config.dart';
+export 'shape/shape.dart';
+export 'shape/box.dart';
+export 'shape/sphere.dart';
+export 'shape/plane.dart';
+export 'shape/cylinder.dart';
+export 'shape/particle.dart';

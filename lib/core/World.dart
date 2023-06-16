@@ -1,46 +1,46 @@
 import 'dart:async';
 
-import 'package:oimo_physics/constraint/joint/JointLink.dart';
+import 'package:oimo_physics/constraint/joint/joint_link.dart';
 
-import '../collision/broadphase/Pair.dart';
-import '../collision/broadphase/sap/SAPBroadPhase.dart';
-import '../collision/narrowphase/BoxBoxCollisionDetector.dart';
-import '../collision/narrowphase/BoxCylinderCollisionDetector.dart';
-import '../collision/narrowphase/BoxPlaneCollisionDetector.dart';
-import '../collision/narrowphase/CollisionDetector.dart';
-import '../collision/narrowphase/CylinderCylinderCollisionDetector.dart';
-import '../collision/narrowphase/SphereBoxCollisionDetector.dart';
-import '../collision/narrowphase/SphereCylinderCollisionDetector.dart';
-import '../collision/narrowphase/SpherePlaneCollisionDetector.dart';
-import '../collision/narrowphase/SphereSphereCollisionDetector.dart';
-import '../constraint/contact/ContactLink.dart';
-import '../constraint/joint/BallAndSockerJoint.dart';
-import '../constraint/joint/DistanceJoint.dart';
-import '../constraint/joint/HingeJoint.dart';
-import '../constraint/joint/JointConfig.dart';
-import '../constraint/joint/PrismaticJoint.dart';
-import '../constraint/joint/SliderJoint.dart';
-import '../constraint/joint/WheelJoint.dart';
-import '../shape/Box.dart';
-import '../shape/Cylinder.dart';
-import '../shape/Plane.dart';
-import '../shape/ShapeConfig.dart';
-import '../shape/Sphere.dart';
+import '../collision/broadphase/pair.dart';
+import '../collision/broadphase/sap/sap_broad_phase.dart';
+import '../collision/narrowphase/box_box_collision_detector.dart';
+import '../collision/narrowphase/box_cylinder_collision_detector.dart';
+import '../collision/narrowphase/box_plane_collision_detector.dart';
+import '../collision/narrowphase/collision_detector.dart';
+import '../collision/narrowphase/cylinder_cylinder_collision_detector.dart';
+import '../collision/narrowphase/sphere_box_collision_detector.dart';
+import '../collision/narrowphase/sphere_cylinder_collision_detector.dart';
+import '../collision/narrowphase/sphere_plane_collision_detector.dart';
+import '../collision/narrowphase/sphere_sphere_collision_detector.dart';
+import '../constraint/contact/contact_link.dart';
+import '../constraint/joint/ball_and_socket_joint.dart';
+import '../constraint/joint/distance_joint.dart';
+import '../constraint/joint/hinge_joint.dart';
+import '../constraint/joint/joint_config.dart';
+import '../constraint/joint/prismatic_joint.dart';
+import '../constraint/joint/slider_joint.dart';
+import '../constraint/joint/wheel_joint.dart';
+import '../shape/box.dart';
+import '../shape/cylinder.dart';
+import '../shape/plane.dart';
+import '../shape/shape_config.dart';
+import '../shape/sphere.dart';
 
-import '../collision/broadphase/BroadPhase.dart';
-import '../collision/broadphase/BruteForceBroadPhase.dart';
-import '../collision/broadphase/dbvt/DBVTBroadPhase.dart';
-import 'Utils.dart';
-import '../shape/Shape.dart';
-import '../math/Math.dart';
-import '../math/Quat.dart';
-import '../math/Vec3.dart';
-import '../constraint/Constraint.dart';
-import 'Core.dart';
-import 'RigidBody.dart';
+import '../collision/broadphase/broad_phase.dart';
+import '../collision/broadphase/brute_force_broad_phase.dart';
+import '../collision/broadphase/dbvt/dbvt_broad_phase.dart';
+import 'utils.dart';
+import '../shape/shape.dart';
+import '../math/math.dart';
+import '../math/quat.dart';
+import '../math/vec3.dart';
+import '../constraint/constraint.dart';
+import 'core.dart';
+import 'rigid_body.dart';
 
-import '../constraint/joint/Joint.dart';
-import '../constraint/contact/Contact.dart';
+import '../constraint/joint/joint.dart';
+import '../constraint/contact/contact.dart';
 
 class ObjectConfigure{
   ObjectConfigure({
@@ -147,14 +147,8 @@ class WorldConfigure{
   late Vec3 gravity;
 }
 
-/**
- * The class of physical computing world.
- * You must be added to the world physical all computing objects
- *
- * @author saharan
- * @author lo-th
- */
-
+//  * The class of physical computing world.
+//  * You must be added to the world physical all computing objects
  // timestep, broadphase, iterations, worldscale, random, stat
 class World{
   World([WorldConfigure? worldConfigure]){
@@ -230,12 +224,7 @@ class World{
   late bool isStat;
     
 
-  /**
-   * Whether the constraints randomizer is enabled or not.
-   *
-   * @property enableRandomizer
-   * @type {Boolean}
-   */
+  // * Whether the constraints randomizer is enabled or not.
   late bool enableRandomizer;
 
   // The rigid body list
@@ -275,9 +264,9 @@ class World{
 
   void play(){
     if(timer != null) return;
-    World _this = this;
+    World world = this;
     timer = Timer(Duration(milliseconds: timerate), () {
-      _this.step();
+      world.step();
     });
     //timer = setInterval((){ _this.step();} , timerate);
   }
@@ -316,11 +305,10 @@ class World{
       removeRigidBody(rigidBodies!);
     }
   }
-  /**
-  * I'll add a rigid body to the world.
-  * Rigid body that has been added will be the operands of each step.
-  * @param  rigidBody  Rigid body that you want to add
-  */
+
+  // * I'll add a rigid body to the world.
+  // * Rigid body that has been added will be the operands of each step.
+  // * @param  rigidBody  Rigid body that you want to add
   void addRigidBody(RigidBody rigidBody){
     if(rigidBody.parent != null){
       printError("World", "It is not possible to be added to more than one world one of the rigid body");
@@ -336,11 +324,10 @@ class World{
     rigidBodies = rigidBody;
     numRigidBodies++;
   }
-  /**
-  * I will remove the rigid body from the world.
-  * Rigid body that has been deleted is excluded from the calculation on a step-by-step basis.
-  * @param  rigidBody  Rigid body to be removed
-  */
+
+  // * I will remove the rigid body from the world.
+  // * Rigid body that has been deleted is excluded from the calculation on a step-by-step basis.
+  // * @param  rigidBody  Rigid body to be removed
   void removeRigidBody(RigidBody rigidBody ){
     RigidBody remove = rigidBody;
     if(remove.parent != this)return;
@@ -381,12 +368,11 @@ class World{
     return null;
   }
 
-  /**
-  * I'll add a shape to the world..
-  * Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
-  * Shape will be added to the world automatically, please do not call from outside this method.
-  * @param  shape  Shape you want to add
-  */
+
+  // * I'll add a shape to the world..
+  // * Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
+  // * Shape will be added to the world automatically, please do not call from outside this method.
+  // * @param  shape  Shape you want to add
   void addShape(Shape shape){
     if(shape.parent == null || shape.parent!.parent == null){
       printError("World", "It is not possible to be added alone to shape world");
@@ -397,22 +383,19 @@ class World{
     broadPhase.addProxy(shape.proxy!);
   }
 
-  /**
-  * I will remove the shape from the world.
-  * Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
-  * Shape will be added to the world automatically, please do not call from outside this method.
-  * @param  shape  Shape you want to delete
-  */
+
+  // * I will remove the shape from the world.
+  // * Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
+  // * Shape will be added to the world automatically, please do not call from outside this method.
+  // * @param  shape  Shape you want to delete
   void removeShape(Shape shape){
     broadPhase.removeProxy(shape.proxy!);
     shape.proxy = null;
   }
 
-  /**
-  * I'll add a joint to the world.
-  * Joint that has been added will be the operands of each step.
-  * @param  shape Joint to be added
-  */
+  // * I'll add a joint to the world.
+  // * Joint that has been added will be the operands of each step.
+  // * @param  shape Joint to be added
   void addJoint(Joint joint) {
     if(joint.parent != null){
       printError("World", "It is not possible to be added to more than one world one of the joint");
@@ -425,11 +408,9 @@ class World{
     joint.attach();
   }
 
-  /**
-  * I will remove the joint from the world.
-  * Joint that has been added will be the operands of each step.
-  * @param  shape Joint to be deleted
-  */
+  // * I will remove the joint from the world.
+  // * Joint that has been added will be the operands of each step.
+  // * @param  shape Joint to be deleted
   void removeJoint (Joint joint ) {
     Joint remove=joint;
     Joint? prev=remove.prev;
@@ -523,9 +504,7 @@ class World{
     return true;
   }
 
-  /**
-  * I will proceed only time step seconds time of World.
-  */
+  //* I will proceed only time step seconds time of World.
   void step(){
     //this.timeStep = timeStep ?? this.timeStep;
     bool stat = isStat;

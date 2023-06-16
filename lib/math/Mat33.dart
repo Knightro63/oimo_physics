@@ -1,5 +1,5 @@
-import 'Quat.dart';
-import 'Vec3.dart';
+import 'quat.dart';
+import 'vec3.dart';
 
 class Mat33{
   Mat33 ([double e00 = 1,double e01 = 0,double e02 = 0,double e10 = 0,double e11 = 1,double e12 = 0,double e20 = 0,double e21 = 0,double e22 = 1]){
