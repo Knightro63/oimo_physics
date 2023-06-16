@@ -1,5 +1,5 @@
 import '../../core/world_core.dart';
-import '../constraint.dart';
+import '../constraint_main.dart';
 import 'joint_link.dart';
 import 'joint_config.dart';
 import '../../math/vec3.dart';

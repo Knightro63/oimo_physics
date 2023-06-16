@@ -1,6 +1,6 @@
 import '../../math/mat33.dart';
 import 'dart:math' as math;
-import '../constraint.dart';
+import '../constraint_main.dart';
 import 'contact_point_data_buffer.dart';
 import 'contact_manifold.dart';
 

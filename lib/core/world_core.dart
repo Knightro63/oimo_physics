@@ -35,7 +35,7 @@ import '../shape/shape_main.dart';
 import '../math/math.dart';
 import '../math/quat.dart';
 import '../math/vec3.dart';
-import '../constraint/constraint.dart';
+import '../constraint/constraint_main.dart';
 import 'core_main.dart';
 import 'rigid_body.dart';
 
