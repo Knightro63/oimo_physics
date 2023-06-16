@@ -1,9 +1,9 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'vec3.dart';
 
 // * An axis-aligned bounding box.
 // AABB aproximation
-double AABB_PROX = 0.005;
+double aabbProx = 0.005;
 
 class AABB{
   AABB([double minX = 0,double maxX = 0,double minY = 0,double maxY = 0,double minZ = 0,double maxZ = 0]){
@@ -104,8 +104,8 @@ class AABB{
 	void expandByPoint(Vec3 pt){
 		List<double> te = elements;
 		set(
-			Math.min(te[ 0 ], pt.x), Math.min(te[ 1 ], pt.y), Math.min(te[ 2 ], pt.z),
-			Math.max(te[ 3 ], pt.x), Math.max(te[ 4 ], pt.y), Math.max(te[ 5 ], pt.z)
+			math.min(te[ 0 ], pt.x), math.min(te[ 1 ], pt.y), math.min(te[ 2 ], pt.z),
+			math.max(te[ 3 ], pt.x), math.max(te[ 4 ], pt.y), math.max(te[ 5 ], pt.z)
 		);
 	}
 

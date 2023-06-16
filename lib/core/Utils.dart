@@ -3,7 +3,7 @@ import '../math/math.dart';
 import '../core/world.dart';
 
 void printError(String clazz,String msg ){
-  print("[OIMO] $clazz: $msg");
+  throw("[OIMO] $clazz: $msg");
 }
 
 // A performance evaluator

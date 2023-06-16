@@ -283,9 +283,13 @@ class World{
   }
   List<double> toNew(List<double> old, double mul){
     List<double> temp = []; 
-    old.forEach((x){ 
-      temp.add(x * mul);
-    });
+    for(int i = 0; i < old.length;i++){
+      double x = old[i];
+      temp.add(x*mul);
+    }
+    // old.forEach((x){ 
+    //   temp.add(x * mul);
+    // });
     return temp;
   }
   // Reset the world and remove all rigid bodies, shapes, joints and any object from the world.

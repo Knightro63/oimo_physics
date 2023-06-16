@@ -4,7 +4,6 @@ import '../math/aabb.dart';
 import 'shape.dart';
 import '../math/vec3.dart';
 
-
 // * Plane shape.
 class Plane extends Shape{
   Plane(ShapeConfig config, [Vec3? normal]):super(config){
@@ -27,7 +26,7 @@ class Plane extends Shape{
 
   @override
   void updateProxy() {
-    double p = AABB_PROX;
+    double p = aabbProx;
     double min = -double.maxFinite;
     double max = double.maxFinite;
     Vec3 n = normal;

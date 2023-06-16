@@ -44,7 +44,7 @@ class Tetra extends Shape{
   @override
   void updateProxy(){
     aabb.setFromPoints(verts);
-    aabb.expandByScalar(AABB_PROX);
+    aabb.expandByScalar(aabbProx);
     if(this.proxy != null) this.proxy!.update();
   }
 

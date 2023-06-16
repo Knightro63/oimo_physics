@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math';
 import 'contact_link.dart';
 import '../../shape/shape.dart';
 import '../../core/rigid_body.dart';
@@ -64,15 +64,13 @@ class Contact{
   late ContactConstraint constraint;
 
   double mixRestitution( restitution1, restitution2 ) {
-    return Math.sqrt(restitution1*restitution2);
+    return sqrt(restitution1*restitution2);
   }
   double mixFriction( friction1, friction2 ) {
-    return Math.sqrt(friction1*friction2);
+    return sqrt(friction1*friction2);
   }
 
-  /**
-  * Update the contact manifold.
-  */
+  //* Update the contact manifold.
   void updateManifold() {
     constraint.restitution = mixRestitution(shape1!.restitution, shape2!.restitution);
     constraint.friction = mixFriction(shape1!.friction,shape2!.friction);
@@ -154,11 +152,9 @@ class Contact{
     }
   }
 
-  /**
-  * Attach the contact to the shapes.
-  * @param   shape1
-  * @param   shape2
-  */
+  // * Attach the contact to the shapes.
+  // * @param   shape1
+  // * @param   shape2
   void attach(Shape shape1,Shape shape2){
     this.shape1 = shape1;
     this.shape2 = shape2;
@@ -224,9 +220,8 @@ class Contact{
     sleeping = body1!.sleeping&&body2!.sleeping;
     manifold.numPoints=0;
   }
-  /**
-  * Detach the contact from the shapes.
-  */
+
+  //* Detach the contact from the shapes.
   void detach(){
     ContactLink? prev = s1Link.prev;
     ContactLink? next = s1Link.next;

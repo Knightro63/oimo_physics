@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape.dart';
@@ -13,7 +13,7 @@ class Sphere extends Shape{
   late double radius;
 
 	double volume(){
-		return Math.pi * radius * 1.333333;
+		return math.pi * radius * 1.333333;
 	}
 
   @override
@@ -26,7 +26,7 @@ class Sphere extends Shape{
 
   @override
 	void updateProxy(){
-		double p = AABB_PROX;
+		double p = aabbProx;
 
 		aabb.set(
 			position.x - radius - p, position.x + radius + p,

@@ -2,7 +2,7 @@ import 'mass_info.dart';
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape.dart';
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import '../math/vec3.dart';
 
 // * Cylinder shape
@@ -22,7 +22,7 @@ class Cylinder extends Shape{
   @override
   void calculateMassInfo(MassInfo out){
     double rsq = radius * radius;
-    double mass = Math.pi * rsq * height * density;
+    double mass = math.pi * rsq * height * density;
     double inertiaXZ = ( ( 0.25 * rsq ) + ( 0.0833 * height * height ) ) * mass;
     double inertiaY = 0.5 * rsq;
     out.mass = mass;
@@ -42,15 +42,15 @@ class Cylinder extends Shape{
     halfDirection.scale(normalDirection, halfHeight);
 
     wx = 1 - xx;
-    len = Math.sqrt(wx*wx + xx*yy + xx*zz);
+    len = math.sqrt(wx*wx + xx*yy + xx*zz);
     if(len>0) len = radius/len;
     wx *= len;
     hy = 1 - yy;
-    len = Math.sqrt(yy*xx + hy*hy + yy*zz);
+    len = math.sqrt(yy*xx + hy*hy + yy*zz);
     if(len>0) len = radius/len;
     hy *= len;
     dz = 1 - zz;
-    len = Math.sqrt(zz*xx + zz*yy + dz*dz);
+    len = math.sqrt(zz*xx + zz*yy + dz*dz);
     if(len>0) len = radius/len;
     dz *= len;
 
@@ -62,7 +62,7 @@ class Cylinder extends Shape{
     h = hy < 0 ? h - hy : h + hy;
     d = dz < 0 ? d - dz : d + dz;
 
-    p = AABB_PROX;
+    p = aabbProx;
 
     aabb.set(
       position.x - w - p, position.x + w + p,
