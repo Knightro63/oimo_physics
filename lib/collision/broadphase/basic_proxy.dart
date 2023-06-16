@@ -1,5 +1,5 @@
-import 'proxy.dart';
-import '../../shape/shape.dart';
+import 'proxy_broad_phase.dart';
+import '../../shape/shape_main.dart';
 
 // * A basic implementation of proxies.
 class BasicProxy extends Proxy{

@@ -1,9 +1,9 @@
 import 'collision_detector.dart';
 import '../../math/vec3.dart';
-import '../../shape/box.dart';
-import '../../shape/cylinder.dart';
+import '../../shape/box_shape.dart';
+import '../../shape/cylinder_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 import 'dart:math' as math;
 
 class BoxCylinderCollisionDetector extends CollisionDetector{

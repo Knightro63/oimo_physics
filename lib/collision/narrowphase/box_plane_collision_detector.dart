@@ -1,10 +1,10 @@
 import 'collision_detector.dart';
 import '../../math/vec3.dart';
 import '../../math/math.dart';
-import '../../shape/box.dart';
-import '../../shape/plane.dart';
+import '../../shape/box_shape.dart';
+import '../../shape/plane_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 
 //  * A collision detector which detects collisions between two spheres.
 class BoxPlaneCollisionDetector extends CollisionDetector{

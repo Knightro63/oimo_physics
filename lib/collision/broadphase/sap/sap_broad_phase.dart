@@ -1,9 +1,9 @@
 import '../broad_phase.dart';
-import '../proxy.dart';
+import '../proxy_broad_phase.dart';
 import 'sap_axis.dart';
 import 'sap_element.dart';
 import 'sap_proxy.dart';
-import '../../../shape/shape.dart';
+import '../../../shape/shape_main.dart';
 
 //  * A broad-phase collision detection algorithm using sweep and prune.
 class SAPBroadPhase extends BroadPhase{

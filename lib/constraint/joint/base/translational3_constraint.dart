@@ -1,6 +1,6 @@
 import '../../../math/vec3.dart';
 import '../../../math/mat33.dart';
-import '../joint.dart';
+import '../joint_main.dart';
 import '../limit_motor.dart';
 import '../../../core/rigid_body.dart';
 

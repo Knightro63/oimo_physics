@@ -1,6 +1,6 @@
 import '../collision/broadphase/broad_phase.dart';
 import '../math/math.dart';
-import '../core/world.dart';
+import 'world_core.dart';
 
 void printError(String clazz,String msg ){
   throw("[OIMO] $clazz: $msg");

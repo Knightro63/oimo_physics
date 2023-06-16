@@ -1,7 +1,7 @@
 import 'collision_detector.dart';
 import '../../math/vec3.dart';
-import '../../shape/shape.dart';
-import '../../shape/tetra.dart';
+import '../../shape/shape_main.dart';
+import '../../shape/tetra_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 
 //  * Class for collision detection based on

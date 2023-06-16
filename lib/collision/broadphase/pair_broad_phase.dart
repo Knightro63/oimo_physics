@@ -1,4 +1,4 @@
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 
 // * A pair of shapes that may collide.
 class Pair{

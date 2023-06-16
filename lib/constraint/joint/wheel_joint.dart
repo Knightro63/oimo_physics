@@ -1,5 +1,5 @@
 import 'joint_config.dart';
-import 'joint.dart';
+import 'joint_main.dart';
 import 'limit_motor.dart';
 import '../../math/vec3.dart';
 import '../../math/quat.dart';

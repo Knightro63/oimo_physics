@@ -1,5 +1,5 @@
-import 'utils.dart';
-import 'world.dart';
+import 'utils_core.dart';
+import 'world_core.dart';
 
 class Core{
   void dispose(){

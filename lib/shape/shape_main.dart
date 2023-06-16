@@ -1,4 +1,4 @@
-import 'package:oimo_physics/collision/broadphase/proxy.dart';
+import 'package:oimo_physics/collision/broadphase/proxy_broad_phase.dart';
 import 'package:oimo_physics/constraint/contact/contact_link.dart';
 import 'package:oimo_physics/core/rigid_body.dart';
 import 'package:oimo_physics/math/aabb.dart';
@@ -7,7 +7,7 @@ import 'package:oimo_physics/math/vec3.dart';
 import 'package:oimo_physics/shape/shape_config.dart';
 
 import 'mass_info.dart';
-import '../core/utils.dart';
+import '../core/utils_core.dart';
 
 var count = 0;
 int shapeIdCount() { return count++; }

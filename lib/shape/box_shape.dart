@@ -1,7 +1,7 @@
 import 'mass_info.dart';
 import 'shape_config.dart';
 import '../math/aabb.dart';
-import 'shape.dart';
+import 'shape_main.dart';
 
 //  * Box shape.
 class Box extends Shape{

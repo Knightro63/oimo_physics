@@ -1,6 +1,6 @@
-import '../proxy.dart';
+import '../proxy_broad_phase.dart';
 import 'dbvt_node.dart';
-import '../../../shape/shape.dart';
+import '../../../shape/shape_main.dart';
 
 // * A proxy for dynamic bounding volume tree broad-phase.
 class DBVTProxy extends Proxy{

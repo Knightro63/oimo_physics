@@ -1,10 +1,10 @@
-import 'world.dart';
-import 'core.dart';
+import 'world_core.dart';
+import 'core_main.dart';
 import '../constraint/contact/contact_link.dart';
 import '../constraint/joint/joint_link.dart';
-import 'utils.dart';
+import 'utils_core.dart';
 import '../shape/mass_info.dart';
-import '../shape/shape.dart';
+import '../shape/shape_main.dart';
 import '../math/math.dart';
 import '../math/mat33.dart';
 import '../math/quat.dart';

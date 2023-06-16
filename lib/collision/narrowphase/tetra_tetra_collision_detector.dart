@@ -1,8 +1,8 @@
 import 'collision_detector.dart';
 import '../../math/vec3.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
-import '../../shape/tetra.dart';
+import '../../shape/tetra_shape.dart';
 
 //  * Class for checking collisions between 2 tetras,
 //  * a shape that is made with 4 vertices and 4 faces

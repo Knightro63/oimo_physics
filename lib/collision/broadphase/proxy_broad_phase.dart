@@ -1,6 +1,6 @@
-import '../../core/utils.dart';
+import '../../core/utils_core.dart';
 import '../../math/aabb.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 
 int count = 0;
 int proxyIdCount() { return count++; }

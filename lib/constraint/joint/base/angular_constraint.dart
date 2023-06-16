@@ -1,5 +1,5 @@
 import '../../../core/rigid_body.dart';
-import '../joint.dart';
+import '../joint_main.dart';
 import '../../../math/mat33.dart';
 import '../../../math/vec3.dart';
 import '../../../math/quat.dart';

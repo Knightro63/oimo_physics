@@ -1,4 +1,4 @@
-import '../proxy.dart';
+import '../proxy_broad_phase.dart';
 
 //  * An element of proxies.
 class SAPElement{

@@ -1,5 +1,5 @@
 import '../../core/rigid_body.dart';
-import 'joint.dart';
+import 'joint_main.dart';
 
 class JointLink{
   JointLink(this.joint);

@@ -1,9 +1,9 @@
 import '../broad_phase.dart';
-import 'dbvt.dart';
+import 'dbvt_main.dart';
 import 'dbvt_proxy.dart';
 import 'dbvt_node.dart';
-import '../proxy.dart';
-import '../../../shape/shape.dart';
+import '../proxy_broad_phase.dart';
+import '../../../shape/shape_main.dart';
 
 //  * A broad-phase algorithm using dynamic bounding volume tree.
 class DBVTBroadPhase extends BroadPhase{

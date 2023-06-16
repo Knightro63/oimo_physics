@@ -1,10 +1,10 @@
 import '../../core/rigid_body.dart';
-import '../../core/utils.dart';
-import 'pair.dart';
-import '../../shape/shape.dart';
-import 'proxy.dart';
+import '../../core/utils_core.dart';
+import 'pair_broad_phase.dart';
+import '../../shape/shape_main.dart';
+import 'proxy_broad_phase.dart';
 import '../../constraint/joint/joint_link.dart';
-import '../../constraint/joint/joint.dart';
+import '../../constraint/joint/joint_main.dart';
 
 
 //* The broad-phase is used for collecting all possible pairs for collision.

@@ -1,7 +1,7 @@
-import '../proxy.dart';
+import '../proxy_broad_phase.dart';
 import 'sap_broad_phase.dart';
 import '../../../core/rigid_body.dart';
-import '../../../shape/shape.dart';
+import '../../../shape/shape_main.dart';
 import 'sap_element.dart';
 
 //  * A proxy for sweep and prune broad-phase.

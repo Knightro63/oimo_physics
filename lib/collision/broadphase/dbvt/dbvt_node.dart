@@ -1,5 +1,5 @@
 import '../../../math/aabb.dart';
-import '../proxy.dart';
+import '../proxy_broad_phase.dart';
 
 // * A node of the dynamic bounding volume tree.
 class DBVTNode{

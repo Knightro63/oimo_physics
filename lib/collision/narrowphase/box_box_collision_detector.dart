@@ -1,9 +1,9 @@
 import 'collision_detector.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import 'dart:math' as math;
 import '../../math/vec3.dart';
-import '../../shape/box.dart';
+import '../../shape/box_shape.dart';
 
 //  * A collision detector which detects collisions between two boxes.
 class BoxBoxCollisionDetector extends CollisionDetector{

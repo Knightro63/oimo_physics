@@ -1,6 +1,6 @@
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 import '../../core/rigid_body.dart';
-import 'contact.dart';
+import 'contact_main.dart';
 
 // * A link list of contacts.
 class ContactLink{

@@ -1,5 +1,5 @@
-import '../../core/utils.dart';
-import '../../shape/shape.dart';
+import '../../core/utils_core.dart';
+import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
 
 class CollisionDetector{

@@ -1,6 +1,6 @@
 import '../../../core/rigid_body.dart';
 import 'dart:math' as math;
-import '../joint.dart';
+import '../joint_main.dart';
 import '../../../math/mat33.dart';
 import '../../../math/vec3.dart';
 

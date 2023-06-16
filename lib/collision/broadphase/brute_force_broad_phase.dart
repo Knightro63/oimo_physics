@@ -1,7 +1,7 @@
-import 'proxy.dart';
+import 'proxy_broad_phase.dart';
 import 'broad_phase.dart';
 import 'basic_proxy.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 
 // * A broad-phase algorithm with brute-force search.
 // * This always checks for all possible pairs.

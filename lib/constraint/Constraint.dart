@@ -1,7 +1,7 @@
 import '../core/rigid_body.dart';
-import '../core/utils.dart';
-import '../core/core.dart';
-import '../core/world.dart';
+import '../core/utils_core.dart';
+import '../core/core_main.dart';
+import '../core/world_core.dart';
 
 
 // * The base class of all type of the constraints.

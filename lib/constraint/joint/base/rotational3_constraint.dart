@@ -1,4 +1,4 @@
-import '../joint.dart';
+import '../joint_main.dart';
 import '../limit_motor.dart';
 import '../../../core/rigid_body.dart';
 import '../../../math/vec3.dart';

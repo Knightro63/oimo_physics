@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'contact_link.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 import '../../core/rigid_body.dart';
 import 'impulse_buffer.dart';
 import 'contact_manifold.dart';

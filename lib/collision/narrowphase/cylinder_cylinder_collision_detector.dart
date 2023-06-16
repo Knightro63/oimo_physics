@@ -1,7 +1,7 @@
 import 'collision_detector.dart';
 import '../../math/vec3.dart';
-import '../../shape/shape.dart';
-import '../../shape/cylinder.dart';
+import '../../shape/shape_main.dart';
+import '../../shape/cylinder_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import 'dart:math' as math;
 

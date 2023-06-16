@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'shape_config.dart';
 import '../math/aabb.dart';
-import 'shape.dart';
+import 'shape_main.dart';
 
 // * Sphere shape
 class Sphere extends Shape{

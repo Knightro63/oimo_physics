@@ -2,7 +2,7 @@ import 'mass_info.dart';
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import '../math/vec3.dart';
-import 'shape.dart';
+import 'shape_main.dart';
 
 class Face{
   Face(this.a,this.b,this.c);

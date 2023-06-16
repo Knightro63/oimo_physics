@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:oimo_physics/constraint/joint/joint_link.dart';
 
-import '../collision/broadphase/pair.dart';
+import '../collision/broadphase/pair_broad_phase.dart';
 import '../collision/broadphase/sap/sap_broad_phase.dart';
 import '../collision/narrowphase/box_box_collision_detector.dart';
 import '../collision/narrowphase/box_cylinder_collision_detector.dart';
@@ -21,26 +21,26 @@ import '../constraint/joint/joint_config.dart';
 import '../constraint/joint/prismatic_joint.dart';
 import '../constraint/joint/slider_joint.dart';
 import '../constraint/joint/wheel_joint.dart';
-import '../shape/box.dart';
-import '../shape/cylinder.dart';
-import '../shape/plane.dart';
+import '../shape/box_shape.dart';
+import '../shape/cylinder_shape.dart';
+import '../shape/plane_shape.dart';
 import '../shape/shape_config.dart';
-import '../shape/sphere.dart';
+import '../shape/sphere_shape.dart';
 
 import '../collision/broadphase/broad_phase.dart';
 import '../collision/broadphase/brute_force_broad_phase.dart';
 import '../collision/broadphase/dbvt/dbvt_broad_phase.dart';
-import 'utils.dart';
-import '../shape/shape.dart';
+import 'utils_core.dart';
+import '../shape/shape_main.dart';
 import '../math/math.dart';
 import '../math/quat.dart';
 import '../math/vec3.dart';
 import '../constraint/constraint.dart';
-import 'core.dart';
+import 'core_main.dart';
 import 'rigid_body.dart';
 
-import '../constraint/joint/joint.dart';
-import '../constraint/contact/contact.dart';
+import '../constraint/joint/joint_main.dart';
+import '../constraint/contact/contact_main.dart';
 
 class ObjectConfigure{
   ObjectConfigure({

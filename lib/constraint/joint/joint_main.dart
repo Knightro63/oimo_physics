@@ -1,4 +1,4 @@
-import '../../core/world.dart';
+import '../../core/world_core.dart';
 import '../constraint.dart';
 import 'joint_link.dart';
 import 'joint_config.dart';

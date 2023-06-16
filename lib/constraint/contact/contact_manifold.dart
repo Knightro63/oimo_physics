@@ -1,7 +1,7 @@
 import 'manifold_point.dart';
 import '../../math/vec3.dart';
 import '../../core/rigid_body.dart';
-import '../../shape/shape.dart';
+import '../../shape/shape_main.dart';
 
 // * A contact manifold between two shapes.
 class ContactManifold{
