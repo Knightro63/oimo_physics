@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:oimo_physics/constraint/joint/joint_link.dart';
+import 'package:oimo_physics/core/soft_body.dart';
 
 import '../collision/broadphase/pair_broad_phase.dart';
 import '../collision/broadphase/sap/sap_broad_phase.dart';
@@ -45,6 +46,7 @@ import '../constraint/contact/contact_main.dart';
 class ObjectConfigure{
   ObjectConfigure({
     this.type = JointType.none,
+    this.coreType = CoreType.rigid,
     this.shapes = const [Shapes.none],
     this.move = false,
     this.kinematic = false,
@@ -88,6 +90,7 @@ class ObjectConfigure{
 
 
   List<Shapes> shapes;
+  CoreType coreType;
   JointType type;
   bool move;
   bool kinematic;
@@ -107,8 +110,8 @@ class ObjectConfigure{
   bool massPos;
   bool sleep;
 
-  RigidBody? body1;
-  RigidBody? body2; 
+  Core? body1;
+  Core? body2; 
   bool allowCollision;
 
   late double max;
@@ -223,7 +226,6 @@ class World{
   InfoDisplay? performance;
   late bool isStat;
     
-
   // * Whether the constraints randomizer is enabled or not.
   late bool enableRandomizer;
 
@@ -231,6 +233,14 @@ class World{
   RigidBody? rigidBodies;
   // number of rigid body
   int numRigidBodies=0;
+  Map<int,RigidBody?> islandRigidBodies = {};
+  Map<int,RigidBody?> islandStack = {};
+
+  // The soft body list
+  SoftBody? softBodies;
+  // number of soft body
+  int numSoftBodies=0;
+
   // The contact list
   Contact? contacts;
   Contact? unusedContacts;
@@ -257,10 +267,7 @@ class World{
   int randA = 98765;
   int randB = 123456789;
 
-  Map<int,RigidBody?> islandRigidBodies = {};
-  Map<int,RigidBody?> islandStack = {};
   Map<int,Constraint?> islandConstraints = {};
-
 
   void play(){
     if(timer != null) return;
@@ -292,7 +299,7 @@ class World{
     // });
     return temp;
   }
-  // Reset the world and remove all rigid bodies, shapes, joints and any object from the world.
+  // Reset the world and remove all rigid bodies, soft bodies, shapes, joints and any object from the world.
   void clear(){
     stop();
     preLoop = null;
@@ -305,10 +312,52 @@ class World{
     while(contacts!=null){
       removeContact(contacts!);
     }
+    while(softBodies!=null){
+      removeSoftBody(softBodies!);
+    }
     while(rigidBodies!=null){
       removeRigidBody(rigidBodies!);
     }
   }
+
+  // * I'll add a soft body to the world.
+  // * Soft body that has been added will be the operands of each step.
+  // * @param  softBody  Soft body that you want to add
+  void addSoftBody(SoftBody softBody){
+    if(softBody.parent != null){
+      printError("World", "It is not possible to be added to more than one world one of the soft body");
+    }
+
+    softBody.setParent(this);
+    
+    for(Shape? shape = softBody.shapes; shape != null; shape = shape.next){
+      addShape(shape);
+    }
+    if(softBodies!=null)(softBodies!.prev=softBody).next=softBody;
+    softBodies = softBody;
+    numSoftBodies++;
+  }
+  // * I will remove the soft body from the world.
+  // * Soft body that has been deleted is excluded from the calculation on a step-by-step basis.
+  // * @param  softBody  Soft body to be removed
+  void removeSoftBody(SoftBody softBody){
+    final SoftBody remove = softBody;
+    if(remove.parent != this)return;
+    remove.awake();
+    for(Shape? shape = softBody.shapes; shape!=null; shape=shape.next){
+      removeShape(shape);
+    }
+    final SoftBody? prev = remove.prev;
+    final SoftBody? next = remove.next;
+    if(prev!=null) prev.next=next;
+    if(next!=null) next.prev=prev;
+    if(softBodies==remove) softBodies=next;
+    remove.prev=null;
+    remove.next=null;
+    remove.parent=null;
+    numSoftBodies--;
+  }
+
 
   // * I'll add a rigid body to the world.
   // * Rigid body that has been added will be the operands of each step.
@@ -328,7 +377,6 @@ class World{
     rigidBodies = rigidBody;
     numRigidBodies++;
   }
-
   // * I will remove the rigid body from the world.
   // * Rigid body that has been deleted is excluded from the calculation on a step-by-step basis.
   // * @param  rigidBody  Rigid body to be removed
@@ -338,15 +386,15 @@ class World{
     remove.awake();
     JointLink? js = remove.jointLink;
     while(js!=null){
-      Joint joint=js.joint;
+      final Joint joint=js.joint;
       js=js.next;
       removeJoint(joint);
     }
     for(Shape? shape = rigidBody.shapes; shape!=null; shape=shape.next){
       removeShape(shape);
     }
-    RigidBody? prev = remove.prev;
-    RigidBody? next = remove.next;
+    final RigidBody? prev = remove.prev;
+    final RigidBody? next = remove.next;
     if(prev!=null) prev.next=next;
     if(next!=null) next.prev=prev;
     if(rigidBodies==remove) rigidBodies=next;
@@ -357,10 +405,16 @@ class World{
   }
 
   Core? getByName(String name){
-    RigidBody? body = rigidBodies;
-    while(body != null){
-      if( body.name == name ){ return body;}
-      body=body.next;
+    RigidBody? rbody = rigidBodies;
+    while(rbody != null){
+      if( rbody.name == name ){ return rbody;}
+      rbody = rbody.next;
+    }
+
+    SoftBody? sbody = softBodies;
+    while(sbody != null){
+      if( sbody.name == name ){ return sbody;}
+      sbody = sbody.next;
     }
 
     Joint? joint = joints;
@@ -416,9 +470,9 @@ class World{
   // * Joint that has been added will be the operands of each step.
   // * @param  shape Joint to be deleted
   void removeJoint (Joint joint ) {
-    Joint remove=joint;
-    Joint? prev=remove.prev;
-    Joint? next=remove.next;
+    final Joint remove=joint;
+    final Joint? prev=remove.prev;
+    final Joint? next=remove.next;
     if(prev!=null)prev.next=next;
     if(next!=null)next.prev=prev;
     if(joints==remove)joints=next;
@@ -460,7 +514,7 @@ class World{
     numContacts--;
   }
 
-  Contact? getContact(RigidBody body1,RigidBody body2) {
+  Contact? getContact(Core body1,Core body2) {
     String b1 = body1.name;
     String b2 = body2.name;
 
@@ -501,7 +555,7 @@ class World{
     return false;
   }
 
-  bool callSleep(RigidBody body) {
+  bool callSleep(Core body) {
     if( !body.allowSleep ) return false;
     if( body.linearVelocity.lengthSq() > 0.04 ) return false;
     if( body.angularVelocity.lengthSq() > 0.25 ) return false;
@@ -515,16 +569,25 @@ class World{
     if(stat){
       performance?.setTime(0);
     }
-    RigidBody? body = rigidBodies;
-    
-    while(body != null){
-      body.addedToIsland = false;
-      if( body.sleeping ){
-        body.testWakeUp();
+
+    RigidBody? rigidBody = rigidBodies;
+    while(rigidBody != null){
+      rigidBody.addedToIsland = false;
+      if( rigidBody.sleeping ){
+        rigidBody.testWakeUp();
       }
-      body = body.next;
+      rigidBody = rigidBody.next;
     }
 
+    SoftBody? softBody = softBodies;
+    while(softBody != null){
+      softBody.addedToIsland = false;
+      if( softBody.sleeping ){
+        softBody.testWakeUp();
+      }
+      softBody = softBody.next;
+    }
+    
     //------------------------------------------------------
     //   UPDATE BROADPHASE CONTACT
     //------------------------------------------------------
@@ -784,6 +847,10 @@ class World{
     }
   }
 
+  rigidBodySimulaton(){
+
+  }
+
   // remove someting to world
   remove( obj ){
 
@@ -794,12 +861,12 @@ class World{
     if(config.type != JointType.none){ 
       return initJoint(config.type, config);
     }
-    else {
-      return initBody(config.shapes, config);
+    else{
+      return initBody(config.shapes, config, config.coreType);
     }
   }
 
-  RigidBody? initBody(List<Shapes> type, ObjectConfigure config){
+  Core? initBody(List<Shapes> shapeTypes, ObjectConfigure config, CoreType coreType){
     double invScale = this.invScale;
 
     // body position
@@ -831,14 +898,13 @@ class World{
     Vec3 position = Vec3( p[0], p[1], p[2] );
     Quat rotation = Quat().setFromEuler( r[0], r[1], r[2] );
 
-    // rigidbody
-    RigidBody body = RigidBody( 
+    // corebody
+    Core body = Core( 
       position,
       rotation
     );
-    //var body = RigidBody( p[0], p[1], p[2], r[0], r[1], r[2], r[3], this.scale, this.invScale );
   
-    for(int i = 0; i<type.length; i++){
+    for(int i = 0; i<shapeTypes.length; i++){
       late Shape shape;
       int n = i * 3;
 
@@ -849,7 +915,7 @@ class World{
         sc.relativeRotation.setQuat( Quat().setFromEuler( r2[n], r2[n+1], r2[n+2] ) );
       }
       
-      switch(type[i]){
+      switch(shapeTypes[i]){
         case Shapes.sphere: 
           shape = Sphere( sc, s[n] ); 
           break;
@@ -881,25 +947,30 @@ class World{
     // body static or dynamic
     if(config.move){
       if(config.massPos || config.massRot) {
-        body.setupMass(RigidBodyType.dynamic, false);
+        body.setupMass(BodyType.dynamic, false);
       }
       else {
-        body.setupMass(RigidBodyType.dynamic);
+        body.setupMass(BodyType.dynamic);
       }
     } 
     else {
-      body.setupMass(RigidBodyType.static);
+      body.setupMass(BodyType.static);
     }
 
     if(config.name != null ){ 
       body.name = config.name!;
     }
     else if(config.move){ 
-      body.name = numRigidBodies.toString();
+      body.name = '${coreType.name}_${coreType == CoreType.rigid?numRigidBodies:numSoftBodies}';
     }
 
-    // finaly add to physics world
-    addRigidBody(body);
+    if(coreType == CoreType.rigid){
+      // finaly add to physics world
+      addRigidBody(body as RigidBody);
+    }
+    else if(coreType == CoreType.soft){
+      addSoftBody(body as SoftBody);
+    }
 
     // force sleep on not
     if(config.move){
@@ -947,8 +1018,8 @@ class World{
     jc.localAnchorPoint1.set( pos1[0], pos1[1], pos1[2] );
     jc.localAnchorPoint2.set( pos2[0], pos2[1], pos2[2] );
 
-    RigidBody? b1 = config.body1;
-    RigidBody? b2 = config.body2;
+    RigidBody? b1 = config.body1 as RigidBody?;
+    RigidBody? b2 = config.body2 as RigidBody?;
 
     if(b1 == null || b2 == null){
       printError('World', "Can't add joint attach rigidbodys not find !" ); 

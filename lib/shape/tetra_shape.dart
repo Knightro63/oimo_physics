@@ -44,8 +44,8 @@ class Tetra extends Shape{
   @override
   void updateProxy(){
     aabb.setFromPoints(verts);
-    aabb.expandByScalar(aabbProx);
-    if(this.proxy != null) this.proxy!.update();
+    aabb.expandByScalar(AABB.aabbProx);
+    if(proxy != null) proxy!.update();
   }
 
   Face mtri(Vec3 a, Vec3 b, Vec3 c){

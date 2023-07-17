@@ -1,3 +1,5 @@
+import 'package:oimo_physics/core/core_main.dart';
+
 import 'manifold_point.dart';
 import '../../math/vec3.dart';
 import '../../core/rigid_body.dart';
@@ -8,9 +10,9 @@ class ContactManifold{
   ContactManifold();
 
   // The first rigid body.
-  RigidBody? body1;
+  Core? body1;
   // The second rigid body.
-  RigidBody? body2;
+  Core? body2;
   // The number of manifold points.
   int numPoints = 0;
   // The manifold points.

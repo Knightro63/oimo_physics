@@ -1,4 +1,3 @@
-import '../core/rigid_body.dart';
 import '../core/utils_core.dart';
 import '../core/core_main.dart';
 import '../core/world_core.dart';
@@ -10,9 +9,9 @@ class Constraint extends Core{
   // parent world of the constraint.
   World? parent;
   // first body of the constraint.
-  RigidBody? body1;
+  Core? body1;
   // second body of the constraint.
-  RigidBody? body2;
+  Core? body2;
   // Internal
   bool addedToIsland = false;
 

@@ -20,13 +20,13 @@ class Sphere extends Shape{
 	void calculateMassInfo( out ) {
 		double mass = volume() * radius * radius * density;
 		out.mass = mass;
-		var inertia = mass * radius * radius * 0.4;
+		double inertia = mass * radius * radius * 0.4;
 		out.inertia.set( inertia, 0, 0, 0, inertia, 0, 0, 0, inertia );
 	}
 
   @override
 	void updateProxy(){
-		double p = aabbProx;
+		double p = AABB.aabbProx;
 
 		aabb.set(
 			position.x - radius - p, position.x + radius + p,
@@ -34,6 +34,6 @@ class Sphere extends Shape{
 			position.z - radius - p, position.z + radius + p
 		);
 
-		if ( this.proxy != null ) this.proxy!.update();
+		if(proxy != null) proxy!.update();
 	}
 }

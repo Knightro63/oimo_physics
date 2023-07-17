@@ -1,5 +1,5 @@
+import 'package:oimo_physics/core/core_main.dart';
 import '../../shape/shape_main.dart';
-import '../../core/rigid_body.dart';
 import 'contact_main.dart';
 
 // * A link list of contacts.
@@ -13,7 +13,7 @@ class ContactLink{
   // The shape of the contact.
   Shape? shape;
   // The other rigid body.
-  RigidBody? body;
+  Core? body;
   // The contact of the link.
   late Contact contact;
 }

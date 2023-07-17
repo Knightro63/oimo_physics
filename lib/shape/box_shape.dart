@@ -123,7 +123,7 @@ class Box extends Shape{
 		h = di[16] < 0 ? h - di[16] : h + di[16];
 		d = di[17] < 0 ? d - di[17] : d + di[17];
 
-		double p = aabbProx;
+		double p = AABB.aabbProx;
 
 		aabb.set(
 			position.x - w - p, position.x + w + p,
@@ -131,6 +131,6 @@ class Box extends Shape{
 			position.z - d - p, position.z + d + p
 		);
 
-		if ( this.proxy != null ) this.proxy!.update();
+		if(proxy != null) proxy!.update();
 	}
 }

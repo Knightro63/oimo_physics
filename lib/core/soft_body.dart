@@ -1,7 +1,6 @@
 import 'world_core.dart';
 import 'core_main.dart';
 import '../constraint/contact/contact_link.dart';
-import '../constraint/joint/joint_link.dart';
 import 'utils_core.dart';
 import '../shape/shape_main.dart';
 import '../math/math.dart';
@@ -12,23 +11,14 @@ import '../math/vec3.dart';
 /// The class of rigid body.
 /// Rigid body has the shape of a single or multiple collision processing,
 /// I can set the parameters individually.
-class RigidBody extends Core{
-  RigidBody([Vec3? position, Quat? orientation]):super(position,orientation){
+class SoftBody extends Core{
+  SoftBody([Vec3? position, Quat? orientation]):super(position,orientation){
     this.position = position ?? Vec3();
     this.orientation = orientation ?? Quat();
-    //type = config.type;
   }
 
-  // The maximum number of shapes that can be added to a one rigid.
-  //this.MAX_SHAPES = 64;//64;
-
-  // It is the link array of joint that is connected to the rigid body.
-  JointLink? jointLink;
-  // The number of joints that are connected to the rigid body.
-  int numJoints = 0;
-
-  RigidBody? next;
-  RigidBody? prev;
+  SoftBody? next;
+  SoftBody? prev;
 
   @override
   void setParent(World world){
@@ -86,7 +76,7 @@ class RigidBody extends Core{
   }
   @override
   void dispose() {
-    parent!.removeRigidBody( this );
+    parent!.removeSoftBody(this);
   }
 
   void checkContact( name ) {
@@ -164,12 +154,6 @@ class RigidBody extends Core{
       cs.body!.sleeping = false;
       cs = cs.next;
     }
-    JointLink? js = jointLink;
-    while(js != null){
-      js.body!.sleepTime = 0;
-      js.body!.sleeping = false;
-      js = js.next;
-    }
     for(Shape? shape = shapes; shape != null; shape = shape.next ) {
       shape.updateProxy();
     }
@@ -198,7 +182,7 @@ class RigidBody extends Core{
   // * Get whether the rigid body has not any connection with others.
   @override
   bool isLonely() {
-    return numJoints==0 && numContacts==0;
+    return numContacts==0;
   }
 
   //  * The time integration of the motion of a rigid body, you can update the information such as the shape.

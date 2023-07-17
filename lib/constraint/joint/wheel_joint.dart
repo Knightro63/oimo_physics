@@ -12,7 +12,7 @@ import 'base/rotational3_constraint.dart';
 // * The wheel joint also allows for relative translation for the suspension.
 class WheelJoint extends Joint{
   WheelJoint (JointConfig config):super(config){
-    type = JointType.wheel;
+    jointType = JointType.wheel;
 
     localAxis1 = config.localAxis1.clone().normalize();
     localAxis2 = config.localAxis2.clone().normalize();

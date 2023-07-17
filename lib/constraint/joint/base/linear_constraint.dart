@@ -1,4 +1,4 @@
-import '../../../core/rigid_body.dart';
+import 'package:oimo_physics/core/core_main.dart';
 import 'dart:math' as math;
 import '../joint_main.dart';
 import '../../../math/mat33.dart';
@@ -67,8 +67,8 @@ class LinearConstraint extends Joint{
   late Vec3 r2;
   late Vec3 p1;
   late Vec3 p2;
-  RigidBody? b1;
-  RigidBody? b2;
+  Core? b1;
+  Core? b2;
   Vec3? l1;
   Vec3? l2;
   Vec3? a1;

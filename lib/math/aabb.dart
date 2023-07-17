@@ -1,15 +1,14 @@
 import 'dart:math' as math;
 import 'vec3.dart';
 
-// * An axis-aligned bounding box.
-// AABB aproximation
-double aabbProx = 0.005;
-
 class AABB{
   AABB([double minX = 0,double maxX = 0,double minY = 0,double maxY = 0,double minZ = 0,double maxZ = 0]){
     elements[0] = minX; elements[1] = minY; elements[2] = minZ;
     elements[3] = maxX; elements[4] = maxY; elements[5] = maxZ;
   }
+  // * An axis-aligned bounding box.
+  // AABB aproximation
+  static double aabbProx = 0.005;
 
   List<double> elements = [1, 0, 0,0, 1, 0];
 

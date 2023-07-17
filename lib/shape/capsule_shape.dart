@@ -6,9 +6,9 @@ import 'dart:math' as math;
 import '../math/vec3.dart';
 
 // * Cylinder shape
-class Cylinder extends Shape{
-  Cylinder(ShapeConfig config, this.radius, this.height ):super(config) {
-    type = Shapes.cylinder;
+class Capsule extends Shape{
+  Capsule(ShapeConfig config, this.radius, this.height ):super(config) {
+    type = Shapes.capsule;
     halfHeight = height * 0.5;
   }
 
@@ -22,8 +22,10 @@ class Cylinder extends Shape{
   @override
   void calculateMassInfo(MassInfo out){
     double rsq = radius * radius;
-    double mass = math.pi * rsq * height * density;
-    double inertiaXZ = ( ( 0.25 * rsq ) + ( 0.0833 * height * height ) ) * mass;
+    double massSphere = math.pi * radius * 1.333333 * rsq * density;
+    double mass = (math.pi * rsq * height * density) + massSphere;
+    double inertiaSphere = mass * radius * radius * 0.4;
+    double inertiaXZ = ( ( 0.25 * rsq ) + ( 0.0833 * height * height ) ) * mass + inertiaSphere;
     double inertiaY = 0.5 * rsq;
     out.mass = mass;
     out.inertia.set( inertiaXZ, 0, 0,  0, inertiaY, 0,  0, 0, inertiaXZ );

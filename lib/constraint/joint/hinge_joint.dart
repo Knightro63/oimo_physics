@@ -12,7 +12,7 @@ import 'base/rotational3_constraint.dart';
 // * A hinge joint allows only for relative rotation of rigid bodies along the axis.
 class HingeJoint extends Joint{
   HingeJoint(JointConfig config,double lowerAngleLimit,double upperAngleLimit ):super(config){
-    type = JointType.hinge;
+    jointType = JointType.hinge;
     limitMotor = LimitMotor(nor, false );
     limitMotor.lowerLimit = lowerAngleLimit;
     limitMotor.upperLimit = upperAngleLimit;

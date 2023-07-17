@@ -1,5 +1,6 @@
+import 'package:oimo_physics/core/core_main.dart';
+
 import '../joint_main.dart';
-import '../../../core/rigid_body.dart';
 import '../limit_motor.dart';
 import '../../../math/mat33.dart';
 import '../../../math/vec3.dart';
@@ -87,8 +88,8 @@ class TranslationalConstraint extends Joint{
     double? maxMotorImpulse;
 
     LimitMotor limitMotor;
-    late RigidBody b1;
-    late RigidBody b2;
+    late Core b1;
+    late Core b2;
     late Vec3 p1;
     late Vec3 p2;
     late Vec3 r1;

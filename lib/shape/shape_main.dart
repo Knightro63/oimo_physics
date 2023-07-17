@@ -1,6 +1,6 @@
 import 'package:oimo_physics/collision/broadphase/proxy_broad_phase.dart';
 import 'package:oimo_physics/constraint/contact/contact_link.dart';
-import 'package:oimo_physics/core/rigid_body.dart';
+import 'package:oimo_physics/core/core_main.dart';
 import 'package:oimo_physics/math/aabb.dart';
 import 'package:oimo_physics/math/mat33.dart';
 import 'package:oimo_physics/math/vec3.dart';
@@ -35,7 +35,7 @@ class Shape{
   // proxy of the shape used for broad-phase collision detection.
   Proxy? proxy;
   // parent rigid body of the shape.
-  RigidBody? parent;
+  Core? parent;
   // linked list of the contacts with the shape.
   ContactLink? contactLink;
   // number of the contacts with the shape.

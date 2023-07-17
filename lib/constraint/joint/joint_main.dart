@@ -1,3 +1,5 @@
+import 'package:oimo_physics/core/rigid_body.dart';
+
 import '../../core/world_core.dart';
 import '../constraint_main.dart';
 import 'joint_link.dart';
@@ -21,15 +23,8 @@ class Joint extends Constraint{
     allowCollision = config.allowCollision;
   }
   JointConfig config;
-  double scale = 1;
-  double invScale = 1;
-
-  // joint name
-  String name = "";
-  int? id;
-
   // The type of the joint.
-  JointType type = JointType.none;
+  JointType jointType = JointType.none;
   //  The previous joint in the world.
   Joint? prev;
   // The next joint in the world.
@@ -76,35 +71,37 @@ class Joint extends Constraint{
 
   // Attach the joint from the bodies.
   void attach(){//[bool isX = false]) {
-    b1Link.body = body2;
-    b2Link.body = body1;
+    b1Link.body = body2 as RigidBody?;
+    b2Link.body = body1 as RigidBody?;
 
     // if(isX){
     //   body1!.jointLink.push(b1Link);
     //   body2!.jointLink.push(b2Link);
     // } 
     // else {
-      if(body1!.jointLink != null){ 
-        (b1Link.next=body1!.jointLink)!.prev = b1Link;
+      if(b1Link.body!.jointLink != null){ 
+        (b1Link.next=b1Link.body!.jointLink)!.prev = b1Link;
       }
       else{ 
         b1Link.next = null;
       }
-      body1!.jointLink = b1Link;
-      body1!.numJoints++;
-      if(body2!.jointLink != null){ 
-        (b2Link.next=body2!.jointLink)!.prev = b2Link;
+      b1Link.body!.jointLink = b1Link;
+      b1Link.body!.numJoints++;
+      if(b2Link.body!.jointLink != null){ 
+        (b2Link.next=b2Link.body!.jointLink)!.prev = b2Link;
       }
       else{
         b2Link.next = null;
       }
-      body2!.jointLink = b2Link;
-      body2!.numJoints++;
+      b2Link.body!.jointLink = b2Link;
+      b2Link.body!.numJoints++;
     //}
   }
 
   // Detach the joint from the bodies.
-  void detach(){//bool isX ) {
+  void detach(){
+    final RigidBody? b1 = body1 as RigidBody?;
+    final RigidBody? b2 = body2 as RigidBody?;
     // if( isX ){
     //   body1!.jointLink.splice(body1!.jointLink.indexOf(b1Link ), 1 );
     //   body2!.jointLink.splice(body2!.jointLink.indexOf(b2Link ), 1 );
@@ -114,21 +111,21 @@ class Joint extends Constraint{
       JointLink? next = b1Link.next;
       if(prev != null){ prev.next = next;}
       if(next != null){ next.prev = prev;}
-      if(body1!.jointLink == b1Link){body1!.jointLink = next;}
+      if(b1!.jointLink == b1Link){b1.jointLink = next;}
       b1Link.prev = null;
       b1Link.next = null;
       b1Link.body = null;
-      body1!.numJoints--;
+      b1.numJoints--;
 
       prev = b2Link.prev;
       next = b2Link.next;
       if(prev != null){ prev.next = next;}
       if(next != null){ next.prev = prev;}
-      if(body2!.jointLink==b2Link) body2!.jointLink = next;
+      if(b2!.jointLink==b2Link) b2.jointLink = next;
       b2Link.prev = null;
       b2Link.next = null;
       b2Link.body = null;
-      body2!.numJoints--;
+      b2.numJoints--;
     //}
     b1Link.body = null;
     b2Link.body = null;
