@@ -26,7 +26,7 @@ class Plane extends Shape{
 
   @override
   void updateProxy() {
-    double p = AABB.aabbProx;
+    double p = aabbProx;
     double min = -double.maxFinite;
     double max = double.maxFinite;
     Vec3 n = normal;
@@ -36,6 +36,6 @@ class Plane extends Shape{
       n.y == -1 ? position.y - p : min, n.y == 1 ? position.y + p : max,
       n.z == -1 ? position.z - p : min, n.z == 1 ? position.z + p : max
     );
-    if(proxy != null ) proxy!.update();
+    if(proxy != null) proxy!.update();
   }
 }

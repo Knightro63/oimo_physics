@@ -1,5 +1,4 @@
-import 'package:oimo_physics/core/core_main.dart';
-import 'package:oimo_physics/core/rigid_body.dart';
+import '../../core/rigid_body.dart';
 import 'joint_main.dart';
 
 class JointLink{

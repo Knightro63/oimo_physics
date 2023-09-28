@@ -7,7 +7,7 @@ import 'base/translational_constraint.dart';
 // * A distance joint limits the distance between two anchor points on rigid bodies.
 class DistanceJoint extends Joint{
   DistanceJoint(JointConfig config, double minDistance, double maxDistance ):super(config){
-    jointType = JointType.distance;
+    type = JointType.distance;
     limitMotor = LimitMotor(nor, true);
     limitMotor.lowerLimit = minDistance;
     limitMotor.upperLimit = maxDistance;

@@ -9,7 +9,7 @@ import 'base/translational3_constraint.dart';
 // * A prismatic joint allows only for relative translation of rigid bodies along the axis.
 class PrismaticJoint extends Joint{
   PrismaticJoint(JointConfig config, lowerTranslation, upperTranslation ):super(config){
-    jointType = JointType.prismatic;
+    type = JointType.prismatic;
 
     localAxis1 = config.localAxis1.clone().normalize();
     localAxis2 = config.localAxis2.clone().normalize();

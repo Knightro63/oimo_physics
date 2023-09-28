@@ -5,7 +5,7 @@ import 'joint_main.dart';
 // * A ball-and-socket joint limits relative translation on two anchor points on rigid bodies.
 class BallAndSocketJoint extends Joint{
   BallAndSocketJoint(JointConfig config ):super(config){
-    jointType = JointType.socket;
+    type = JointType.socket;
     lc = LinearConstraint(this);
   }
 

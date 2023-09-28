@@ -3,32 +3,124 @@ import 'core_main.dart';
 import '../constraint/contact/contact_link.dart';
 import '../constraint/joint/joint_link.dart';
 import 'utils_core.dart';
+import '../shape/mass_info.dart';
 import '../shape/shape_main.dart';
 import '../math/math.dart';
 import '../math/mat33.dart';
 import '../math/quat.dart';
 import '../math/vec3.dart';
 
-/// The class of rigid body.
-/// Rigid body has the shape of a single or multiple collision processing,
-/// I can set the parameters individually.
+/// * The class of rigid body.
+/// * Rigid body has the shape of a single or multiple collision processing,
+/// * I can set the parameters individually.
+enum RigidBodyType{none,dynamic,static,kinematic,ghost}
+
 class RigidBody extends Core{
-  RigidBody([Vec3? position, Quat? orientation]):super(position,orientation){
+  RigidBody([Vec3? position, Quat? orientation]){//RigidBodyConfig config){//
     this.position = position ?? Vec3();
     this.orientation = orientation ?? Quat();
     //type = config.type;
   }
 
+  late Vec3 position;
+  late Quat orientation;
+
+  double scale = 1;
+  double invScale = 1;
+
+  /// possible link to three Mesh; dart(todo) add three_dart
+  dynamic mesh;
+
+  int? id;
+  String name = "";
+
   // The maximum number of shapes that can be added to a one rigid.
   //this.MAX_SHAPES = 64;//64;
+  RigidBody? prev;
+  RigidBody? next;
+
+  // I represent the kind of rigid body.
+  // Please do not change from the outside this variable.
+  // If you want to change the type of rigid body, always
+  // Please specify the type you want to set the arguments of setupMass method.
+  RigidBodyType type = RigidBodyType.none;
+
+  MassInfo massInfo = MassInfo();
+
+  Vec3 newPosition = Vec3();
+  bool controlPos = false;
+  Quat newOrientation = Quat();
+  Vec3 newRotation = Vec3();
+  Vec3 currentRotation = Vec3();
+  bool controlRot = false;
+  bool controlRotInTime = false;
+
+  Quat quaternion = Quat();
+  Vec3 pos = Vec3();
+
+  // Is the translational velocity.
+  Vec3 linearVelocity = Vec3();
+ // Is the angular velocity.
+ Vec3 angularVelocity = Vec3();
+
+  //--------------------------------------------
+  //  Please do not change from the outside this variables.
+  //--------------------------------------------
+
+  // It is a world that rigid body has been added.
+  World? parent;
+  ContactLink? contactLink;
+  int numContacts = 0;
+
+  // An array of shapes that are included in the rigid body.
+  Shape? shapes;
+  // The number of shapes that are included in the rigid body.
+  int numShapes = 0;
 
   // It is the link array of joint that is connected to the rigid body.
   JointLink? jointLink;
   // The number of joints that are connected to the rigid body.
   int numJoints = 0;
 
-  RigidBody? next;
-  RigidBody? prev;
+  // It is the world coordinate of the center of gravity in the sleep just before.
+  Vec3 sleepPosition = Vec3();
+  // It is a quaternion that represents the attitude of sleep just before.
+  Quat sleepOrientation = Quat();
+  // I will show this rigid body to determine whether it is a rigid body static.
+  bool isStatic = false;
+  // I indicates that this rigid body to determine whether it is a rigid body dynamic.
+  bool isDynamic = false;
+
+  bool isKinematic = false;
+
+  // It is a rotation matrix representing the orientation.
+  Mat33 rotation = Mat33();
+
+  //--------------------------------------------
+  // It will be recalculated automatically from the shape, which is included.
+  //--------------------------------------------
+
+  // This is the weight.
+  double mass = 0;
+  // It is the reciprocal of the mass.
+  double inverseMass = 0;
+  // It is the inverse of the inertia tensor in the world system.
+  Mat33 inverseInertia = Mat33();
+  // It is the inertia tensor in the initial state.
+  Mat33 localInertia = Mat33();
+  // It is the inverse of the inertia tensor in the initial state.
+  Mat33 inverseLocalInertia = Mat33();
+
+  Mat33 tmpInertia = Mat33();
+
+  // I indicates rigid body whether it has been added to the simulation Island.
+  bool addedToIsland = false;
+  // It shows how to sleep rigid body.
+  bool allowSleep = true;
+  // This is the time from when the rigid body at rest.
+  double sleepTime = 0;
+  // I shows rigid body to determine whether it is a sleep state.
+  bool sleeping = false;
 
   @override
   void setParent(World world){
@@ -46,7 +138,6 @@ class RigidBody extends Core{
   /// * If you add a shape, please call the setupMass method to step up to the start of the next.
   /// * @param   shape shape to Add
   /// *
-  @override
   void addShape(Shape shape){
     if(shape.parent != null){
       printError("RigidBody", "It is not possible that you add a shape which already has an associated body.");
@@ -102,11 +193,10 @@ class RigidBody extends Core{
   ///  * @param adjustPosition
   ///  * @return void
   ///  *
-  @override
-  void setupMass([BodyType? bodyType, bool adjustPosition = true]) {
-    this.bodyType = bodyType ?? BodyType.static;
-    isDynamic = this.bodyType == BodyType.dynamic;
-    isStatic = this.bodyType == BodyType.static;
+  void setupMass([RigidBodyType? type, bool adjustPosition = true]) {
+    this.type = type ?? RigidBodyType.static;
+    isDynamic = this.type == RigidBodyType.dynamic;
+    isStatic = this.type == RigidBodyType.static;
 
     mass = 0;
     localInertia.set(0,0,0,0,0,0,0,0,0);
@@ -143,7 +233,7 @@ class RigidBody extends Core{
 
     //}
 
-    if(this.bodyType == BodyType.static ){
+    if(this.type == RigidBodyType.static ){
       inverseMass = 0;
       inverseLocalInertia.set(0,0,0,0,0,0,0,0,0);
     }
@@ -190,13 +280,12 @@ class RigidBody extends Core{
       shape.updateProxy();
     }
   }
-  @override
+
   void testWakeUp(){
     if(linearVelocity.testZero() || angularVelocity.testZero() || position.testDiff(sleepPosition) || orientation.testDiff(sleepOrientation)) awake(); // awake the body
   }
 
   // * Get whether the rigid body has not any connection with others.
-  @override
   bool isLonely() {
     return numJoints==0 && numContacts==0;
   }
@@ -204,10 +293,9 @@ class RigidBody extends Core{
   //  * The time integration of the motion of a rigid body, you can update the information such as the shape.
   //  * This method is invoked automatically when calling the step of the World,
   //  * There is no need to call from outside usually.
-  @override
   void updatePosition(double timeStep) {
-    switch(bodyType){
-      case BodyType.static:
+    switch(type){
+      case RigidBodyType.static:
         linearVelocity.set(0,0,0);
         angularVelocity.set(0,0,0);
 
@@ -221,7 +309,7 @@ class RigidBody extends Core{
           controlRot = false;
         }
         break;
-      case BodyType.dynamic:
+      case RigidBodyType.dynamic:
         if(isKinematic ){
           linearVelocity.set(0,0,0);
           angularVelocity.set(0,0,0);

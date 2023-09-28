@@ -1,8 +1,7 @@
 # oimo\_physics
 
 [![Pub Version](https://img.shields.io/pub/v/oimo_physics)](https://pub.dev/packages/oimo_physics)
-[![analysis](https://github.com/Knightro63/apple_vision/actions/workflows/flutter.yml/badge.svg)](https://github.com/Knightro63/apple_vision/actions/)
-[![Star on Github](https://img.shields.io/github/stars/Knightro63/apple_vision.svg?style=flat&logo=github&colorB=deeppink&label=stars)](https://github.com/Knightro63/oimo_physics)
+[![analysis](https://github.com/Knightro63/oimo_physics/actions/workflows/flutter.yml/badge.svg)](https://github.com/Knightro63/oimo_physics/actions/)
 [![License: BSD](https://img.shields.io/badge/license-BSD-purple.svg)](https://opensource.org/licenses/BSD)
 
 A Flutter plugin designed for three_dart and three_dart_jsm to allow users to add a simple physics engine to their 3D  project.

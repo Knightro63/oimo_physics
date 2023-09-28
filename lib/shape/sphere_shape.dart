@@ -26,7 +26,7 @@ class Sphere extends Shape{
 
   @override
 	void updateProxy(){
-		double p = AABB.aabbProx;
+		double p = aabbProx;
 
 		aabb.set(
 			position.x - radius - p, position.x + radius + p,

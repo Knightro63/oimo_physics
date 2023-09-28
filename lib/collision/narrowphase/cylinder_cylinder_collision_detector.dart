@@ -14,7 +14,7 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
     double t2x;
     double t2y;
     double t2z;
-    Vec3 sup = Vec3();
+    final sup = Vec3();
     double len;
     
     double p1x = 0;
@@ -24,12 +24,12 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
     double p2y = 0;
     double p2z = 0;
 
-    double v01x=c1.position.x;
-    double v01y=c1.position.y;
-    double v01z=c1.position.z;
-    double v02x=c2.position.x;
-    double v02y=c2.position.y;
-    double v02z=c2.position.z;
+    final v01x=c1.position.x;
+    final v01y=c1.position.y;
+    final v01z=c1.position.z;
+    final v02x=c2.position.x;
+    final v02y=c2.position.y;
+    final v02z=c2.position.z;
 
     double v0x=v02x-v01x;
     double v0y=v02y-v01y;
@@ -395,34 +395,34 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
       c2=shape1 as Cylinder;
     }
 
-    Vec3 p1=c1.position;
-    Vec3 p2=c2.position;
-    double p1x=p1.x;
-    double p1y=p1.y;
-    double p1z=p1.z;
-    double p2x=p2.x;
-    double p2y=p2.y;
-    double p2z=p2.z;
-    double h1=c1.halfHeight;
-    double h2=c2.halfHeight;
-    Vec3 n1=c1.normalDirection;
-    Vec3 n2=c2.normalDirection;
-    Vec3 d1=c1.halfDirection;
-    Vec3 d2=c2.halfDirection;
-    double r1=c1.radius;
-    double r2=c2.radius;
-    double n1x=n1.x;
-    double n1y=n1.y;
-    double n1z=n1.z;
-    double n2x=n2.x;
-    double n2y=n2.y;
-    double n2z=n2.z;
-    double d1x=d1.x;
-    double d1y=d1.y;
-    double d1z=d1.z;
-    double d2x=d2.x;
-    double d2y=d2.y;
-    double d2z=d2.z;
+    final p1=c1.position;
+    final p2=c2.position;
+    final p1x=p1.x;
+    final p1y=p1.y;
+    final p1z=p1.z;
+    final p2x=p2.x;
+    final p2y=p2.y;
+    final p2z=p2.z;
+    final h1=c1.halfHeight;
+    final h2=c2.halfHeight;
+    final n1=c1.normalDirection;
+    final n2=c2.normalDirection;
+    final d1=c1.halfDirection;
+    final d2=c2.halfDirection;
+    final r1=c1.radius;
+    final r2=c2.radius;
+    final n1x=n1.x;
+    final n1y=n1.y;
+    final n1z=n1.z;
+    final n2x=n2.x;
+    final n2y=n2.y;
+    final n2z=n2.z;
+    final d1x=d1.x;
+    final d1y=d1.y;
+    final d1z=d1.z;
+    final d2x=d2.x;
+    final d2y=d2.y;
+    final d2z=d2.z;
     double dx=p1x-p2x;
     double dy=p1y-p2y;
     double dz=p1z-p2z;
@@ -448,9 +448,9 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
     double t1;
     double t2;
 
-    Vec3 sep=Vec3();
-    Vec3 pos=Vec3();
-    Vec3 dep=Vec3();
+    final sep=Vec3();
+    final pos=Vec3();
+    final dep=Vec3();
 
     if(!getSep(c1,c2,sep,pos,dep))return;
 

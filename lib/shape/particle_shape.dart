@@ -28,6 +28,6 @@ class Particle extends Shape{
       position.y - p, position.y + p,
       position.z - p, position.z + p
     );
-    if(proxy != null) proxy!.update();
+    if (proxy != null) proxy!.update();
   }
 }

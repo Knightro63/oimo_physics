@@ -4,7 +4,7 @@ import '../math/mat33.dart';
 //  * A shape configuration holds common configuration data for constructing a shape.
 //  * These configurations can be reused safely.
 // Shape type
-enum Shapes{none,sphere,box,cylinder,plane,particle,tetra,capsule}
+enum Shapes{none,sphere,box,cylinder,plane,particle,tetra}
 
 class ShapeConfig{
   ShapeConfig({

@@ -62,7 +62,7 @@ class Cylinder extends Shape{
     h = hy < 0 ? h - hy : h + hy;
     d = dz < 0 ? d - dz : d + dz;
 
-    p = AABB.aabbProx;
+    p = aabbProx;
 
     aabb.set(
       position.x - w - p, position.x + w + p,
@@ -70,6 +70,6 @@ class Cylinder extends Shape{
       position.z - d - p, position.z + d + p
     );
 
-    if (proxy != null) proxy!.update();
+    if(proxy != null) proxy!.update();
   }
 }

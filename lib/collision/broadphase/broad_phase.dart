@@ -36,8 +36,8 @@ class BroadPhase{
 
   // Returns whether the pair is available or not.
   bool isAvailablePair(Shape s1,Shape s2 ) {
-    RigidBody b1 = s1.parent! as RigidBody;
-    RigidBody b2 = s2.parent! as RigidBody;
+    RigidBody b1 = s1.parent!;
+    RigidBody b2 = s2.parent!;
 
     if( b1 == b2 || // same parents
       (!b1.isDynamic && !b2.isDynamic) || // static or kinematic object

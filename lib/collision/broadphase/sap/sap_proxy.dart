@@ -1,7 +1,6 @@
-import 'package:oimo_physics/core/core_main.dart';
-
 import '../proxy_broad_phase.dart';
 import 'sap_broad_phase.dart';
+import '../../../core/rigid_body.dart';
 import '../../../shape/shape_main.dart';
 import 'sap_element.dart';
 
@@ -38,7 +37,7 @@ class SAPProxy extends Proxy{
 
   // Returns whether the proxy is dynamic or not.
   bool isDynamic() {
-    Core body = shape.parent!;
+    RigidBody body = shape.parent!;
     return body.isDynamic && !body.sleeping;
   }
 

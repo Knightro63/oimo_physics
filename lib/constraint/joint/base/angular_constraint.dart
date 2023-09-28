@@ -1,4 +1,4 @@
-import 'package:oimo_physics/core/core_main.dart';
+import '../../../core/rigid_body.dart';
 import '../joint_main.dart';
 import '../../../math/mat33.dart';
 import '../../../math/vec3.dart';
@@ -34,8 +34,8 @@ class AngularConstraint extends Joint{
   Vec3 rn1 = Vec3();
   Vec3 rn2 = Vec3();
 
-  late Core b1;
-  late Core b2;
+  late RigidBody b1;
+  late RigidBody b2;
   late Vec3 a1;
   late Vec3 a2;
   late Mat33 i1;

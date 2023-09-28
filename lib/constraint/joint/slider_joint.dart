@@ -11,7 +11,7 @@ import 'base/translational3_constraint.dart';
 // * A slider joint allows for relative translation and relative rotation between two rigid bodies along the axis.
 class SliderJoint extends Joint{
   SliderJoint(JointConfig config, double lowerTranslation, double upperTranslation ):super(config){
-    jointType = JointType.slider;
+    type = JointType.slider;
     localAxis1 = config.localAxis1.clone().normalize();
     localAxis2 = config.localAxis2.clone().normalize();
 

@@ -1,9 +1,8 @@
-import 'package:oimo_physics/core/core_main.dart';
-
 import '../../../math/vec3.dart';
 import '../../../math/mat33.dart';
 import '../joint_main.dart';
 import '../limit_motor.dart';
+import '../../../core/rigid_body.dart';
 
 // * A rotational constraint for various joints.
 class RotationalConstraint extends Joint{
@@ -59,8 +58,8 @@ class RotationalConstraint extends Joint{
   bool enableMotor=false;
 
   LimitMotor limitMotor;
-  late Core b1;
-  late Core b2;
+  late RigidBody b1;
+  late RigidBody b2;
   late Vec3 a1;
   late Vec3 a2;
   late Mat33 i1;

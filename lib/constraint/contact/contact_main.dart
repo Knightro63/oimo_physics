@@ -1,6 +1,4 @@
 import 'dart:math';
-import 'package:oimo_physics/core/core_main.dart';
-
 import 'contact_link.dart';
 import '../../shape/shape_main.dart';
 import '../../core/rigid_body.dart';
@@ -27,9 +25,9 @@ class Contact{
   // The second shape.
   Shape? shape2;
   // The first rigid body.
-  Core? body1;
+  RigidBody? body1;
   // The second rigid body.
-  Core? body2;
+  RigidBody? body2;
   // The previous contact in the world.
   Contact? prev;
   // The next contact in the world.

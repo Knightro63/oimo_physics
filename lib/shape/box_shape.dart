@@ -123,7 +123,7 @@ class Box extends Shape{
 		h = di[16] < 0 ? h - di[16] : h + di[16];
 		d = di[17] < 0 ? d - di[17] : d + di[17];
 
-		double p = AABB.aabbProx;
+		double p = aabbProx;
 
 		aabb.set(
 			position.x - w - p, position.x + w + p,
