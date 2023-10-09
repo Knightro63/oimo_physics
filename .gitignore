@@ -104,7 +104,6 @@ unlinked_spec.ds
 **/macos/Flutter/GeneratedPluginRegistrant.swift
 **/macos/Flutter/ephemeral
 **/xcuserdata/
-**/macos/**/xcuserdata/
 
 # Windows
 **/windows/flutter/generated_plugin_registrant.cc
