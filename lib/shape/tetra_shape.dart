@@ -4,6 +4,7 @@ import '../math/aabb.dart';
 import '../math/vec3.dart';
 import 'shape_main.dart';
 
+/// Face of the tetra shape
 class Face{
   Face(this.a,this.b,this.c);
   Vec3 a;
@@ -11,22 +12,26 @@ class Face{
   Vec3 c;
 }
 
-//  * A tetra shape.
+/// Tetra shape.
 class Tetra extends Shape{
+
+  /// Tetra shape.
+  /// 
+  /// [config] the configuration of the shape
   Tetra(ShapeConfig config, Vec3 p1, Vec3 p2, Vec3 p3, Vec3 p4 ):super(config){
     type = Shapes.tetra;
     verts = [ p1, p2, p3, p4 ];
     faces = [ mtri(p1, p2, p3), mtri(p2, p3, p4),];
   }
 
-  // Vertices and faces of tetra
+  /// Vertices and faces of tetra
   late List<Vec3> verts;
   late List<Face> faces;
 
   @override
   void calculateMassInfo(MassInfo out ){
-    // I guess you could calculate box mass and split it
-    // in half for the tetra...
+    /// I guess you could calculate box mass and split it
+    /// in half for the tetra...
     aabb.setFromPoints(verts);
     List<double> p = aabb.elements;
     double x = p[3] - p[0];

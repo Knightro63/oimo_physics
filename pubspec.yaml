@@ -1,6 +1,6 @@
 name: oimo_physics
 description: A Flutter plugin designed for three_dart and three_dart_jsm to allow users to add a simple physics engine to their 3D  project.
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/Knightro63/oimo_physics
 
 environment:

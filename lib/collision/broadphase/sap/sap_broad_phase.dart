@@ -5,7 +5,7 @@ import 'sap_element.dart';
 import 'sap_proxy.dart';
 import '../../../shape/shape_main.dart';
 
-//  * A broad-phase collision detection algorithm using sweep and prune.
+// A broad-phase collision detection algorithm using sweep and prune.
 class SAPBroadPhase extends BroadPhase{
   SAPBroadPhase () {
     types = BroadPhaseType.sweep;
@@ -14,13 +14,13 @@ class SAPBroadPhase extends BroadPhase{
   int numElementsD = 0;
   int numElementsS = 0;
 
-    // dynamic proxies
+  /// dynamic proxies in the swee and prune broadphase
   List<SAPAxis> axesD = [
     SAPAxis(),
     SAPAxis(),
     SAPAxis()
   ];
-  // static or sleeping proxies
+  /// static or sleeping proxies in the swee and prune broadphase
   List<SAPAxis> axesS = [
     SAPAxis(),
     SAPAxis(),

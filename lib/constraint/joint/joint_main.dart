@@ -4,9 +4,10 @@ import 'joint_link.dart';
 import 'joint_config.dart';
 import '../../math/vec3.dart';
 
+/// Joint types
 enum JointType{none,distance,socket,hinge,wheel,slider,prismatic}
 
-// * Joints are used to constrain the motion between two rigid bodies.
+/// Joints are used to constrain the motion between two rigid bodies.
 class Joint extends Constraint{
   Joint(this.config):super(){
     b1Link = JointLink(this);
@@ -19,6 +20,9 @@ class Joint extends Constraint{
     localAnchorPoint2 = Vec3().copy( config.localAnchorPoint2 );
 
     allowCollision = config.allowCollision;
+
+    scale = config.scale;
+    invScale = config.invScale;
   }
   JointConfig config;
   double scale = 1;
@@ -28,31 +32,32 @@ class Joint extends Constraint{
   String name = "";
   int? id;
 
-  // The type of the joint.
+  /// The type of the joint.
   JointType type = JointType.none;
-  //  The previous joint in the world.
+  /// The previous joint in the world.
   Joint? prev;
-  // The next joint in the world.
+  /// The next joint in the world.
   Joint? next;
 
-  // anchor point on the first rigid body in local coordinate system.
+  /// anchor point on the first rigid body in local coordinate system.
   late Vec3 localAnchorPoint1;
-  // anchor point on the second rigid body in local coordinate system.
+  /// anchor point on the second rigid body in local coordinate system.
   late Vec3 localAnchorPoint2;
-  // anchor point on the first rigid body in world coordinate system relative to the body's origin.
+  /// anchor point on the first rigid body in world coordinate system relative to the body's origin.
   Vec3 relativeAnchorPoint1 = Vec3();
-  // anchor point on the second rigid body in world coordinate system relative to the body's origin.
+  /// anchor point on the second rigid body in world coordinate system relative to the body's origin.
   Vec3 relativeAnchorPoint2 = Vec3();
-  //  anchor point on the first rigid body in world coordinate system.
+  ///  anchor point on the first rigid body in world coordinate system.
   Vec3 anchorPoint1 = Vec3();
-  // anchor point on the second rigid body in world coordinate system.
+  /// anchor point on the second rigid body in world coordinate system.
   Vec3 anchorPoint2 = Vec3();
-  // Whether allow collision between connected rigid bodies or not.
+  /// Whether allow collision between connected rigid bodies or not.
   late bool allowCollision;
 
   late JointLink b1Link;
   late JointLink b2Link;
 
+  /// set the id of the joint
   void setId(int i){ 
     id = i; 
   }
@@ -65,7 +70,7 @@ class Joint extends Constraint{
     if(name == '') name = 'J$id';
   }
 
-  // Update all the anchor points.a
+  /// Update all the anchor points.a
   void updateAnchorPoints() {
     relativeAnchorPoint1.copy( localAnchorPoint1 ).applyMatrix3(body1!.rotation, true );
     relativeAnchorPoint2.copy(localAnchorPoint2 ).applyMatrix3(body2!.rotation, true );
@@ -74,7 +79,7 @@ class Joint extends Constraint{
     anchorPoint2.add( relativeAnchorPoint2, body2!.position );
   }
 
-  // Attach the joint from the bodies.
+  /// Attach the joint from the bodies.
   void attach(){//[bool isX = false]) {
     b1Link.body = body2;
     b2Link.body = body1;
@@ -103,7 +108,7 @@ class Joint extends Constraint{
     //}
   }
 
-  // Detach the joint from the bodies.
+  /// Detach the joint from the bodies.
   void detach(){//bool isX ) {
     // if( isX ){
     //   body1!.jointLink.splice(body1!.jointLink.indexOf(b1Link ), 1 );
@@ -164,7 +169,7 @@ class Joint extends Constraint{
     parent?.removeJoint(this);
   }
 
-  // Three js add
+  /// get the scaled position of the joint
   List<Vec3> getPosition() {
     Vec3 p1 = Vec3().scale(anchorPoint1, scale);
     Vec3 p2 = Vec3().scale(anchorPoint2, scale);

@@ -1,11 +1,24 @@
 import 'dart:math' as math;
 import 'vec3.dart';
 
-// * An axis-aligned bounding box.
-// AABB aproximation
+/// AABB aproximation
 double aabbProx = 0.005;
 
+/// An axis-aligned bounding box.
 class AABB{
+  /// An axis-aligned bounding box.
+  /// 
+  /// [minX] the min x position
+  /// 
+  /// [maxX] the max x position
+  /// 
+  /// [minY] the min y position
+  /// 
+  /// [maxY] the max y position
+  /// 
+  /// [minZ] the min z position
+  /// 
+  /// [maxZ] the max z position
   AABB([double minX = 0,double maxX = 0,double minY = 0,double maxY = 0,double minZ = 0,double maxZ = 0]){
     elements[0] = minX; elements[1] = minY; elements[2] = minZ;
     elements[3] = maxX; elements[4] = maxY; elements[5] = maxZ;
@@ -13,6 +26,19 @@ class AABB{
 
   List<double> elements = [1, 0, 0,0, 1, 0];
 
+  /// Set the AABB with new parameters
+  /// 
+  /// [minX] the min x position
+  /// 
+  /// [maxX] the max x position
+  /// 
+  /// [minY] the min y position
+  /// 
+  /// [maxY] the max y position
+  /// 
+  /// [minZ] the min z position
+  /// 
+  /// [maxZ] the max z position
 	AABB set(double minX,double maxX,double minY,double maxY,double minZ,double maxZ){
 		List<double> te = elements;
 		te[0] = minX;
@@ -24,28 +50,33 @@ class AABB{
 		return this;
 	}
 
+  /// Chack to see if [aabb] intersects this.AABB
 	bool intersectTest (AABB aabb ) {
 		List<double> te = elements;
 		List<double> ue = aabb.elements;
 		return te[0] > ue[3] || te[1] > ue[4] || te[2] > ue[5] || te[3] < ue[0] || te[4] < ue[1] || te[5] < ue[2] ? true : false;
 	}
 
+  // Chack to see if [aabb] intersects this.AABB
 	bool intersectTestTwo (AABB aabb ) {
 		List<double> te = elements;
 		List<double> ue = aabb.elements;
 		return te[0] < ue[0] || te[1] < ue[1] || te[2] < ue[2] || te[3] > ue[3] || te[4] > ue[4] || te[5] > ue[5] ? true : false;
 	}
 
+  // Clone this AABB
 	AABB clone () {
 		return fromArray(elements);
 	}
 
+  /// Copy all info in this AABB to another AABB
 	AABB copy (AABB aabb, [double m = 0] ) {
 		List<double> me = aabb.elements;
 		set( me[ 0 ]-m, me[ 3 ]+m, me[ 1 ]-m, me[ 4 ]+m, me[ 2 ]-m, me[ 5 ]+m );
 		return this;
 	}
 
+  /// Create this AABB from an array
 	AABB fromArray(List<double> array) {
     for(int i = 0; i < array.length; i++){
       elements[i] = array[i];
@@ -53,7 +84,7 @@ class AABB{
 		return this;
 	}
 
-	// Set this AABB to the combined AABB of aabb1 and aabb2.
+	/// Set this AABB to the combined AABB of aabb1 and aabb2.
 	AABB combine(AABB aabb1,AABB aabb2 ) {
 		List<double> a = aabb1.elements;
 		List<double> b = aabb2.elements;
@@ -71,7 +102,7 @@ class AABB{
 	}
 
 
-	// Get the surface area.
+	/// Get the surface area.
 	double surfaceArea () {
 		List<double> te = elements;
 		double a = te[3] - te[0];
@@ -81,15 +112,14 @@ class AABB{
 	}
 
 
-	// Get whether the AABB intersects with the point or not.
-
+	/// Get whether the AABB intersects with the point or not.
 	bool intersectsWithPoint(double x, double y, double z){
 		List<double> te = elements;
 		return x>=te[0] && x<=te[3] && y>=te[1] && y<=te[4] && z>=te[2] && z<=te[5];
 	}
 
-	//  * Set the AABB from an array
-	//  * of vertices. From THREE.
+	/// Set the AABB from an array
+	/// of vertices. From THREE.
 	void setFromPoints(List<Vec3> arr){
 		makeEmpty();
 		for(int i = 0; i < arr.length; i++){
@@ -97,10 +127,12 @@ class AABB{
 		}
 	}
 
+  /// Clear all info from this AABB
 	void makeEmpty(){
 		set(-double.maxFinite, -double.maxFinite, -double.maxFinite, double.maxFinite, double.maxFinite, double.maxFinite);
 	}
 
+  /// Make this AABB larger by this point
 	void expandByPoint(Vec3 pt){
 		List<double> te = elements;
 		set(
@@ -109,6 +141,7 @@ class AABB{
 		);
 	}
 
+  /// Make this AABB larger by this value
 	void expandByScalar(double s){
 		List<double> te = elements;
 		te[0] += -s;

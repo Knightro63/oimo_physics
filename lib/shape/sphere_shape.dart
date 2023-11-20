@@ -3,11 +3,16 @@ import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
 
-// * Sphere shape
+/// Sphere shape
 class Sphere extends Shape{
+  /// Sphere shape
+  /// 
+  /// [config] the configuration of the shape
+  /// 
+  /// [radius] The radius of the sphere
   Sphere(ShapeConfig config, this.radius):super(config) {
     type = Shapes.sphere;
-    //Object.assign(Object.create(Shape.prototype);
+    //Object.assign(Object.create(Shape.prototype));
   }
 
   late double radius;

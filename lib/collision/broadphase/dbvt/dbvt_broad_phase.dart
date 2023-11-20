@@ -5,15 +5,21 @@ import 'dbvt_node.dart';
 import '../proxy_broad_phase.dart';
 import '../../../shape/shape_main.dart';
 
-//  * A broad-phase algorithm using dynamic bounding volume tree.
+/// A broad-phase algorithm using dynamic bounding volume tree.
 class DBVTBroadPhase extends BroadPhase{
+
+  ///  broad-phase algorithm using dynamic bounding volume tree.
   DBVTBroadPhase(){
     types = BroadPhaseType.volume;
   }
 
+  /// Dynamic bounding volume tree
   DBVT tree = DBVT();
+  /// The stack of the leafs in the tree as a  map
   Map<int,DBVTNode> stack = {};
+  /// all the leafs in this tree
   List<DBVTNode> leaves = [];
+  /// Number of leafes in the tree
   int numLeaves = 0;
 
   @override

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'vec3.dart';
 
+/// Some math used in this api
 class Math {
   static double degtorad = 0.0174532925199432957;
   static double radtodeg = 57.295779513082320876;
@@ -16,19 +17,25 @@ class Math {
   static double lerp(double  x, double y, double t ) { 
     return ( 1 - t ) * x + t * y; 
   }
-
+  
+  /// Create random number between [low] and [high]
   static double randInt(double  low, double high ) {
     double rand = math.Random().nextDouble();
     return low + (rand * ( high - low + 1 ) ); 
   }
+
+  /// Is num [v] infinate
   static bool isFinite(num v) {
     return v != double.maxFinite || v != -double.maxFinite;
   }
+
+  /// Create random number between [low] and [high]
   static double rand(double  low,double  high ) { 
     double rand = math.Random().nextDouble();
     return low + rand * ( high - low ); 
   }
   
+  /// Create a UUID
   static String generateUUID() {
     // http://www.broofa.com/Tools/Math.uuid.htm
     List<String> chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split( '' );
@@ -53,14 +60,17 @@ class Math {
     return uuid.join( '' );
   }
 
+  /// Clamp [x] between [n] (3) and 10
   static double fix(double x,[double?  n]) { 
     return x.clamp(n ?? 3, 10).toDouble();// x.toStringAsFixed(n || 3, 10); 
   }
 
+  /// Clamp [value] between [min] and [max]
   static double clamp(double  value,double  min,double  max ) { 
     return math.max( min, math.min( max, value ) ); 
   }
 
+  /// Find the distant between [p1] and [p2]
   static double distance(List<double> p1,List<double > p2 ){
     double  xd = p2[0]-p1[0];
     double  yd = p2[1]-p1[1];
@@ -81,12 +91,14 @@ class Math {
       return r;
   }*/
 
+  /// Clamp [cos] between -1 and 1
   static double acosClamp(double  cos ) {
     if(cos>1){return 0;}
     else if(cos<-1){return math.pi;}
     else{ return math.acos(cos);}
   }
 
+  /// Get distance between [v1] and [v2]
   static double distanceVector(Vec3 v1,Vec3 v2 ){
     double  xd = v1.x - v2.x;
     double  yd = v1.y - v2.y;
@@ -94,6 +106,7 @@ class Math {
     return xd * xd + yd * yd + zd * zd;
   }
 
+  /// Get the dot product between [a] and [b]
   static double dotVectors(Vec3 a, Vec3 b ) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
   }

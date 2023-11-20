@@ -1,6 +1,5 @@
 
 class ImpulseDataBuffer{
-  ImpulseDataBuffer();
   double? lp1X;
   double? lp1Y ;
   double? lp1Z ;

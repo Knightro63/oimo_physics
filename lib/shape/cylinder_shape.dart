@@ -5,8 +5,16 @@ import 'shape_main.dart';
 import 'dart:math' as math;
 import '../math/vec3.dart';
 
-// * Cylinder shape
+/// Cylinder shape
 class Cylinder extends Shape{
+
+  /// Cylinder shape
+  /// 
+  /// [config] configuration of the shape
+  /// 
+  /// [radius] the top and bottom radius of the cylinder
+  /// 
+  /// [height] the height of the cylinder
   Cylinder(ShapeConfig config, this.radius, this.height ):super(config) {
     type = Shapes.cylinder;
     halfHeight = height * 0.5;

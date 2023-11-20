@@ -6,35 +6,33 @@ import 'proxy_broad_phase.dart';
 import '../../constraint/joint/joint_link.dart';
 import '../../constraint/joint/joint_main.dart';
 
-
-//* The broad-phase is used for collecting all possible pairs for collision.
+/// Broadphase types
 enum BroadPhaseType{none,force,sweep,volume}
 
+/// The broad-phase is used for collecting all possible pairs for collision.
 class BroadPhase{
-  BroadPhase();
-
   BroadPhaseType types = BroadPhaseType.none;
   int numPairChecks = 0;
   int numPairs = 0;
   List<Pair> pairs = [];
 
-  // Create a new proxy.
+  /// Create a new proxy.
   Proxy? createProxy(Shape shape ) {
     printError("BroadPhase","Inheritance error.");
     return null;
   }
 
-  // Add the proxy into the broad-phase.
+  /// Add the proxy into the broad-phase.
   void addProxy(Proxy proxy ) {
     printError("BroadPhase","Inheritance error.");
   }
 
-  // Remove the proxy from the broad-phase.
+  /// Remove the proxy from the broad-phase.
   void removeProxy(Proxy proxy ) {
     printError("BroadPhase","Inheritance error.");
   }
 
-  // Returns whether the pair is available or not.
+  /// Returns whether the pair is available or not.
   bool isAvailablePair(Shape s1,Shape s2 ) {
     RigidBody b1 = s1.parent!;
     RigidBody b2 = s2.parent!;
@@ -75,10 +73,12 @@ class BroadPhase{
     collectPairs();
   }
 
+  /// Collect overlaping pairs
   void collectPairs() {
     printError("BroadPhase", "Inheritance error.");
   }
 
+  /// Add overlaping pairs
   void addPair(Shape s1,Shape s2 ) {
     Pair pair = Pair( s1, s2 );
     pairs.add(pair);

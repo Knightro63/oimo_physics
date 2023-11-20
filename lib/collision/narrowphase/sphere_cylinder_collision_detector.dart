@@ -6,6 +6,7 @@ import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/sphere_shape.dart';
 import 'dart:math' as math;
 
+/// The collision detector for Sphere on Cylinder collisions
 class SphereCylinderCollisionDetector extends CollisionDetector{
   SphereCylinderCollisionDetector();
 

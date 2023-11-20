@@ -6,6 +6,8 @@
 
 A Flutter plugin designed for three_dart and three_dart_jsm to allow users to add a simple physics engine to their 3D  project.
 
+This is a dart conversion of oimo.js, originally created by Saharan [@saharan](https://github.com/saharan).
+
 ## Usage
 
 This project is a basic physics engine for three_dart. This package includes RigidBodies, and Joints.

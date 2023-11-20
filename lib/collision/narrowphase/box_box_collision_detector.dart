@@ -2,10 +2,9 @@ import 'collision_detector.dart';
 import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import 'dart:math' as math;
-import '../../math/vec3.dart';
 import '../../shape/box_shape.dart';
 
-//  * A collision detector which detects collisions between two boxes.
+/// A collision detector which detects collisions between two boxes.
 class BoxBoxCollisionDetector extends CollisionDetector{
   List<double> clipVertices1 = List.filled(24, 0);//new Float32Array( 24 ); // 8 vertices x,y,z
   List<double> clipVertices2 = List.filled(24, 0);//new Float32Array( 24 );
@@ -14,7 +13,6 @@ class BoxBoxCollisionDetector extends CollisionDetector{
 
     @override
     void detectCollision(Shape shape1,Shape shape2,ContactManifold manifold ) {
-
       Box b1;
       Box b2;
       if(shape1.id<shape2.id){
@@ -25,14 +23,14 @@ class BoxBoxCollisionDetector extends CollisionDetector{
         b1= shape2 as Box;
         b2= shape1 as Box;
       }
-      List<double> vv1 = b1.elements;
-      List<double> vv2 = b2.elements;
+      final vv1 = b1.elements;
+      final vv2 = b2.elements;
 
-      List<double> dd1 = b1.dimentions;
-      List<double> dd2 = b2.dimentions;
+      final dd1 = b1.dimentions;
+      final dd2 = b2.dimentions;
 
-      Vec3 p1=b1.position;
-      Vec3 p2=b2.position;
+      final p1=b1.position;
+      final p2=b2.position;
       double p1x=p1.x;
       double p1y=p1.y;
       double p1z=p1.z;
@@ -965,8 +963,8 @@ class BoxBoxCollisionDetector extends CollisionDetector{
         }
         else if(minDotIndex==5){// z- face
           q1x=vv1[3]; q1y=vv1[4]; q1z=vv1[5];//vertex2
-          //2x=vv1[6]; q2y=vv1[7]; q2z=vv1[8];//vertex4 !!!
-          q2x=vv2[9]; q2y=vv2[10]; q2z=vv2[11];//vertex4
+          q2x=vv1[6]; q2y=vv1[7]; q2z=vv1[8];//vertex4 !!!
+          //q2x=vv2[9]; q2y=vv2[10]; q2z=vv2[11];//vertex4
           q3x=vv1[21]; q3y=vv1[22]; q3z=vv1[23];//vertex8
           q4x=vv1[15]; q4y=vv1[16]; q4z=vv1[17];//vertex6
         }
@@ -1346,8 +1344,8 @@ class BoxBoxCollisionDetector extends CollisionDetector{
         z1=clipVertices1[index+2];
         dot=x1*n2x+y1*n2y+z1*n2z;
         if(dot<minDot){
-            minDot=dot;
-            index2=i;
+          minDot=dot;
+          index2=i;
         }
         if(dot>maxDot){
           maxDot=dot;

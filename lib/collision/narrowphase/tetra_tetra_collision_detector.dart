@@ -4,12 +4,12 @@ import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/tetra_shape.dart';
 
-//  * Class for checking collisions between 2 tetras,
-//  * a shape that is made with 4 vertices and 4 faces
-//  * arranged in triangles. With this algorigthm, soft
-//  * body physics are possible and easier to implement.
-
+/// Class for checking collisions between 2 tetras,
+/// a shape that is made with 4 vertices and 4 faces
+/// arranged in triangles. With this algorigthm, soft
+/// body physics are possible and easier to implement.
 class TetraTetraCollisionDetector extends CollisionDetector{
+
   @override
   void detectCollision(Shape shape1, Shape shape2,ContactManifold manifold){
     if(shape1 is Tetra && shape2 is Tetra){
@@ -47,6 +47,7 @@ class TetraTetraCollisionDetector extends CollisionDetector{
   }
 
   // Taken from: http://jsfiddle.net/PerroAZUL/zdaY8/1/
+  /// Check the triangle for intersections
   bool tricheck(Vec3 p,Vec3 p0,Vec3 p1,Vec3 p2){
     double A = 0.5 * (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y);
     int sg = A < 0 ? -1 : 1;
@@ -55,6 +56,7 @@ class TetraTetraCollisionDetector extends CollisionDetector{
     return s > 0 && t > 0 && (s + t) < 2 * A * sg;
   }
 
+  /// point from x and y
   Vec3 pt(x, y){
     return Vec3(x,y);
   }

@@ -4,8 +4,11 @@ import '../joint_main.dart';
 import '../../../math/mat33.dart';
 import '../../../math/vec3.dart';
 
-// * A linear constraint for all axes for various joints.
+/// A linear constraint for all axes for various joints.
 class LinearConstraint extends Joint{
+  /// A linear constraint for all axes for various joints.
+  /// 
+  /// [joint] joint of the linear constraint
   LinearConstraint(this.joint):super(joint.config){
     r1 = joint.relativeAnchorPoint1;
     r2 = joint.relativeAnchorPoint2;

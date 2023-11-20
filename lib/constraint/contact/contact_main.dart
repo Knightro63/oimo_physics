@@ -8,7 +8,7 @@ import 'manifold_point.dart';
 import 'contact_constraint.dart';
 import '../../collision/narrowphase/collision_detector.dart';
 
-// * A contact is a pair of shapes whose axis-aligned bounding boxes are overlapping.
+/// A contact is a pair of shapes whose axis-aligned bounding boxes are overlapping.
 class Contact{
   Contact(){  
     points = manifold.points;
@@ -20,27 +20,27 @@ class Contact{
     s2Link = ContactLink(this);
   }
 
-  // The first shape.
+  /// The first shape.
   Shape? shape1;
-  // The second shape.
+  /// The second shape.
   Shape? shape2;
-  // The first rigid body.
+  /// The first rigid body.
   RigidBody? body1;
-  // The second rigid body.
+  /// The second rigid body.
   RigidBody? body2;
-  // The previous contact in the world.
+  /// The previous contact in the world.
   Contact? prev;
-  // The next contact in the world.
+  /// The next contact in the world.
   Contact? next;
-  // Internal
+  /// Internal
   bool persisting = false;
-  // Whether both the rigid bodies are sleeping or not.
+  /// Whether both the rigid bodies are sleeping or not.
   bool sleeping = false;
-  // The collision detector between two shapes.
+  /// The collision detector between two shapes.
   CollisionDetector? detector;
-  // Whether the shapes are touching or not.
+  /// Whether the shapes are touching or not.
   bool touching = false;
-  // shapes is very close and touching 
+  /// shapes is very close and touching 
   bool close = false;
 
   double dist = double.maxFinite;
@@ -70,7 +70,7 @@ class Contact{
     return sqrt(friction1*friction2);
   }
 
-  //* Update the contact manifold.
+  /// Update the contact manifold.
   void updateManifold() {
     constraint.restitution = mixRestitution(shape1!.restitution, shape2!.restitution);
     constraint.friction = mixFriction(shape1!.friction,shape2!.friction);
@@ -97,7 +97,9 @@ class Contact{
       return;
     }
 
-    if(touching || dist < 0.001 ){ close = true;}
+    if(touching || dist < 0.001 ){ 
+      close = true;
+    }
     touching=true;
 
     for(int i=num-1; i>=0; i--){
@@ -152,9 +154,10 @@ class Contact{
     }
   }
 
-  // * Attach the contact to the shapes.
-  // * @param   shape1
-  // * @param   shape2
+  /// Attach the contact to the shapes.
+  /// 
+  /// [shape1] First shape of the attached contact
+  /// [shape2] Second shape of the attached contact
   void attach(Shape shape1,Shape shape2){
     this.shape1 = shape1;
     this.shape2 = shape2;

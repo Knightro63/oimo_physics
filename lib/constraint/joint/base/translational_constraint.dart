@@ -5,8 +5,14 @@ import '../../../math/mat33.dart';
 import '../../../math/vec3.dart';
 
 
-// * A translational constraint for various joints.
+/// A translational constraint for various joints.
 class TranslationalConstraint extends Joint{
+
+  /// A translational constraint for various joints.
+  /// 
+  /// [joint] joint of translational constraint
+  /// 
+  /// [limitMotor] limit and motor of the translational constraint
   TranslationalConstraint(Joint joint, this.limitMotor):super(joint.config){
     b1=joint.body1!;
     b2=joint.body2!;

@@ -4,12 +4,11 @@ import '../../shape/shape_main.dart';
 import '../../shape/tetra_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 
-//  * Class for collision detection based on
-//  * ray casting. Ray source from THREE. This
-//  * class should only be used with the tetra
-//  * or a polygon.
+/// Class for collision detection based on
+/// ray casting. Ray source from THREE. This
+/// class should only be used with the tetra
+/// or a polygon.
 class RayCollisionDetector extends CollisionDetector{
-  RayCollisionDetector();
 
   @override
   void detectCollision(Shape shape1,Shape shape2,ContactManifold manifold){
@@ -31,6 +30,7 @@ class RayCollisionDetector extends CollisionDetector{
     }
   }
 
+  /// Find where triangle intersect
   Vec3? triangleIntersect(Vec3 origin, Vec3 direction, Face face, bool backfaceCulling){
     Vec3 diff = Vec3();
     Vec3 edge1 = Vec3();

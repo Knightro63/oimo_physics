@@ -1,8 +1,6 @@
 import '../../math/vec3.dart';
 
 class ContactPointDataBuffer{
-  ContactPointDataBuffer ();
-
   Vec3 nor = Vec3();
   Vec3 tan = Vec3();
   Vec3 bin = Vec3();

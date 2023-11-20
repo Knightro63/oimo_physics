@@ -6,8 +6,16 @@ import '../../math/quat.dart';
 import 'base/angular_constraint.dart';
 import 'base/translational3_constraint.dart';
 
-// * A prismatic joint allows only for relative translation of rigid bodies along the axis.
+/// A prismatic joint allows only for relative translation of rigid bodies along the axis.
 class PrismaticJoint extends Joint{
+
+  /// A prismatic joint allows only for relative translation of rigid bodies along the axis.
+  /// 
+  /// [config] configuration profile of the joint
+  /// 
+  /// [lowerTranslation] the min movment the joint will travel
+  /// 
+  /// [upperTranslation] the max movment the joint will travel
   PrismaticJoint(JointConfig config, lowerTranslation, upperTranslation ):super(config){
     type = JointType.prismatic;
 
@@ -23,9 +31,9 @@ class PrismaticJoint extends Joint{
     t3 = Translational3Constraint(this, limitMotor, LimitMotor(tan, true), LimitMotor(bin, true));
   }
 
-  // The axis in the first body's coordinate system.
+  /// The axis in the first body's coordinate system.
   late Vec3 localAxis1;
-  // The axis in the second body's coordinate system.
+  /// The axis in the second body's coordinate system.
   late Vec3 localAxis2;
 
   Vec3 ax1 = Vec3();
@@ -37,7 +45,7 @@ class PrismaticJoint extends Joint{
 
   late AngularConstraint ac;
 
-  // The translational limit and motor information of the joint.
+  /// The translational limit and motor information of the joint.
   late LimitMotor limitMotor;
   late Translational3Constraint t3;
 

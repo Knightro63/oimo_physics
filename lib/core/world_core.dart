@@ -21,11 +21,8 @@ import '../constraint/joint/joint_config.dart';
 import '../constraint/joint/prismatic_joint.dart';
 import '../constraint/joint/slider_joint.dart';
 import '../constraint/joint/wheel_joint.dart';
-import '../shape/box_shape.dart';
-import '../shape/cylinder_shape.dart';
-import '../shape/plane_shape.dart';
+
 import '../shape/shape_config.dart';
-import '../shape/sphere_shape.dart';
 
 import '../collision/broadphase/broad_phase.dart';
 import '../collision/broadphase/brute_force_broad_phase.dart';
@@ -42,10 +39,11 @@ import 'rigid_body.dart';
 import '../constraint/joint/joint_main.dart';
 import '../constraint/contact/contact_main.dart';
 
+/// The configuration class for the objects
 class ObjectConfigure{
   ObjectConfigure({
     this.type = JointType.none,
-    this.shapes = const [Shapes.none],
+    this.shapes = const [],
     this.move = false,
     this.kinematic = false,
     this.neverSleep = false,
@@ -63,15 +61,15 @@ class ObjectConfigure{
     this.body1,
     this.body2,
 
-    this.position = const [0,0,0],
-    this.position2 = const [0,0,0],
-    this.positionShape = const [0,0,0],
-    this.rotation = const [0,0,0],
-    this.rotationShape = const [0,0,0],
-    this.size = const [0,0,0],
+    Vec3? position,
+    Vec3? position2,
+    Vec3? positionShape,
+    Quat? rotation,
+    Quat? rotationShape,
+    //this.size = const [0,0,0],
 
-    this.axis1 = const [1,0,0],
-    this.axis2 = const [1,0,0],
+    Vec3? axis1,
+    Vec3? axis2,
 
     this.motorSpeed,
     this.motorForce,
@@ -80,6 +78,15 @@ class ObjectConfigure{
     this.lowerMotorLimit,
     this.upperMotorLimit
   }){
+    this.position = position?.clone() ?? Vec3();
+    this.position2 = position2?.clone() ?? Vec3();
+    this.positionShape = positionShape?.clone() ?? Vec3();
+    this.rotation = rotation?.clone() ?? Quat();
+    this.rotationShape = rotationShape?.clone() ?? Quat();
+
+    this.axis1 = axis1?.clone() ?? Vec3();
+    this.axis2 = axis2?.clone() ?? Vec3();
+
     this.shapeConfig = shapeConfig ?? ShapeConfig();
 
     this.max = max ?? (JointType.distance == type?0:10);
@@ -87,18 +94,18 @@ class ObjectConfigure{
   }
 
 
-  List<Shapes> shapes;
+  List<Shape> shapes;
   JointType type;
   bool move;
   bool kinematic;
   bool neverSleep;
 
-  late List<double> position;
-  late List<double> position2;
-  late List<double> positionShape;
-  late List<double> rotation;
-  late List<double> rotationShape;
-  late List<double> size;
+  late Vec3 position;
+  late Vec3 position2;
+  late Vec3 positionShape;
+  late Quat rotation;
+  late Quat rotationShape;
+  //late List<double> size;
 
   late ShapeConfig shapeConfig;
   String? name;
@@ -114,8 +121,8 @@ class ObjectConfigure{
   late double max;
   late double min;
 
-  late List<double> axis1;
-  late List<double> axis2;
+  late Vec3 axis1;
+  late Vec3 axis2;
 
   double? motorSpeed; 
   double? motorForce;
@@ -125,7 +132,8 @@ class ObjectConfigure{
   double? upperMotorLimit;
 }
 
-class WorldConfigure{
+/// The configuration class for the world
+class WorldConfigure {
   WorldConfigure({
     this.scale = 1,
     this.timeStep = 1/60,
@@ -133,6 +141,7 @@ class WorldConfigure{
     this.isStat = false,
     this.enableRandomizer = true,
     this.iterations = 8,
+    this.setPerformance = false,
     Vec3? gravity
   }){
     this.gravity = gravity ?? Vec3(0,-9.8,0);
@@ -144,12 +153,13 @@ class WorldConfigure{
   bool enableRandomizer;
   bool isStat;
   BroadPhaseType broadPhaseType;
+  bool setPerformance;
   late Vec3 gravity;
 }
 
-//  * The class of physical computing world.
-//  * You must be added to the world physical all computing objects
- // timestep, broadphase, iterations, worldscale, random, stat
+/// The class of physical computing world.
+/// You must be added to the world physical all computing objects
+/// timestep, broadphase, iterations, worldscale, random, stat
 class World{
   World([WorldConfigure? worldConfigure]){
     this.worldConfigure = worldConfigure ?? WorldConfigure();
@@ -199,59 +209,67 @@ class World{
 
     // TETRA add
     //this.detectors[SHAPE_TETRA][SHAPE_TETRA] = TetraTetraCollisionDetector();
+
+    bool getInfo = worldConfigure?.setPerformance ?? false;
+    if(getInfo){
+      performance = InfoDisplay(this);
+      performance!.setTime();
+    }
+    time = InfoDisplay.now().toDouble();
   }
 
   late WorldConfigure worldConfigure;
-  // this world scale defaut is 0.1 to 10 meters max for dynamique body
+  /// this world scale defaut is 0.1 to 10 meters max for dynamique body
   late double scale;
   late double invScale;
 
-    // The time between each step
+  /// The wall-clock time since simulation start.
+  double time = 0.0;
+
+  /// The time between each step
   late double timeStep; // 1/60;
   late int timerate;
+  
   Timer? timer;
 
   void Function()? preLoop;//function(){};
   void Function()? postLoop;//function(){};
 
-  // The number of iterations for constraint solvers.
+  /// The number of iterations for constraint solvers.
   late int numIterations;
   late BroadPhaseType broadPhaseType;
   late BroadPhase broadPhase;
 
-  // This is the detailed information of the performance.
+  /// This is the detailed information of the performance.
   InfoDisplay? performance;
   late bool isStat;
-    
 
-  // * Whether the constraints randomizer is enabled or not.
+  /// Whether the constraints randomizer is enabled or not.
   late bool enableRandomizer;
 
-  // The rigid body list
+  /// The rigid body list
   RigidBody? rigidBodies;
-  // number of rigid body
+  /// number of rigid body
   int numRigidBodies=0;
-  // The contact list
+  /// The contact list
   Contact? contacts;
   Contact? unusedContacts;
-  // The number of contact
+  /// The number of contact
   int numContacts=0;
-  // The number of contact points
+  /// The number of contact points
   int numContactPoints=0;
-  //  The joint list
+  ///  The joint list
   Joint? joints;
-  // The number of joints.
+  /// The number of joints.
   int numJoints=0;
-  // The number of simulation islands.
+  /// The number of simulation islands.
   int numIslands=0;
 
-
-  // The gravity in the world.
+  /// The gravity in the world.
   late Vec3 gravity;
   
   int numShapeTypes = 5;//4;//3;
   Map<String,CollisionDetector> detectors={};
-
 
   int randX = 65535;
   int randA = 98765;
@@ -261,21 +279,19 @@ class World{
   Map<int,RigidBody?> islandStack = {};
   Map<int,Constraint?> islandConstraints = {};
 
-
   void play(){
     if(timer != null) return;
     World world = this;
     timer = Timer(Duration(milliseconds: timerate), () {
       world.step();
     });
-    //timer = setInterval((){ _this.step();} , timerate);
   }
   void stop(){
     if(timer == null) return;
     timer?.cancel();
     timer = null;
   }
-  void setGravity ( ar ) {
+  void setGravity(List<double> ar){
     gravity.fromArray( ar );
   }
   String getInfo(){
@@ -292,7 +308,8 @@ class World{
     // });
     return temp;
   }
-  // Reset the world and remove all rigid bodies, shapes, joints and any object from the world.
+
+  /// Reset the world and remove all rigid bodies, shapes, joints and any object from the world.
   void clear(){
     stop();
     preLoop = null;
@@ -310,9 +327,9 @@ class World{
     }
   }
 
-  // * I'll add a rigid body to the world.
-  // * Rigid body that has been added will be the operands of each step.
-  // * @param  rigidBody  Rigid body that you want to add
+  /// I'll add a rigid body to the world.
+  /// Rigid body that has been added will be the operands of each step.
+  /// [rigidBody]  Rigid body that you want to add
   void addRigidBody(RigidBody rigidBody){
     if(rigidBody.parent != null){
       printError("World", "It is not possible to be added to more than one world one of the rigid body");
@@ -329,9 +346,9 @@ class World{
     numRigidBodies++;
   }
 
-  // * I will remove the rigid body from the world.
-  // * Rigid body that has been deleted is excluded from the calculation on a step-by-step basis.
-  // * @param  rigidBody  Rigid body to be removed
+  /// I will remove the rigid body from the world.
+  /// Rigid body that has been deleted is excluded from the calculation on a step-by-step basis.
+  /// [rigidBody]  Rigid body to be removed
   void removeRigidBody(RigidBody rigidBody ){
     RigidBody remove = rigidBody;
     if(remove.parent != this)return;
@@ -373,10 +390,10 @@ class World{
   }
 
 
-  // * I'll add a shape to the world..
-  // * Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
-  // * Shape will be added to the world automatically, please do not call from outside this method.
-  // * @param  shape  Shape you want to add
+  /// I'll add a shape to the world..
+  /// Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
+  /// Shape will be added to the world automatically, please do not call from outside this method.
+  /// [shape]  Shape you want to add
   void addShape(Shape shape){
     if(shape.parent == null || shape.parent!.parent == null){
       printError("World", "It is not possible to be added alone to shape world");
@@ -388,18 +405,18 @@ class World{
   }
 
 
-  // * I will remove the shape from the world.
-  // * Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
-  // * Shape will be added to the world automatically, please do not call from outside this method.
-  // * @param  shape  Shape you want to delete
+  /// I will remove the shape from the world.
+  /// Add to the rigid world, and if you add a shape to a rigid body that has been added to the world,
+  /// Shape will be added to the world automatically, please do not call from outside this method.
+  /// [shape]  Shape you want to delete
   void removeShape(Shape shape){
     broadPhase.removeProxy(shape.proxy!);
     shape.proxy = null;
   }
 
-  // * I'll add a joint to the world.
-  // * Joint that has been added will be the operands of each step.
-  // * @param  shape Joint to be added
+  /// I'll add a joint to the world.
+  /// Joint that has been added will be the operands of each step.
+  /// [shape] Joint to be added
   void addJoint(Joint joint) {
     if(joint.parent != null){
       printError("World", "It is not possible to be added to more than one world one of the joint");
@@ -412,9 +429,9 @@ class World{
     joint.attach();
   }
 
-  // * I will remove the joint from the world.
-  // * Joint that has been added will be the operands of each step.
-  // * @param  shape Joint to be deleted
+  /// I will remove the joint from the world.
+  /// Joint that has been added will be the operands of each step.
+  /// [shape] Joint to be deleted
   void removeJoint (Joint joint ) {
     Joint remove=joint;
     Joint? prev=remove.prev;
@@ -430,6 +447,7 @@ class World{
     remove.parent=null;
   }
 
+  /// Add contact with 2 shapes
   void addContact(Shape s1, Shape s2){
     Contact newContact;
     if(unusedContacts!=null){
@@ -446,6 +464,8 @@ class World{
     contacts = newContact;
     numContacts++;
   }
+
+  /// Remove a contact
   void removeContact(Contact contact) {
     Contact? prev = contact.prev;
     Contact? next = contact.next;
@@ -460,6 +480,7 @@ class World{
     numContacts--;
   }
 
+  /// Get a contact from 2 rigid bodies
   Contact? getContact(RigidBody body1,RigidBody body2) {
     String b1 = body1.name;
     String b2 = body2.name;
@@ -484,6 +505,7 @@ class World{
     return null;
   }
 
+  /// Chack to see if it is a contact
   bool checkContact(String name1, String name2 ) {
     String n1, n2;
     Contact? contact = contacts;
@@ -501,6 +523,7 @@ class World{
     return false;
   }
 
+  /// Should call sleep
   bool callSleep(RigidBody body) {
     if( !body.allowSleep ) return false;
     if( body.linearVelocity.lengthSq() > 0.04 ) return false;
@@ -508,8 +531,9 @@ class World{
     return true;
   }
 
-  //* I will proceed only time step seconds time of World.
+  /// I will proceed only time step seconds time of World.
   void step(){
+    time = InfoDisplay.now();
     //this.timeStep = timeStep ?? this.timeStep;
     bool stat = isStat;
     if(stat){
@@ -525,11 +549,11 @@ class World{
       body = body.next;
     }
 
-    //------------------------------------------------------
-    //   UPDATE BROADPHASE CONTACT
-    //------------------------------------------------------
+    ///------------------------------------------------------
+    ///   UPDATE BROADPHASE CONTACT
+    ///------------------------------------------------------
     if(stat){
-      performance?.setTime( 1 );
+      performance?.setTime(1);
     }
     broadPhase.detectPairs();
     List<Pair> pairs = broadPhase.pairs;
@@ -577,7 +601,7 @@ class World{
     //   UPDATE NARROWPHASE CONTACT
     //------------------------------------------------------
 
-    // update & narrow phase
+    /// update & narrow phase
     numContactPoints = 0;
     Contact? contact = contacts;
     while(contact!=null){
@@ -671,12 +695,18 @@ class World{
         for(ContactLink? cs = body.contactLink; cs != null; cs = cs.next ) {
           Contact contact = cs.contact;
           constraint = contact.constraint;
-          if( constraint.addedToIsland || !contact.touching ) continue;// ignore
+          if( constraint.addedToIsland || !contact.touching) continue;// ignore
+          RigidBody next = cs.body!;
+          body.collide?.call(next);
+          next.collide?.call(body);
+          
+          if(next.isTrigger) continue;
+          
 
           // add constraint to the island
           islandConstraints[islandNumConstraints++] = constraint;
           constraint.addedToIsland = true;
-          RigidBody next = cs.body!;
+          
 
           if(next.addedToIsland) continue;
 
@@ -784,151 +814,55 @@ class World{
     }
   }
 
-  // remove someting to world
-  remove( obj ){
+  /// remove someting to world
+  void remove( obj ){
 
   }
 
-  // add someting to world
+  /// add someting to world
   Core? add(ObjectConfigure config){
     if(config.type != JointType.none){ 
-      return initJoint(config.type, config);
+      return initJoint(config);
     }
     else {
-      return initBody(config.shapes, config);
+      return initBody(config);
     }
   }
 
-  RigidBody? initBody(List<Shapes> type, ObjectConfigure config){
+  /// Init the body added
+  RigidBody? initBody(ObjectConfigure config){
     double invScale = this.invScale;
 
-    // body position
-    List<double> p = config.position;
-    p = toNew(p, invScale);//p.map( function(x) { return x * invScale; } );
-
-    // shape position
-    List<double> p2 = config.positionShape;
-    p2 = toNew(p2, invScale);//p2.map( function(x) { return x * invScale; } );
-
-    // ROTATION
-
-    // body rotation in degree
-    List<double> r = config.rotation;
-    r = toNew(r, invScale);//r.map( function(x) { return x * Math.degtorad; } );
-
-    // shape rotation in degree
-    List<double> r2 = config.rotationShape;
-    r2 = toNew(r2, invScale);//r.map( function(x) { return x * Math.degtorad; } );
-
-    // shape size
-    List<double> s = config.size;
-    if( s.length == 1 ){ s[1] = s[0]; }
-    if( s.length == 2 ){ s[2] = s[0]; }
-    s = toNew(s, invScale);//s.map( function(x) { return x * invScale; } );
-
-    // body physics settings
-    ShapeConfig sc = config.shapeConfig;
-    Vec3 position = Vec3( p[0], p[1], p[2] );
-    Quat rotation = Quat().setFromEuler( r[0], r[1], r[2] );
-
     // rigidbody
-    RigidBody body = RigidBody( 
-      position,
-      rotation
+    final body = RigidBody( 
+      position: Vec3().scale(config.position, invScale),
+      orientation: Quat().scale(config.rotation, invScale),
+      type: config.kinematic?RigidBodyType.kinematic:config.move?RigidBodyType.dynamic:RigidBodyType.static,
+      allowSleep: !config.neverSleep,
+      name: config.name,
+      shapes: config.shapes,
+      isSleeping: config.sleep,
+      adjustPosition: (config.massPos || config.massRot)?false:true
     );
-    //var body = RigidBody( p[0], p[1], p[2], r[0], r[1], r[2], r[3], this.scale, this.invScale );
-  
-    for(int i = 0; i<type.length; i++){
-      late Shape shape;
-      int n = i * 3;
-
-      if(p2.length > n){ 
-        sc.relativePosition.set( p2[n], p2[n+1], p2[n+2] );
-      }
-      if(r2.length > n){ 
-        sc.relativeRotation.setQuat( Quat().setFromEuler( r2[n], r2[n+1], r2[n+2] ) );
-      }
-      
-      switch(type[i]){
-        case Shapes.sphere: 
-          shape = Sphere( sc, s[n] ); 
-          break;
-        case Shapes.cylinder: 
-          shape = Cylinder( sc, s[n], s[n+1] ); 
-          break;
-        case Shapes.box: 
-          shape = Box( sc, s[n], s[n+1], s[n+2] ); 
-          break;
-        case Shapes.plane: 
-          shape = Plane(sc); 
-          break;
-        default:
-      }
-
-      body.addShape(shape);
-    }
-
-    // body can sleep or not
-    if(config.neverSleep || config.kinematic){ 
-      body.allowSleep = false;
-    }
-    else{ 
-      body.allowSleep = true;
-    }
-
-    body.isKinematic = config.kinematic;
-
-    // body static or dynamic
-    if(config.move){
-      if(config.massPos || config.massRot) {
-        body.setupMass(RigidBodyType.dynamic, false);
-      }
-      else {
-        body.setupMass(RigidBodyType.dynamic);
-      }
-    } 
-    else {
-      body.setupMass(RigidBodyType.static);
-    }
-
-    if(config.name != null ){ 
-      body.name = config.name!;
-    }
-    else if(config.move){ 
-      body.name = numRigidBodies.toString();
-    }
 
     // finaly add to physics world
     addRigidBody(body);
-
-    // force sleep on not
-    if(config.move){
-      if(config.sleep) {
-        body.sleep();
-      }
-      else{ 
-        body.awake();
-      }
-    }
-
     return body;
   }
 
-  Joint? initJoint(JointType type, ObjectConfigure config){
+  /// Initlize the joint added
+  Joint? initJoint(ObjectConfigure config){
     //var type = type;
     double invScale = this.invScale;
 
-    List<double> axe1 = config.axis1;
-    List<double> axe2 = config.axis2;
-    List<double> pos1 = config.position;
-    List<double> pos2 = config.position2;
-
-    pos1 = toNew(pos1, invScale);
-    pos2 = toNew(pos2, invScale);//pos2.map(function(x){ return x * invScale; });
+    final axe1 = config.axis1;
+    final axe2 = config.axis2;
+    final pos1 = Vec3().scale(config.position,invScale);
+    final pos2 = Vec3().scale(config.position2,invScale);
 
     double min = config.min;
     double max = config.max;
-    if(type == JointType.distance){
+    if(config.type == JointType.distance){
       min = min * invScale;
       max = max * invScale;
     }
@@ -942,10 +876,10 @@ class World{
     jc.scale = scale;
     jc.invScale = this.invScale;
     jc.allowCollision = config.allowCollision;
-    jc.localAxis1.set( axe1[0], axe1[1], axe1[2] );
-    jc.localAxis2.set( axe2[0], axe2[1], axe2[2] );
-    jc.localAnchorPoint1.set( pos1[0], pos1[1], pos1[2] );
-    jc.localAnchorPoint2.set( pos2[0], pos2[1], pos2[2] );
+    jc.localAxis1.copy( axe1 );
+    jc.localAxis2.copy( axe2 );
+    jc.localAnchorPoint1.copy( pos1 );
+    jc.localAnchorPoint2.copy( pos2 );
 
     RigidBody? b1 = config.body1;
     RigidBody? b2 = config.body2;
@@ -959,7 +893,7 @@ class World{
     jc.body2 = b2;
 
     late Joint joint;
-    switch( type){
+    switch(config.type){
       case JointType.distance: 
         joint = DistanceJoint(jc, min, max);
         if(joint is DistanceJoint){

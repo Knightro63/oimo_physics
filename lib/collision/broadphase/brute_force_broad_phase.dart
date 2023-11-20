@@ -3,8 +3,8 @@ import 'broad_phase.dart';
 import 'basic_proxy.dart';
 import '../../shape/shape_main.dart';
 
-// * A broad-phase algorithm with brute-force search.
-// * This always checks for all possible pairs.
+/// A broad-phase algorithm with brute-force search.
+/// This always checks for all possible pairs.
 class BruteForceBroadPhase extends BroadPhase{
   BruteForceBroadPhase(){
     types = BroadPhaseType.force;

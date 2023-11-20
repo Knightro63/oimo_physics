@@ -5,8 +5,9 @@ import '../../shape/cylinder_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import 'dart:math' as math;
 
+/// The collision detector for Cylinder on Cylinder collisions
 class CylinderCylinderCollisionDetector extends CollisionDetector{
-
+  /// Should reimpliment sep
   bool getSep(Cylinder c1,Cylinder c2,Vec3 sep,Vec3 pos,Vec3 dep){
     double t1x;
     double t1y;
@@ -139,7 +140,7 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
 
     int iterations=0;
     while(true){
-      if(++iterations>100){
+      if(iterations++ > 100){
         return false;
       }
       supportPoint(c1,-nx,-ny,-nz,sup);
@@ -266,7 +267,7 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
             sep.set( -nx, -ny, -nz );
             pos.set( (p1x+p2x)*0.5, (p1y+p2y)*0.5, (p1z+p2z)*0.5 );
             dep.x=separation;
-          return true;
+            return true;
           }
           return false;
         }
@@ -333,19 +334,18 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
         }
       }
     }
-    //return false;
   }
 
   void supportPoint(Cylinder c, double dx, double dy, double dz, Vec3 out){
-    List<double> rot=c.rotation.elements;
-    double ldx=rot[0]*dx+rot[3]*dy+rot[6]*dz;
-    double ldy=rot[1]*dx+rot[4]*dy+rot[7]*dz;
-    double ldz=rot[2]*dx+rot[5]*dy+rot[8]*dz;
-    double radx=ldx;
-    double radz=ldz;
-    double len=radx*radx+radz*radz;
-    double rad=c.radius;
-    double hh=c.halfHeight;
+    final rot = c.rotation.elements;
+    double ldx = rot[0]*dx+rot[3]*dy+rot[6]*dz;
+    double ldy = rot[1]*dx+rot[4]*dy+rot[7]*dz;
+    double ldz = rot[2]*dx+rot[5]*dy+rot[8]*dz;
+    double radx = ldx;
+    double radz = ldz;
+    double len = radx*radx+radz*radz;
+    double rad = c.radius;
+    double hh = c.halfHeight;
     double ox;
     double oy;
     double oz;
@@ -454,21 +454,21 @@ class CylinderCylinderCollisionDetector extends CollisionDetector{
 
     if(!getSep(c1,c2,sep,pos,dep))return;
 
-    double dot1=sep.x*n1x+sep.y*n1y+sep.z*n1z;
-    double dot2=sep.x*n2x+sep.y*n2y+sep.z*n2z;
-    bool right1=dot1>0;
-    bool right2=dot2>0;
+    double dot1 = sep.x*n1x+sep.y*n1y+sep.z*n1z;
+    double dot2 = sep.x*n2x+sep.y*n2y+sep.z*n2z;
+    bool right1 = dot1 > 0;
+    bool right2 = dot2 > 0;
 
     if(!right1){
-      dot1=-dot1;
+      dot1 = -dot1;
     }
     if(!right2){
-      dot2=-dot2;
+      dot2 = -dot2;
     }
 
     var state=0;
-    if(dot1>0.999||dot2>0.999){
-      if(dot1>dot2){
+    if(dot1 > 0.999 || dot2 > 0.999){
+      if(dot1 > dot2){
         state=1;
       }
       else{ 

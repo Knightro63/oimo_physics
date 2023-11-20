@@ -1,20 +1,32 @@
+import 'package:oimo_physics/math/quat.dart';
+
 import 'mass_info.dart';
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
 import '../math/vec3.dart';
 
-// * Plane shape.
+// Plane shape.
 class Plane extends Shape{
+
+  /// Plane Shape
+  /// 
+  /// [config] config file of the shape
+  /// 
+  /// [normal] the direction of the plane
   Plane(ShapeConfig config, [Vec3? normal]):super(config){
-    this.normal = normal ?? Vec3( 0, 1, 0 );
+    this.normal = normal ?? Vec3( 0, 0, 1 );
     type = Shapes.plane;
   }
 
   late Vec3 normal;
 
+  /// Calculate the volume of the plane
   double volume() {
     return double.maxFinite;
+  }
+  void computeNormal(Quat quat){
+    quat.vmult(normal, normal);
   }
 
   @override

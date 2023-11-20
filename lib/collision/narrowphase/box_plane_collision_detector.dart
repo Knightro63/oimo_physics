@@ -6,23 +6,23 @@ import '../../shape/plane_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/shape_main.dart';
 
-//  * A collision detector which detects collisions between two spheres.
+/// The collision detector for Box on Plane collisions
 class BoxPlaneCollisionDetector extends CollisionDetector{
-  Vec3 n = Vec3();
-  Vec3 p = Vec3();
+  final Vec3 n = Vec3();
+  final Vec3 p = Vec3();
 
-  Vec3 dix = Vec3();
-  Vec3 diy = Vec3();
-  Vec3 diz = Vec3();
+  final Vec3 dix = Vec3();
+  final Vec3 diy = Vec3();
+  final Vec3 diz = Vec3();
 
-  Vec3 cc = Vec3();
-  Vec3 cc2 = Vec3();
+  final Vec3 cc = Vec3();
+  final Vec3 cc2 = Vec3();
 
   @override
   void detectCollision(Shape shape1,Shape shape2,ContactManifold manifold ) {
-    Vec3 n = this.n;
-    Vec3 p = this.p;
-    Vec3 cc = this.cc;
+    final Vec3 n = this.n;
+    final Vec3 p = this.p;
+    final Vec3 cc = this.cc;
 
     Plane pn;
     Box b;
@@ -38,10 +38,10 @@ class BoxPlaneCollisionDetector extends CollisionDetector{
       b = shape2 as Box;
     }
 
-    List<double> D = b.dimentions;
-    double hw = b.halfWidth;
-    double hh = b.halfHeight;
-    double hd = b.halfDepth;
+    final D = b.dimentions;
+    final double hw = b.halfWidth;
+    final double hh = b.halfHeight;
+    final double hd = b.halfDepth;
     double len;
     int overlap = 0;
 
@@ -60,7 +60,6 @@ class BoxPlaneCollisionDetector extends CollisionDetector{
       Math.dotVectors( diy, n ),
       Math.dotVectors( diz, n )
     );
-
 
     if( cc.x > hw ){ 
       cc.x = hw;
@@ -91,8 +90,6 @@ class BoxPlaneCollisionDetector extends CollisionDetector{
     else{ 
       overlap |= 4;
     }
-
-    
 
     if(overlap == 7){
       // center of sphere is in the box

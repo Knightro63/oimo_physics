@@ -8,8 +8,8 @@ import '../../math/math.dart';
 import 'base/translational3_constraint.dart';
 import 'base/rotational3_constraint.dart';
 
-// * A wheel joint allows for relative rotation between two rigid bodies along two axes.
-// * The wheel joint also allows for relative translation for the suspension.
+/// A wheel joint allows for relative rotation between two rigid bodies along two axes.
+/// The wheel joint also allows for relative translation for the suspension.
 class WheelJoint extends Joint{
   WheelJoint (JointConfig config):super(config){
     type = JointType.wheel;
@@ -49,37 +49,36 @@ class WheelJoint extends Joint{
     t3 = Translational3Constraint( this, LimitMotor(nor, true),translationalLimitMotor,LimitMotor(bin, true));
     t3.weight = 1;
     r3 = Rotational3Constraint(this,LimitMotor(nor, true),rotationalLimitMotor1,rotationalLimitMotor2);
-
   }
 
-    // The axis in the first body's coordinate system.
-    late Vec3 localAxis1;
-    // The axis in the second body's coordinate system.
-    late Vec3 localAxis2;
+  /// The axis in the first body's coordinate system.
+  late Vec3 localAxis1;
+  /// The axis in the second body's coordinate system.
+  late Vec3 localAxis2;
 
-    Vec3 localAngle1 = Vec3();
-    Vec3 localAngle2 = Vec3();
+  Vec3 localAngle1 = Vec3();
+  Vec3 localAngle2 = Vec3();
 
-    late double dot;
+  late double dot;
 
-    Vec3 ax1 = Vec3();
-    Vec3 ax2 = Vec3();
-    Vec3 an1 = Vec3();
-    Vec3 an2 = Vec3();
-    Vec3 tmp = Vec3();
-    Vec3 nor = Vec3();
-    Vec3 tan = Vec3();
-    Vec3 bin = Vec3();
+  Vec3 ax1 = Vec3();
+  Vec3 ax2 = Vec3();
+  Vec3 an1 = Vec3();
+  Vec3 an2 = Vec3();
+  Vec3 tmp = Vec3();
+  Vec3 nor = Vec3();
+  Vec3 tan = Vec3();
+  Vec3 bin = Vec3();
 
-    // The translational limit and motor information of the joint.
-    late LimitMotor translationalLimitMotor;
-    // The first rotational limit and motor information of the joint.
-    late LimitMotor rotationalLimitMotor1;
-    // The second rotational limit and motor information of the joint.
-    late LimitMotor rotationalLimitMotor2;
+  /// The translational limit and motor information of the joint.
+  late LimitMotor translationalLimitMotor;
+  /// The first rotational limit and motor information of the joint.
+  late LimitMotor rotationalLimitMotor1;
+  /// The second rotational limit and motor information of the joint.
+  late LimitMotor rotationalLimitMotor2;
 
-    late Translational3Constraint t3;
-    late Rotational3Constraint r3;
+  late Translational3Constraint t3;
+  late Rotational3Constraint r3;
 
   @override
   void preSolve(double timeStep,double invTimeStep ) {

@@ -6,7 +6,7 @@ import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/shape_main.dart';
 import 'dart:math' as math;
 
-//  * A collision detector which detects collisions between two spheres.
+/// A collision detector which detects collisions between sphere and plane.
 class SpherePlaneCollisionDetector extends CollisionDetector{
 
   Vec3 n = Vec3();
@@ -47,7 +47,7 @@ class SpherePlaneCollisionDetector extends CollisionDetector{
     if(len > 0 && len < rad * rad){//&& h > rad*rad ){
       len = math.sqrt(len);
       //len = _Math.sqrt( h );
-      n.copy(pn.normal).negate();
+      n.copy(pn.normal).inverse();
       //n.scaleEqual( 1/len );
 
       //(0, -1, 0)

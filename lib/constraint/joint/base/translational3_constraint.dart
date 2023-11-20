@@ -6,6 +6,16 @@ import '../../../core/rigid_body.dart';
 
 // * A three-axis translational constraint for various joints.
 class Translational3Constraint extends Joint{
+
+  /// A three-axis translational constraint for various joints.
+  /// 
+  /// [joint] joint of the translational constraint
+  /// 
+  /// [limitMotor1] limit and motor of the translational constraint
+  /// 
+  /// [limitMotor2] limit and motor of the translational constraint
+  /// 
+  /// [limitMotor3] limit and motor of the translational constraint
   Translational3Constraint(Joint joint,this.limitMotor1,this.limitMotor2,this.limitMotor3):super(joint.config){
     b1=joint.body1!;
     b2=joint.body2!;

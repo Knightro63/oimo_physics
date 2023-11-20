@@ -4,8 +4,13 @@ import '../joint_main.dart';
 import '../limit_motor.dart';
 import '../../../core/rigid_body.dart';
 
-// * A rotational constraint for various joints.
+/// A rotational constraint for various joints.
 class RotationalConstraint extends Joint{
+  /// A rotational constraint for various joints.
+  /// 
+  /// [joint] joint of rotational constraint
+  /// 
+  /// [limitMotor] limit and motor of the rotation constraint
   RotationalConstraint(Joint joint, this.limitMotor):super(joint.config){
     b1=joint.body1!;
     b2=joint.body2!;

@@ -1,13 +1,16 @@
 import '../../../math/aabb.dart';
 import './dbvt_node.dart';
 
-//  * A dynamic bounding volume tree for the broad-phase algorithm.
+/// A dynamic bounding volume tree for the broad-phase algorithm.
 class DBVT{
-  DBVT();
 
-  // The root of the tree.
+  /// The root of the tree.
   DBVTNode? root;
+
+  /// All the free nodes in the tree
   List<DBVTNode> freeNodes = List.filled(16384, DBVTNode());
+
+  /// Number of nodes that are free
   int numFreeNodes = 0;
   AABB aabb = AABB();
 
@@ -16,6 +19,7 @@ class DBVT{
     insertLeaf( leaf );
   }
 
+  /// Insert a new leaf to the tree
   void insertLeaf(DBVTNode leaf){
     if(root == null){
       root = leaf;
@@ -109,11 +113,13 @@ class DBVT{
     }while(newParent != null);
   }
 
+  /// Get the balance of the dynamic bounding volme node from its children
   double getBalance(DBVTNode node){
     if(node.proxy!=null)return 0;
     return node.child1!.height-node.child2!.height;
   }
 
+  // Remove the leaf from this node tree
   void deleteLeaf(DBVTNode leaf) {
     if(leaf == root){
       root = null;
@@ -150,6 +156,7 @@ class DBVT{
     }while( grandParent != null);
   }
 
+  /// Balance the dynamic bounding volume node according to the input
   DBVTNode balance(DBVTNode node) {
     double nh = node.height;
     if(nh<2){
@@ -332,7 +339,7 @@ class DBVT{
     }
     return node;
   }
-
+  /// Fix the dynamic bounding volume of the input node
   void fix(DBVTNode node){
     DBVTNode c1 = node.child1!;
     DBVTNode c2 = node.child2!;

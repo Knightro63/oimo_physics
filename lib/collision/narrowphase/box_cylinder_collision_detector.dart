@@ -6,8 +6,9 @@ import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/shape_main.dart';
 import 'dart:math' as math;
 
+/// The collision detector for Box on Cylinder collisions
 class BoxCylinderCollisionDetector extends CollisionDetector{
-
+  /// Should sep be reimplimented
   bool getSep(Box c1,Cylinder c2, Vec3 sep,Vec3 pos,Vec3 dep ) {
     double t1x;
     double t1y;
@@ -298,6 +299,7 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
     //return false;
   }
 
+  /// Support for point B
   void supportPointB(Box c, double dx, double dy, double dz, Vec3 out) {
     List<double> rot=c.rotation.elements;
     double ldx=rot[0]*dx+rot[3]*dy+rot[6]*dz;
@@ -335,6 +337,7 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
     out.set( ldx, ldy, ldz );
   }
 
+  /// Support for point C
   void supportPointC(Cylinder c, double dx, double dy, double dz, Vec3 out) {
     List<double> rot=c.rotation.elements;
     double ldx=rot[0]*dx+rot[3]*dy+rot[6]*dz;

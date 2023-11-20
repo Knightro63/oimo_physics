@@ -9,9 +9,17 @@ import '../../math/math.dart';
 import 'base/linear_constraint.dart';
 import 'base/rotational3_constraint.dart';
 
-// * A hinge joint allows only for relative rotation of rigid bodies along the axis.
+/// A hinge joint allows only for relative rotation of rigid bodies along the axis.
 class HingeJoint extends Joint{
-  HingeJoint(JointConfig config,double lowerAngleLimit,double upperAngleLimit ):super(config){
+
+  /// A hinge joint allows only for relative rotation of rigid bodies along the axis.
+  /// 
+  /// [config] configuration profile of the joint
+  /// 
+  /// [lowerAngleLimit] the min angle the motor will travel
+  /// 
+  /// [upperAngleLimit] the max angle the motor will travel
+  HingeJoint(JointConfig config,[double lowerAngleLimit = 0,double upperAngleLimit = 0 ]):super(config){
     type = JointType.hinge;
     limitMotor = LimitMotor(nor, false );
     limitMotor.lowerLimit = lowerAngleLimit;
@@ -30,9 +38,9 @@ class HingeJoint extends Joint{
     r3 = Rotational3Constraint(this, limitMotor, LimitMotor(tan, true), LimitMotor(bin, true));
   }
 
-  // The axis in the first body's coordinate system.
+  /// The axis in the first body's coordinate system.
   late Vec3 localAxis1;
-  // The axis in the second body's coordinate system.
+  /// The axis in the second body's coordinate system.
   late Vec3 localAxis2;
 
   // make angle axis
@@ -51,7 +59,7 @@ class HingeJoint extends Joint{
   Vec3 tan = Vec3();
   Vec3 bin = Vec3();
 
-  // The rotational limit and motor information of the joint.
+  /// The rotational limit and motor information of the joint.
   late LimitMotor limitMotor;
 
   late LinearConstraint lc;

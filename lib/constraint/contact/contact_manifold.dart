@@ -3,17 +3,17 @@ import '../../math/vec3.dart';
 import '../../core/rigid_body.dart';
 import '../../shape/shape_main.dart';
 
-// * A contact manifold between two shapes.
+/// A contact manifold between two shapes.
 class ContactManifold{
   ContactManifold();
 
-  // The first rigid body.
+  /// The first rigid body.
   RigidBody? body1;
-  // The second rigid body.
+  /// The second rigid body.
   RigidBody? body2;
-  // The number of manifold points.
+  /// The number of manifold points.
   int numPoints = 0;
-  // The manifold points.
+  /// The manifold points.
   List<ManifoldPoint> points = [
     ManifoldPoint(),
     ManifoldPoint(),
@@ -21,14 +21,22 @@ class ContactManifold{
     ManifoldPoint()
   ];
 
-  //Reset the manifold.
+  /// Reset the manifold.
   void reset(Shape shape1, Shape shape2){
     body1 = shape1.parent;
     body2 = shape2.parent;
     numPoints = 0;
   }
 
-  //  Add a point into this manifold.
+  ///  Add a point into this manifold.
+  /// 
+  /// [pos] position of the manifold
+  /// 
+  /// [norm] Normal vector of the point
+  /// 
+  /// [penetration] depth of the contact
+  /// 
+  /// [flip] flip direction of contact
   void addPointVec(Vec3 pos, [Vec3? norm, double penetration = 0, bool flip = false]) {
     ManifoldPoint p = points[numPoints++];
 
@@ -41,7 +49,7 @@ class ContactManifold{
     }
 
     if(flip){
-      p.normal.negate();
+      p.normal.inverse();
     }
 
     p.normalImpulse = 0;
@@ -49,7 +57,23 @@ class ContactManifold{
     p.warmStarted = false;
   }
 
-  //  Add a point into this manifold.
+  ///  Add a point into this manifold.
+  /// 
+  /// [x] x position
+  /// 
+  /// [y] y position
+  /// 
+  /// [z] z position
+  /// 
+  /// [nx] normal x
+  /// 
+  /// [ny] normal y
+  /// 
+  /// [nz] normal z
+  /// 
+  /// [penetration] depth of the point
+  /// 
+  /// [flip] need to be flipped
   void addPoint(double x,double y,double z,double nx,double ny,double nz,double penetration,bool flip){
     ManifoldPoint p = points[numPoints++];
 
@@ -60,7 +84,7 @@ class ContactManifold{
     p.normalImpulse = 0;
 
     p.normal.set( nx, ny, nz );
-    if( flip ) p.normal.negate();
+    if( flip ) p.normal.inverse();
 
     p.penetration = penetration;
     p.warmStarted = false;

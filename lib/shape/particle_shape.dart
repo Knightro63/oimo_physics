@@ -3,14 +3,21 @@ import 'shape_config.dart';
 import 'shape_main.dart';
 import '../math/vec3.dart';
 
-// * A Particule shape
+/// A Particule shape
 class Particle extends Shape{
+
+  /// Particule Shape
+  /// 
+  /// [config] config file of the shape
+  /// 
+  /// [normal] the direction of the particle
   Particle(ShapeConfig config, this.normal):super(config){
     type = Shapes.particle;
   }
 
   late Vec3 normal;
 
+  /// Calculate the volume of the particle
   double volume() {
     return double.maxFinite;
   }

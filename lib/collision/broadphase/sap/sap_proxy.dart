@@ -4,8 +4,13 @@ import '../../../core/rigid_body.dart';
 import '../../../shape/shape_main.dart';
 import 'sap_element.dart';
 
-//  * A proxy for sweep and prune broad-phase.
+/// A proxy for sweep and prune broad-phase.
 class SAPProxy extends Proxy{
+
+  /// A proxy for sweep and prune broad-phase.
+  /// 
+  /// [sap] the broard phase used in the proxy
+  /// [shape] The shape applied to the proxy
   SAPProxy(this.sap, Shape shape):super(shape){
     min = List.filled(3, SAPElement(this, false));
     max = List.filled(3, SAPElement(this, true));

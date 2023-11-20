@@ -3,8 +3,18 @@ import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
 
-//  * Box shape.
+/// Box shape.
 class Box extends Shape{
+
+  /// Box Shape
+  /// 
+  /// [config] config file of the shape
+  /// 
+  /// [width] the width of the box
+  /// 
+  /// [height] the height of the box
+  /// 
+  /// [depth] the depth of the box
   Box(ShapeConfig config, this.width,this.height,this.depth):super(config){
     halfWidth = width * 0.5;
     halfHeight = height * 0.5;
@@ -20,13 +30,13 @@ class Box extends Shape{
   late double halfHeight;
   late double halfDepth;
 
-  List<double> dimentions = List.filled( 18,0 );
-  List<double> elements = List.filled( 24,0 );
+  final List<double> dimentions = List.filled( 18,0 );
+  final List<double> elements = List.filled( 24,0 );
 
   @override
 	void calculateMassInfo(MassInfo out ) {
-		var mass = width * height * depth * density;
-		var divid = 1/12;
+		final mass = width * height * depth * density;
+		const divid = 1/12;
 		out.mass = mass;
 		out.inertia.set(
 			mass * ( height * height + depth * depth ) * divid, 0, 0,
@@ -36,8 +46,8 @@ class Box extends Shape{
 	}
   @override
 	void updateProxy() {
-		List<double> te = rotation.elements;
-		List<double> di = dimentions;
+		final te = rotation.elements;
+		final di = dimentions;
 		// Width
 		di[0] = te[0];
 		di[1] = te[3];
@@ -77,7 +87,7 @@ class Box extends Shape{
 		double y = position.y;
 		double z = position.z;
 
-		List<double> v = elements;
+		final v = elements;
 		//v1
 		v[0] = x + wx + hx + dx;
 		v[1] = y + wy + hy + dy;

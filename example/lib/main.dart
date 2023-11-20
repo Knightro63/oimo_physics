@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_gl/flutter_gl.dart';
-import 'package:oimo_physics/oimo_physics.dart' as OIMO;
+import 'package:oimo_physics/core/rigid_body.dart';
+import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:three_dart/three_dart.dart' as THREE;
 import 'package:three_dart/three_dart.dart' hide Texture, Color;
 import 'package:three_dart_jsm/three_dart_jsm.dart';
@@ -30,12 +31,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-extension on OIMO.Quat{
+extension on oimo.Quat{
   Quaternion toQuaternion(){
     return Quaternion(x,y,z,w);
   }
 }
-extension on OIMO.Vec3{
+extension on oimo.Vec3{
   Vector3 toVector3(){
     return Vector3(x,y,z);
   }
@@ -80,8 +81,8 @@ class _TestBasicPageState extends State<TestBasic> {
   Map<String,THREE.Material> mats = {};
 
   //oimo var
-  OIMO.World? world;
-  List<OIMO.RigidBody> bodys = [];
+  oimo.World? world;
+  List<oimo.Core?> bodys = [];
 
   List<int> fps = [0,0,0,0];
   double ToRad = 0.0174532925199432957;
@@ -197,11 +198,11 @@ class _TestBasicPageState extends State<TestBasic> {
   }
 
   //----------------------------------
-  //  OIMO PHYSICS
+  //  oimo PHYSICS
   //----------------------------------
 
   void initOimoPhysics(){
-    world = OIMO.World(OIMO.WorldConfigure(isStat:true, scale:100.0));
+    world = oimo.World(oimo.WorldConfigure(isStat:true, scale:100.0));
     populate(type);
   }
 
@@ -228,23 +229,23 @@ class _TestBasicPageState extends State<TestBasic> {
 
     //add ground
     world!.add(
-      OIMO.ObjectConfigure(
-      shapes: [OIMO.Shapes.box],
+      oimo.ObjectConfigure(
+      shapes: [oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))],
       size:[40.0, 40.0, 390.0], 
-      position:[-180.0,20.0,0.0], 
-    )) as OIMO.RigidBody;
+      position:oimo.Vec3(-180.0,20.0,0.0), 
+    )) as oimo.RigidBody;
     world!.add(
-      OIMO.ObjectConfigure(
-      shapes: [OIMO.Shapes.box],
+      oimo.ObjectConfigure(
+      shapes: [oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))],
       size:[40.0, 40.0, 390.0], 
-      position:[180.0,20.0,0.0], 
-    )) as OIMO.RigidBody;
+      position:oimo.Vec3(180.0,20.0,0.0), 
+    )) as oimo.RigidBody;
     world!.add(
-      OIMO.ObjectConfigure(
-      shapes: [OIMO.Shapes.box],
+      oimo.ObjectConfigure(
+      shapes: [oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))],
       size:[400.0, 80.0, 400.0], 
-      position:[0.0,-40.0,0.0], 
-    )) as OIMO.RigidBody;
+      position:oimo.Vec3(0.0,-40.0,0.0), 
+    )) as oimo.RigidBody;
 
     addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
     addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
@@ -271,36 +272,36 @@ class _TestBasicPageState extends State<TestBasic> {
       if(t==1){
         THREE.Material mat = mats['sph']!;
         mat.color = randColor;
-        bodys.add(world!.add(OIMO.ObjectConfigure(
-          shapes:[OIMO.Shapes.sphere], 
+        bodys.add(world!.add(oimo.ObjectConfigure(
+          shapes:[oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.sphere))], 
           size:[w*0.5,w*0.5,w*0.5], 
-          position:[x,y,z], 
+          position:oimo.Vec3(x,y,z), 
           move:true,
-        )) as OIMO.RigidBody);
+        )));
         meshs.add(THREE.Mesh( geos['sphere'], mat));
         meshs[i].scale.set( w*0.5, w*0.5, w*0.5 );
       } 
       else if(t==2){
         THREE.Material mat = mats['box']!;
         mat.color = randColor;
-        bodys.add(world!.add(OIMO.ObjectConfigure(
-          shapes:[OIMO.Shapes.box], 
+        bodys.add(world!.add(oimo.ObjectConfigure(
+          shapes:[oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))], 
           size:[w,h,d], 
-          position:[x,y,z], 
+          position:oimo.Vec3(x,y,z), 
           move:true,
-        )) as OIMO.RigidBody);
+        )) as oimo.RigidBody);
         meshs.add(THREE.Mesh( geos['box'], mat ));
         meshs[i].scale.set( w, h, d );
       } 
       else if(t==3){
         THREE.Material mat = mats['cyl']!;
         mat.color = randColor;
-        bodys.add(world!.add(OIMO.ObjectConfigure(
-          shapes:[OIMO.Shapes.cylinder], 
+        bodys.add(world!.add(oimo.ObjectConfigure(
+          shapes:[oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.cylinder))], 
           size:[w*0.5,h,w*0.5], 
-          position:[x,y,z], 
+          position:oimo.Vec3(x,y,z), 
           move:true, 
-        )) as OIMO.RigidBody);
+        )));
         meshs.add(THREE.Mesh( geos['cylinder'], mat));
         meshs[i].scale.set( w*0.5, h, w*0.5 );
       }
@@ -319,10 +320,10 @@ class _TestBasicPageState extends State<TestBasic> {
 
     var x, y, z;
     Mesh mesh; 
-    OIMO.RigidBody body;
+    oimo.RigidBody body;
     //print(bodys[0].getPosition());
     for(int i = 0; i < bodys.length;i++){
-      body = bodys[i];
+      body = bodys[i] as RigidBody;
       mesh = meshs[i];
 
       if(!body.sleeping){

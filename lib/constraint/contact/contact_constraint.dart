@@ -8,7 +8,11 @@ import '../../math/vec3.dart';
 import 'manifold_point.dart';
 import '../../math/math.dart';
 
+/// A constraint used on contacts
 class ContactConstraint extends Constraint{
+  /// A constraint used on contacts
+  /// 
+  /// [manifold] The contact manifold of the constraint.
   ContactConstraint(this.manifold):super(){
     cs.next = ContactPointDataBuffer();
     cs.next!.next = ContactPointDataBuffer();
@@ -16,11 +20,11 @@ class ContactConstraint extends Constraint{
 
     ps = manifold.points;
   }
-  // The contact manifold of the constraint.
+  /// The contact manifold of the constraint.
   ContactManifold manifold;
-  // The coefficient of restitution of the constraint.
+  /// The coefficient of restitution of the constraint.
   double? restitution;
-  // The coefficient of friction of the constraint.
+  /// The coefficient of friction of the constraint.
   double? friction;
   Vec3? p1;
   Vec3? p2;
@@ -53,7 +57,7 @@ class ContactConstraint extends Constraint{
   late List<ManifoldPoint> ps;
   ContactPointDataBuffer cs = ContactPointDataBuffer();
 
-  // Attach the constraint to the bodies.
+  /// Attach the constraint to the bodies.
   void attach(){
     p1=body1!.position;
     p2=body2!.position;
@@ -65,7 +69,7 @@ class ContactConstraint extends Constraint{
     i2=body2!.inverseInertia;
   }
 
-  // Detach the constraint from the bodies.
+  /// Detach the constraint from the bodies.
   void detach(){
     p1=null;
     p2=null;

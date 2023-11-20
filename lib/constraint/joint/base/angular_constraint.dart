@@ -4,10 +4,15 @@ import '../../../math/mat33.dart';
 import '../../../math/vec3.dart';
 import '../../../math/quat.dart';
 
-// * An angular constraint for all axes for various joints.
+/// An angular constraint for all axes for various joints.
 class AngularConstraint extends Joint{
-  AngularConstraint(this.joint, targetOrientation ):super(joint.config) {
-    targetOrientation = Quat().invert( targetOrientation );
+  /// An angular constraint for all axes for various joints.
+  /// 
+  /// [joint] the joint of the angular constraint
+  /// 
+  /// [targetOrientation] Prientation of the angular constraint
+  AngularConstraint(this.joint, Quat targetOrientation ):super(joint.config) {
+    this.targetOrientation = Quat().invert(targetOrientation);
 
     b1 = joint.body1!;
     b2 = joint.body2!;

@@ -1,3 +1,5 @@
+import 'package:oimo_physics/shape/plane_shape.dart';
+
 import 'world_core.dart';
 import 'core_main.dart';
 import '../constraint/contact/contact_link.dart';
@@ -10,32 +12,90 @@ import '../math/mat33.dart';
 import '../math/quat.dart';
 import '../math/vec3.dart';
 
-/// * The class of rigid body.
-/// * Rigid body has the shape of a single or multiple collision processing,
-/// * I can set the parameters individually.
+/// The class of rigid body.
+/// Rigid body has the shape of a single or multiple collision processing,
+/// I can set the parameters individually.
 enum RigidBodyType{none,dynamic,static,kinematic,ghost}
 
 class RigidBody extends Core{
-  RigidBody([Vec3? position, Quat? orientation]){//RigidBodyConfig config){//
+  RigidBody({
+    Vec3? position, 
+    Quat? orientation,
+    List<Shape>? shapes,
+    String? name,
+    this.type = RigidBodyType.static,
+    this.allowSleep = true,
+    bool isSleeping = false,
+    bool adjustPosition = true,
+    Vec3? linearVelocity,
+    Vec3? angularVelocity,
+    double? mass,
+    this.isTrigger = false
+  }){
     this.position = position ?? Vec3();
     this.orientation = orientation ?? Quat();
+    this.linearVelocity = linearVelocity ?? Vec3();
+    this.angularVelocity = angularVelocity ?? Vec3();
+
+    initAngularVelocity = Vec3().copy(this.angularVelocity);
+    initLinearVelocity = Vec3().copy(this.linearVelocity);
+    initPosition = Vec3().copy(this.position);
+    initOrientation = Quat().copy(this.orientation);
+
     //type = config.type;
+    if(shapes!= null && shapes.isNotEmpty){
+      for(int i = 0; i < shapes.length;i++){
+        addShape(shapes[i]);
+      }
+    }
+
+    id = RigidBody.idCounter++;
+    this.name = name ?? id.toString();
+  
+    if(isKinematic){ 
+      allowSleep = false;
+    }
+
+    if(mass == null || mass == 0){
+      setupMass(adjustPosition);
+    }
+    else{
+      this.mass = mass;
+      type = RigidBodyType.static == type?RigidBodyType.dynamic:type;
+      setupInertia(Vec3(),adjustPosition);
+    }
+
+    if(isDynamic){
+      if(isSleeping){
+        sleep();
+      }
+      else{
+        awake();
+      }
+    }
   }
+
+  void Function(RigidBody body)? collide;//function(){};
+
+  /// Initilized parameters
+  late Vec3 initPosition;
+  late Vec3 initAngularVelocity;
+  late Vec3 initLinearVelocity;
+  late Quat initOrientation;
 
   late Vec3 position;
   late Quat orientation;
+  late bool isTrigger;
 
   double scale = 1;
   double invScale = 1;
 
-  /// possible link to three Mesh; dart(todo) add three_dart
-  dynamic mesh;
+  static int idCounter = 0;
+  late int id;
+  late String name;
 
-  int? id;
-  String name = "";
-
-  // The maximum number of shapes that can be added to a one rigid.
-  //this.MAX_SHAPES = 64;//64;
+  /// The maximum number of shapes that can be added to a one rigid.
+  // MAX_SHAPES = 64;
   RigidBody? prev;
   RigidBody? next;
 
@@ -43,84 +103,75 @@ class RigidBody extends Core{
   // Please do not change from the outside this variable.
   // If you want to change the type of rigid body, always
   // Please specify the type you want to set the arguments of setupMass method.
-  RigidBodyType type = RigidBodyType.none;
+  RigidBodyType type;
 
   MassInfo massInfo = MassInfo();
 
-  Vec3 newPosition = Vec3();
-  bool controlPos = false;
-  Quat newOrientation = Quat();
-  Vec3 newRotation = Vec3();
-  Vec3 currentRotation = Vec3();
-  bool controlRot = false;
-  bool controlRotInTime = false;
-
-  Quat quaternion = Quat();
-  Vec3 pos = Vec3();
-
-  // Is the translational velocity.
-  Vec3 linearVelocity = Vec3();
- // Is the angular velocity.
- Vec3 angularVelocity = Vec3();
+  /// Is the translational velocity.
+  late Vec3 linearVelocity;
+  /// Is the angular velocity.
+  late Vec3 angularVelocity;
 
   //--------------------------------------------
   //  Please do not change from the outside this variables.
   //--------------------------------------------
 
-  // It is a world that rigid body has been added.
+  /// It is a world that rigid body has been added.
   World? parent;
   ContactLink? contactLink;
   int numContacts = 0;
 
-  // An array of shapes that are included in the rigid body.
+  /// An array of shapes that are included in the rigid body.
   Shape? shapes;
-  // The number of shapes that are included in the rigid body.
+  /// The number of shapes that are included in the rigid body.
   int numShapes = 0;
 
-  // It is the link array of joint that is connected to the rigid body.
+  /// It is the link array of joint that is connected to the rigid body.
   JointLink? jointLink;
-  // The number of joints that are connected to the rigid body.
+  /// The number of joints that are connected to the rigid body.
   int numJoints = 0;
 
-  // It is the world coordinate of the center of gravity in the sleep just before.
+  /// It is the world coordinate of the center of gravity in the sleep just before.
   Vec3 sleepPosition = Vec3();
-  // It is a quaternion that represents the attitude of sleep just before.
+  /// It is a quaternion that represents the attitude of sleep just before.
   Quat sleepOrientation = Quat();
-  // I will show this rigid body to determine whether it is a rigid body static.
-  bool isStatic = false;
-  // I indicates that this rigid body to determine whether it is a rigid body dynamic.
-  bool isDynamic = false;
 
-  bool isKinematic = false;
+  /// I will show this rigid body to determine whether it is a rigid body static.
+  bool get isStatic => RigidBodyType.static == type;
+  /// I indicates that this rigid body to determine whether it is a rigid body dynamic.
+  bool get isDynamic  => RigidBodyType.dynamic == type;
+  bool get isKinematic => RigidBodyType.kinematic == type;
 
-  // It is a rotation matrix representing the orientation.
+  /// It is a rotation matrix representing the orientation.
   Mat33 rotation = Mat33();
 
   //--------------------------------------------
   // It will be recalculated automatically from the shape, which is included.
   //--------------------------------------------
 
-  // This is the weight.
+  /// This is the weight.
   double mass = 0;
-  // It is the reciprocal of the mass.
+  /// It is the reciprocal of the mass.
   double inverseMass = 0;
-  // It is the inverse of the inertia tensor in the world system.
+  /// It is the inverse of the inertia tensor in the world system.
   Mat33 inverseInertia = Mat33();
-  // It is the inertia tensor in the initial state.
+  /// It is the inertia tensor in the initial state.
   Mat33 localInertia = Mat33();
-  // It is the inverse of the inertia tensor in the initial state.
+  /// It is the inverse of the inertia tensor in the initial state.
   Mat33 inverseLocalInertia = Mat33();
 
   Mat33 tmpInertia = Mat33();
 
-  // I indicates rigid body whether it has been added to the simulation Island.
+  /// I indicates rigid body whether it has been added to the simulation Island.
   bool addedToIsland = false;
-  // It shows how to sleep rigid body.
-  bool allowSleep = true;
-  // This is the time from when the rigid body at rest.
+  /// It shows how to sleep rigid body.
+  bool allowSleep;
+  /// This is the time from when the rigid body at rest.
   double sleepTime = 0;
-  // I shows rigid body to determine whether it is a sleep state.
+  /// I shows rigid body to determine whether it is a sleep state.
   bool sleeping = false;
+
+  bool fixedRotation = false;
 
   @override
   void setParent(World world){
@@ -130,15 +181,16 @@ class RigidBody extends Core{
     id = parent!.numRigidBodies;
     if(name != '') name = id.toString();
 
-    updateMesh();
+    //updateMesh();
   }
 
-  /// **
-  /// * I'll add a shape to rigid body.
-  /// * If you add a shape, please call the setupMass method to step up to the start of the next.
-  /// * @param   shape shape to Add
-  /// *
+  /// I'll add a shape to rigid body.
+  /// If you add a shape, please call the setupMass method to step up to the start of the next.
+  /// [shape] shape to Add
   void addShape(Shape shape){
+    if(shape is Plane){
+      shape.computeNormal(orientation);
+    }
     if(shape.parent != null){
       printError("RigidBody", "It is not possible that you add a shape which already has an associated body.");
     }
@@ -151,12 +203,9 @@ class RigidBody extends Core{
     numShapes++;
   }
 
-  /// **
-  ///  * I will delete the shape from the rigid body.
-  ///  * If you delete a shape, please call the setupMass method to step up to the start of the next.
-  ///  * @param shape {Shape} to delete
-  ///  * @return void
-  ///  *
+  /// I will delete the shape from the rigid body.
+  /// If you delete a shape, please call the setupMass method to step up to the start of the next.
+  /// [shape] shape to delete
   void removeShape(Shape shape){
     Shape remove = shape;
     if(remove.parent != this)return;
@@ -184,23 +233,15 @@ class RigidBody extends Core{
     parent!.checkContact( this.name, name );
   }
 
-  /// **
-  ///  * Calulates mass datas(center of gravity, mass, moment inertia, etc...).
-  ///  * If the parameter type is set to BODY_STATIC, the rigid body will be fixed to the space.
-  ///  * If the parameter adjustPosition is set to true, the shapes' relative positions and
-  ///  * the rigid body's position will be adjusted to the center of gravity.
-  ///  * @param type
-  ///  * @param adjustPosition
-  ///  * @return void
-  ///  *
-  void setupMass([RigidBodyType? type, bool adjustPosition = true]) {
-    this.type = type ?? RigidBodyType.static;
-    isDynamic = this.type == RigidBodyType.dynamic;
-    isStatic = this.type == RigidBodyType.static;
-
+  /// Calulates mass datas(center of gravity, mass, moment inertia, etc...).
+  /// If the parameter type is set to BODY_STATIC, the rigid body will be fixed to the space.
+  /// If the parameter adjustPosition is set to true, the shapes' relative positions and
+  /// the rigid body's position will be adjusted to the center of gravity.
+  /// [type] type of rigid body
+  /// [adjustPosition]
+  void setupMass([bool adjustPosition = true]) {
     mass = 0;
     localInertia.set(0,0,0,0,0,0,0,0,0);
-
 
     Mat33 tmpM = Mat33();
     Vec3 tmpV = Vec3();
@@ -215,9 +256,12 @@ class RigidBody extends Core{
       // add offset inertia
       localInertia.addOffset(shapeMass, shape.relativePosition );
     }
+    setupInertia(tmpV,adjustPosition);
+  }
 
+  void setupInertia(Vec3 tmpV,bool adjustPosition){
     inverseMass = 1 / mass;
-    tmpV.scaleEqual(inverseMass );
+    tmpV.scaleEqual(inverseMass);
 
     if(adjustPosition){
       position.add(tmpV);
@@ -231,9 +275,7 @@ class RigidBody extends Core{
 
     inverseLocalInertia.invert(localInertia );
 
-    //}
-
-    if(this.type == RigidBodyType.static ){
+    if(isStatic){
       inverseMass = 0;
       inverseLocalInertia.set(0,0,0,0,0,0,0,0,0);
     }
@@ -241,7 +283,8 @@ class RigidBody extends Core{
     syncShapes();
     awake();
   }
-  // * Awake the rigid body.
+
+  /// Awake the rigid body.
   @override
   void awake(){
     if(!allowSleep || !sleeping ) return;
@@ -265,7 +308,7 @@ class RigidBody extends Core{
     }
   }
 
-  // * Sleep the rigid body.
+  /// Sleep the rigid body.
   @override
   void sleep(){
     if(!allowSleep || sleeping ) return;
@@ -285,54 +328,43 @@ class RigidBody extends Core{
     if(linearVelocity.testZero() || angularVelocity.testZero() || position.testDiff(sleepPosition) || orientation.testDiff(sleepOrientation)) awake(); // awake the body
   }
 
-  // * Get whether the rigid body has not any connection with others.
+  /// Get whether the rigid body has not any connection with others.
   bool isLonely() {
     return numJoints==0 && numContacts==0;
   }
 
-  //  * The time integration of the motion of a rigid body, you can update the information such as the shape.
-  //  * This method is invoked automatically when calling the step of the World,
-  //  * There is no need to call from outside usually.
+  /// The time integration of the motion of a rigid body, you can update the information such as the shape.
+  /// This method is invoked automatically when calling the step of the World,
+  /// There is no need to call from outside usually.
   void updatePosition(double timeStep) {
     switch(type){
       case RigidBodyType.static:
         linearVelocity.set(0,0,0);
         angularVelocity.set(0,0,0);
-
-        // ONLY FOR TEST
-        if(controlPos){
-          position.copy(newPosition);
-          controlPos = false;
-        }
-        if(controlRot){
-          orientation.copy(newOrientation);
-          controlRot = false;
-        }
         break;
       case RigidBodyType.dynamic:
-        if(isKinematic ){
-          linearVelocity.set(0,0,0);
+        position.addScaledVector(linearVelocity, timeStep.toDouble());
+        if(fixedRotation){
           angularVelocity.set(0,0,0);
         }
-        if(controlPos){
-          linearVelocity.subVectors(newPosition, position ).multiplyScalar(1/timeStep);
-          controlPos = false;
+        else{
+          orientation.addTime(angularVelocity, timeStep.toDouble());
         }
-        if(controlRot){
-          angularVelocity.copy(getAxis() );
-          orientation.copy(newOrientation );
-          controlRot = false;
+        break;
+      case RigidBodyType.kinematic:
+        // linearVelocity.set(0,0,0);
+        if(fixedRotation){
+          angularVelocity.set(0,0,0);
         }
-
+        else{
+          orientation.addTime(angularVelocity, timeStep.toDouble());
+        }
         position.addScaledVector(linearVelocity, timeStep.toDouble());
-        orientation.addTime(angularVelocity, timeStep.toDouble());
-        updateMesh();
         break;
       default: printError("RigidBody", "Invalid type.");
     }
 
     syncShapes();
-    updateMesh();
   }
 
   Vec3 getAxis() {
@@ -350,6 +382,7 @@ class RigidBody extends Core{
     
     for(Shape? shape = shapes; shape!=null; shape = shape.next){
       shape.position.copy( shape.relativePosition ).applyMatrix3(rotation, true ).add(position );
+      //shape.relativePosition.applyMatrix3(rotation, true ).add(position );
       // add by QuaziKb
       shape.rotation.multiplyMatrices(rotation, shape.relativeRotation );
       shape.updateProxy();
@@ -357,42 +390,41 @@ class RigidBody extends Core{
   }
 
 
-  //---------------------------------------------
-  // APPLY IMPULSE FORCE
-  //---------------------------------------------
-
+  ///---------------------------------------------
+  /// APPLY IMPULSE FORCE
+  ///---------------------------------------------
   void applyImpulse(Vec3 position, Vec3 force){
     linearVelocity.addScaledVector(force, inverseMass);
-    Vec3 rel = Vec3().copy( position ).sub( this.position ).cross( force ).applyMatrix3(inverseInertia, true );
-    angularVelocity.add( rel );
+    position.sub( this.position ).cross( force ).applyMatrix3(inverseInertia, true );
+    angularVelocity.add( position );
   }
 
+  ///---------------------------------------------
+  /// APPLY IMPULSE FORCE
+  ///---------------------------------------------
+  void applyTorque(Vec3 torque){
+    torque.multiply(Vec3(5,5,5)).applyMatrix3(inverseInertia, true );
+    angularVelocity.add(torque);
+  }
 
-  //---------------------------------------------
-  // SET DYNAMIQUE POSITION AND ROTATION
-  //---------------------------------------------
-
+  ///---------------------------------------------
+  /// SET DYNAMIQUE POSITION AND ROTATION
+  ///---------------------------------------------
   void setPosition(Vec3 pos){
-    newPosition.copy( pos ).multiplyScalar( invScale );
-    controlPos = true;
-    if( !isKinematic ) isKinematic = true;
+    position.copy( pos ).multiplyScalar( invScale );
   }
 
   void setQuaternion(Quat q){
-    newOrientation.set(q.x, q.y, q.z, q.w);
-    controlRot = true;
-    if( !isKinematic ) isKinematic = true;
+    orientation.set(q.x, q.y, q.z, q.w);
   }
 
   void setRotation(Quat rot){
-    newOrientation = Quat().setFromEuler( rot.x * Math.degtorad, rot.y * Math.degtorad, rot.z * Math.degtorad );
-    controlRot = true;
+    orientation = Quat().setFromEuler( rot.x * Math.degtorad, rot.y * Math.degtorad, rot.z * Math.degtorad );
   }
 
-  //---------------------------------------------
-  // RESET DYNAMIQUE POSITION AND ROTATION
-  //---------------------------------------------
-
+  ///---------------------------------------------
+  /// RESET DYNAMIQUE POSITION AND ROTATION
+  ///---------------------------------------------
   void resetPosition(double x,double y,double z){
     linearVelocity.set( 0, 0, 0 );
     angularVelocity.set( 0, 0, 0 );
@@ -410,34 +442,5 @@ class RigidBody extends Core{
     angularVelocity.set(0,0,0);
     orientation = Quat().setFromEuler( x * Math.degtorad, y * Math.degtorad,  z * Math.degtorad );//this.rotationVectToQuad( Vec3(x,y,z) );
     awake();
-  }
-
-  //---------------------------------------------
-  // GET POSITION AND ROTATION
-  //---------------------------------------------
-
-  Vec3 getPosition () {
-    return pos;
-  }
-
-  Quat getQuaternion() {
-    return quaternion;
-  }
-
-  //---------------------------------------------
-  // AUTO UPDATE THREE MESH
-  //---------------------------------------------
-
-  void connectMesh( mesh) {
-    mesh = mesh;
-    updateMesh();
-  }
-
-  void updateMesh(){
-    pos.scale( position, scale );
-    quaternion.copy( orientation );
-    if( mesh == null ) return;
-    mesh.position.copy( getPosition() );
-    mesh.quaternion.copy( getQuaternion() );
   }
 }

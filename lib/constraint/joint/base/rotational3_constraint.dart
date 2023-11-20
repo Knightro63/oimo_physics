@@ -4,8 +4,18 @@ import '../../../core/rigid_body.dart';
 import '../../../math/vec3.dart';
 import '../../../math/mat33.dart';
 
-// * A three-axis rotational constraint for various joints.
+/// A three-axis rotational constraint for various joints.
 class Rotational3Constraint extends Joint{
+
+  /// A three-axis rotational constraint for various joints.
+  /// 
+  /// [joint] joint of the rotation constraint
+  /// 
+  /// [limitMotor1] limit and motor of the rotation constraint
+  /// 
+  /// [limitMotor2] limit and motor of the rotation constraint
+  /// 
+  /// [limitMotor3] limit and motor of the rotation constraint
   Rotational3Constraint(Joint joint,this.limitMotor1,this.limitMotor2,this.limitMotor3):super(joint.config) {
     b1=joint.body1!;
     b2=joint.body2!;
@@ -68,7 +78,7 @@ class Rotational3Constraint extends Joint{
 
   double? lowerLimit1;
   double? upperLimit1;
-  double? limitVelocity1;
+  double limitVelocity1 = 0;
   double limitState1=0; // -1: at lower, 0: locked, 1: at upper, 2: free
   bool enableMotor1=false;
   double? motorSpeed1;
@@ -76,7 +86,7 @@ class Rotational3Constraint extends Joint{
   double? maxMotorImpulse1;
   double? lowerLimit2;
   double? upperLimit2;
-  double? limitVelocity2;
+  double limitVelocity2 = 0;
   double limitState2=0; // -1: at lower, 0: locked, 1: at upper, 2: free
   bool enableMotor2=false;
   double? motorSpeed2;
@@ -84,8 +94,8 @@ class Rotational3Constraint extends Joint{
   double? maxMotorImpulse2;
   double?lowerLimit3;
   double? upperLimit3;
-  double? limitVelocity3;
-  double limitState3=0; // -1: at lower, 0: locked, 1: at upper, 2: free
+  double limitVelocity3 = 0;
+  double limitState3 = 0; // -1: at lower, 0: locked, 1: at upper, 2: free
   bool enableMotor3=false;
   double? motorSpeed3;
   double? maxMotorForce3;
@@ -225,11 +235,11 @@ class Rotational3Constraint extends Joint{
               limitVelocity1=0;
           }
           if(!enableSpring1){
-            if(limitVelocity1!>0.02){
-              limitVelocity1 = limitVelocity1!-0.02;
+            if(limitVelocity1>0.02){
+              limitVelocity1 = limitVelocity1-0.02;
             }
-            else if(limitVelocity1!<-0.02){
-              limitVelocity1 = limitVelocity1!+0.02;
+            else if(limitVelocity1<-0.02){
+              limitVelocity1 = limitVelocity1+0.02;
             }
             else {
               limitVelocity1=0;
@@ -271,11 +281,11 @@ class Rotational3Constraint extends Joint{
           }
 
           if(!enableSpring2){
-            if(limitVelocity2!>0.02){
-              limitVelocity2=limitVelocity2!-0.02;
+            if(limitVelocity2>0.02){
+              limitVelocity2=limitVelocity2-0.02;
             }
-            else if(limitVelocity2!<-0.02){
-              limitVelocity2=limitVelocity2!+0.02;
+            else if(limitVelocity2<-0.02){
+              limitVelocity2=limitVelocity2+0.02;
             }
             else {
               limitVelocity2=0;
@@ -316,11 +326,11 @@ class Rotational3Constraint extends Joint{
               limitVelocity3=0;
             }
             if(!enableSpring3){
-              if(limitVelocity3!>0.02){
-                limitVelocity3=limitVelocity3!-0.02;
+              if(limitVelocity3>0.02){
+                limitVelocity3=limitVelocity3-0.02;
               }
-              else if(limitVelocity3!<-0.02){
-                limitVelocity3=limitVelocity3!+0.02;
+              else if(limitVelocity3<-0.02){
+                limitVelocity3=limitVelocity3+0.02;
               }
               else {
                 limitVelocity3=0;
@@ -399,11 +409,11 @@ class Rotational3Constraint extends Joint{
           double k=omega*omega*timeStep;
           double dmp=invTimeStep/(k+2*limitMotor1.dampingRatio*omega);
           cfm1=kv00!*dmp;
-          limitVelocity1 = limitVelocity1!*k*dmp;
+          limitVelocity1 = limitVelocity1*k*dmp;
         }
         else{
           cfm1=0;
-          limitVelocity1 = limitVelocity1!*invTimeStep*0.05;
+          limitVelocity1 = limitVelocity1*invTimeStep*0.05;
         }
 
         if(enableSpring2&&limitState2!=2){
@@ -411,11 +421,11 @@ class Rotational3Constraint extends Joint{
           double k=omega*omega*timeStep;
           double dmp=invTimeStep/(k+2*limitMotor2.dampingRatio*omega);
             cfm2=kv11!*dmp;
-            limitVelocity2 = limitVelocity2!*k*dmp;
+            limitVelocity2 = limitVelocity2*k*dmp;
         }
         else{
           cfm2=0;
-          limitVelocity2 = limitVelocity2!*invTimeStep*0.05;
+          limitVelocity2 = limitVelocity2*invTimeStep*0.05;
         }
 
         if(enableSpring3&&limitState3!=2){
@@ -423,11 +433,11 @@ class Rotational3Constraint extends Joint{
           double k=omega*omega*timeStep;
           double dmp=invTimeStep/(k+2*limitMotor3.dampingRatio*omega);
           cfm3=kv22!*dmp;
-          limitVelocity3 = limitVelocity3!*k*dmp;
+          limitVelocity3 = limitVelocity3*k*dmp;
         }
         else{
           cfm3=0;
-          limitVelocity3 = limitVelocity3!*invTimeStep*0.05;
+          limitVelocity3 = limitVelocity3*invTimeStep*0.05;
         }
 
         k00=k00!+cfm1!;
@@ -472,9 +482,9 @@ class Rotational3Constraint extends Joint{
     double rvz=a2.z-a1.z;
 
     limitVelocity3=30;
-    double rvn1=rvx*ax1!+rvy*ay1!+rvz*az1!-limitVelocity1!;
-    double rvn2=rvx*ax2!+rvy*ay2!+rvz*az2!-limitVelocity2!;
-    double rvn3=rvx*ax3!+rvy*ay3!+rvz*az3!-limitVelocity3!;
+    double rvn1=rvx*ax1!+rvy*ay1!+rvz*az1!-limitVelocity1;
+    double rvn2=rvx*ax2!+rvy*ay2!+rvz*az2!-limitVelocity2;
+    double rvn3=rvx*ax3!+rvy*ay3!+rvz*az3!-limitVelocity3;
 
     double dLimitImpulse1=rvn1*d00!+rvn2*d01!+rvn3*d02!;
     double dLimitImpulse2=rvn1*d10!+rvn2*d11!+rvn3*d12!;
@@ -550,9 +560,9 @@ class Rotational3Constraint extends Joint{
       rvn3+=dMotorImpulse1*k20!+dMotorImpulse2*k21!+dMotorImpulse3*kv22!;
 
       // subtract target velocity and applied impulse
-      rvn1-=limitVelocity1!+limitImpulse1*cfm1!;
-      rvn2-=limitVelocity2!+limitImpulse2*cfm2!;
-      rvn3-=limitVelocity3!+limitImpulse3*cfm3!;
+      rvn1-=limitVelocity1+limitImpulse1*cfm1!;
+      rvn2-=limitVelocity2+limitImpulse2*cfm2!;
+      rvn3-=limitVelocity3+limitImpulse3*cfm3!;
 
       double oldLimitImpulse1=limitImpulse1;
       double oldLimitImpulse2=limitImpulse2;

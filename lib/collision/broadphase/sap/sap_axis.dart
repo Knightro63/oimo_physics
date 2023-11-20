@@ -1,6 +1,6 @@
 import 'sap_element.dart';
 
-//  * A projection axis for sweep and prune broad-phase.
+/// A projection axis for sweep and prune broad-phase.
 class SAPAxis{
   SAPAxis (){
     //elements = List.filled(bufferSize, null,growable: true);
@@ -11,6 +11,7 @@ class SAPAxis{
   Map<int,SAPElement?> elements = {};
   List<double> stack = List.filled(64, 0);//Float32Array( 64 );
 
+  /// add new min and max elements to the sweep and prune axis
   void addElements(SAPElement min,SAPElement max ) {
     if(numElements+2>=bufferSize){
       //this.bufferSize<<=1;
@@ -24,6 +25,7 @@ class SAPAxis{
     elements[numElements++] = max;
   }
 
+  /// remove min and max elements to the sweep and prune axis
   void removeElements(SAPElement min,SAPElement max ) {
     int minIndex=-1;
     int maxIndex=-1;
@@ -50,6 +52,7 @@ class SAPAxis{
     elements[--numElements] = null;
   }
 
+  /// Sort the elements in the sweep and prune
   void sort() {
     int count = 0;
     int threshold = 1;
@@ -150,6 +153,7 @@ class SAPAxis{
     }
   }
 
+  /// Gat test count of all the elements
   int calculateTestCount() {
     int num = 1;
     int sum = 0;

@@ -6,7 +6,7 @@ void printError(String clazz,String msg ){
   throw("[OIMO] $clazz: $msg");
 }
 
-// A performance evaluator
+/// A performance evaluator
 class InfoDisplay{
   InfoDisplay(world){
     parent = world;
@@ -39,6 +39,10 @@ class InfoDisplay{
   int maxTotalTime = 0;
   int maxUpdateTime = 0;
 
+  static double now() => DateTime.now().millisecondsSinceEpoch/1000;
+
+
+  /// set time to calculate performance
   void setTime([int? n]){
     times[ n ?? 0 ] = DateTime.now().millisecondsSinceEpoch;
   }
@@ -83,12 +87,13 @@ class InfoDisplay{
     if(tt > 500)tt = 0;
   }
 
-
+  /// Calc FPS
   void upfps (){
     f[1] = DateTime.now().millisecondsSinceEpoch;
     if (f[1]-1000>f[0]){ f[0] = f[1]; fps = f[2].toDouble(); f[2] = 0;} f[2]++;
   }
 
+  /// show the information for debugging
   String show(){
     String info =[
       "Oimo.js $version<br>",
@@ -109,6 +114,7 @@ class InfoDisplay{
     return info;
   }
 
+  /// SET AN ARRAY OF DATA FOR DEBUGGING
   List<double> toArray(){
     infos[0] = parent.broadPhase.types.index.toDouble();
     infos[1] = parent.numRigidBodies.toDouble();

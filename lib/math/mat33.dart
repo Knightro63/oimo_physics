@@ -1,7 +1,9 @@
 import 'quat.dart';
 import 'vec3.dart';
 
+/// 3x3 matrix
 class Mat33{
+  /// Create a 3x3 matrix
   Mat33 ([double e00 = 1,double e01 = 0,double e02 = 0,double e10 = 0,double e11 = 1,double e12 = 0,double e20 = 0,double e21 = 0,double e22 = 1]){
     set(e00, e01, e02, e10, e11, e12, e20, e21, e22);
   }
@@ -12,6 +14,7 @@ class Mat33{
     0, 0, 1
   ];
 
+  /// Set new values for this 3x3 matrix
   Mat33 set(double e00,double e01,double e02,double e10,double e11,double e12,double e20,double e21,double e22){
     List<double> te = elements;
     te[0] = e00; te[1] = e01; te[2] = e02;
@@ -19,7 +22,8 @@ class Mat33{
     te[6] = e20; te[7] = e21; te[8] = e22;
     return this;
   }
-    
+  
+  /// Add a to this matrix
   Mat33 add(Mat33  a, [Mat33? b ]) {
     if( b != null ) return addMatrixs( a, b );
     var e = elements, te = a.elements;
@@ -29,6 +33,7 @@ class Mat33{
     return this;
   }
 
+  /// Add a matrix to b matrix
   Mat33 addMatrixs(Mat33  a, Mat33 b ) {
     List<double> te = elements, tem1 = a.elements, tem2 = b.elements;
     te[0] = tem1[0] + tem2[0]; te[1] = tem1[1] + tem2[1]; te[2] = tem1[2] + tem2[2];
@@ -37,6 +42,7 @@ class Mat33{
     return this;
   }
 
+  /// Add m to this matrix
   Mat33 addEqual(Mat33  m){
     List<double> te = elements, tem = m.elements;
     te[0] += tem[0]; te[1] += tem[1]; te[2] += tem[2];
@@ -45,6 +51,7 @@ class Mat33{
     return this;
   }
 
+  /// Subtract a from this matrix
   Mat33 sub(Mat33  a, [Mat33? b ]) {
     if( b != null ) return subMatrixs( a, b );
     List<double> e = elements, te = a.elements;
@@ -54,6 +61,7 @@ class Mat33{
     return this;
   }
 
+  /// Subtract A matrix from B matrix
   Mat33 subMatrixs(Mat33  a, Mat33 b ) {
     List<double> te = elements, tem1 = a.elements, tem2 = b.elements;
     te[0] = tem1[0] - tem2[0]; te[1] = tem1[1] - tem2[1]; te[2] = tem1[2] - tem2[2];
@@ -62,6 +70,7 @@ class Mat33{
     return this;
   }
 
+  /// Subtract M from this matrix
   Mat33 subEqual(Mat33  m ) {
     List<double> te = elements, tem = m.elements;
     te[0] -= tem[0]; te[1] -= tem[1]; te[2] -= tem[2];
@@ -70,6 +79,7 @@ class Mat33{
     return this;
   }
 
+  /// Scale matrix m by s and replace this matrix
   Mat33 scale(Mat33  m, double s ) {
     List<double> te = elements, tm = m.elements;
     te[0] = tm[0] * s; te[1] = tm[1] * s; te[2] = tm[2] * s;
@@ -78,6 +88,7 @@ class Mat33{
     return this;
   }
 
+  /// Scale this matrix by s
   Mat33 scaleEqual(double s ){// multiplyScalar
     List<double> te = elements;
     te[0] *= s; te[1] *= s; te[2] *= s;
@@ -86,6 +97,7 @@ class Mat33{
     return this;
   }
 
+  /// Multiple m1 by m2
   Mat33 multiplyMatrices(Mat33 m1, Mat33 m2, [bool transpose = true]) {
     if(transpose) m2 = m2.clone().transpose();
     List<double> te = elements;
@@ -141,6 +153,7 @@ class Mat33{
   //   return this;
   // }
 
+  /// transpose this matrix by m
   Mat33 transpose([Mat33?  m ]) {
     if( m != null ){
       List<double> a = m.elements;
@@ -159,6 +172,7 @@ class Mat33{
     return this;
   }
 
+  /// Scale matrix m by new x,y,z scales and replace this matrix
   Mat33 mulScale(Mat33  m,double sx,double sy, double sz, [bool prepend = false]) {
     List<double> te = elements, tm = m.elements;
     if(prepend){
@@ -173,6 +187,7 @@ class Mat33{
     return this;
   }
 
+  /// Set this matrixposition by q
   Mat33 setQuat(Quat q ) {
     List<double> te = elements;
     double x = q.x, y = q.y, z = q.z, w = q.w;
@@ -196,6 +211,7 @@ class Mat33{
     return this;
   }
 
+  /// Invert matrix m
   Mat33 invert(Mat33  m ) {
     List<double> te = elements, tm = m.elements;
     double a00 = tm[0], a10 = tm[3], a20 = tm[6],
@@ -224,6 +240,7 @@ class Mat33{
     return this;
   }
 
+  /// Add offest to this matrix
   Mat33 addOffset(double m, Vec3 v ) {
     double relX = v.x;
     double relY = v.y;
@@ -245,7 +262,8 @@ class Mat33{
     return this;
   }
 
-  Mat33 subOffset(double m,Vec3 v ) {
+  /// Subtract matrix m with offset v
+  Mat33 subOffset(double m,Vec3 v) {
     double relX = v.x;
     double relY = v.y;
     double relZ = v.z;
@@ -266,8 +284,7 @@ class Mat33{
     return this;
   }
 
-  // OK 
-
+  /// Multiple this matrix by s
   Mat33 multiplyScalar(double s ) {
     List<double> te = elements;
     te[ 0 ] *= s; te[ 3 ] *= s; te[ 6 ] *= s;
@@ -277,21 +294,24 @@ class Mat33{
     return this;
   }
 
+  /// Set this matrixs value as an idenity matrix
   Mat33 identity() {
     set( 1, 0, 0, 0, 1, 0, 0, 0, 1 );
     return this;
   }
 
-
+  /// Clone this matrix
   Mat33 clone() {
     return Mat33().fromArray(elements);
   }
 
+  /// copy from m tho this matrix
   Mat33 copy(Mat33  m ) {
     for (int i = 0; i < 9; i ++ ){ elements[ i ] = m.elements[ i ];}
     return this;
   }
 
+  /// get the determinate of the matrix
   double determinant() {
     List<double> te = elements;
     double a = te[ 0 ], b = te[ 1 ], c = te[ 2 ],
@@ -300,6 +320,7 @@ class Mat33{
     return a * e * i - a * f * h - b * d * i + b * f * g + c * d * h - c * e * g;
   }
 
+  /// place this array into this matrix
   Mat33 fromArray(List<double> array, [int offset = 0]) {
     for(int i = 0; i < 9; i ++ ) {
       elements[ i ] = array[ i + offset ];
@@ -307,6 +328,7 @@ class Mat33{
     return this;
   }
 
+  /// place this matrix in the supplied array
   List<double> toArray([List<double>? array, int offset = 0]) {
     array ??= [];
 
@@ -325,5 +347,11 @@ class Mat33{
     array[ offset + 8 ] = te[ 8 ];
 
     return array;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return elements.toString();
   }
 }

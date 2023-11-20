@@ -6,7 +6,7 @@ import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/sphere_shape.dart';
 import 'dart:math' as math;
 
-//  * A collision detector which detects collisions between sphere and box.
+/// A collision detector which detects collisions between sphere and box.
 class SphereBoxCollisionDetector extends CollisionDetector{
 
   @override

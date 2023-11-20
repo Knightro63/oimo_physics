@@ -4,16 +4,53 @@ import 'vec3.dart';
 import 'dart:math' as math;
 
 class Quat{
+  /// Create a Quanternation value with the given parameters
+  /// 
+  /// [w]
+  /// 
+  /// [x]
+  /// 
+  /// [y]
+  /// 
+  /// [z] 
   Quat ([this.w = 1, this.x = 0, this.y = 0, this.z = 0]);
   double w;
   double x;
   double y;
   double z;
 
+  /// Convert Quant to Vec3
   Vec3 toVec3(){
     return Vec3(x,y,z);
   }
 
+  /// Multiply the quaternion by a vector
+  Vec3 vmult(Vec3 v, [Vec3? target]){
+    target ??= Vec3();
+    final x = v.x;
+    final y = v.y;
+    final z = v.z;
+    
+    final qx = this.x;
+    final qy = this.y;
+    final qz = this.z;
+    final qw = w;
+
+    // q*v
+    final ix = qw * x + qy * z - qz * y;
+
+    final iy = qw * y + qz * x - qx * z;
+    final iz = qw * z + qx * y - qy * x;
+    final iw = -qx * x - qy * y - qz * z;
+
+    target.x = ix * qw + iw * -qx + iy * -qz - iz * -qy;
+    target.y = iy * qw + iw * -qy + iz * -qx - ix * -qz;
+    target.z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
+
+    return target;
+  }
+
+  /// Set the current Quant with the new values
   Quat set( x, y, z, w ) {
     this.x = x;
     this.y = y;
@@ -22,7 +59,15 @@ class Quat{
 
     return this;
   }
-
+  /// Set the current Quant with the new values
+  Quat scale(Quat q, double s) {
+    x = q.x * s;
+    y = q.y * s;
+    z = q.z * s;
+    w = q.w *s;
+    return this;
+  }
+  /// Add time to the current Quant
   Quat addTime(Vec3 v, double t ){
     double ax = v.x, ay = v.y, az = v.z;
     double qw = w, qx = x, qy = y, qz = z;
@@ -45,11 +90,31 @@ class Quat{
       return this;
   }*/
 
+  /// Multiply the this by [q] and return either p or this
   Quat multiply(Quat q, [Quat? p] ) {
     if ( p != null ) return multiplyQuaternions( q, p );
     return multiplyQuaternions( this, q );
   }
+  /// Multiply the quaternion with an other quaternion.
+  Quat mult(Quat quat, [Quat? target]){
+    target ??= Quat();
+    final ax = x;
+    final ay = y;
+    final az = z;
+    final aw = w;
+    final bx = quat.x;
+    final by = quat.y;
+    final bz = quat.z;
+    final bw = quat.w;
 
+    target.x = ax * bw + aw * bx + ay * bz - az * by;
+    target.y = ay * bw + aw * by + az * bx - ax * bz;
+    target.z = az * bw + aw * bz + ax * by - ay * bx;
+    target.w = aw * bw - ax * bx - ay * by - az * bz;
+
+    return target;
+  }
+  /// Multiply [a] by [b]
   Quat multiplyQuaternions(Quat a, Quat b ) {
     double qax = a.x, qay = a.y, qaz = a.z, qaw = a.w;
     double qbx = b.x, qby = b.y, qbz = b.z, qbw = b.w;
@@ -61,6 +126,7 @@ class Quat{
     return this;
   }
 
+  /// Set Quant from [v1] and [v2]
   Quat setFromUnitVectors(Vec3 v1, Vec3 v2 ) {
     var vx = Vec3();
     var r = v1.dot( v2 ) + 1;
@@ -81,6 +147,7 @@ class Quat{
 
     return normalize();
   }
+
 
   Quat arc(Vec3 v1, Vec3 v2 ){
     double x1 = v1.x;
@@ -112,6 +179,7 @@ class Quat{
     return this;
   }
 
+  /// Normalize the current Quant
   Quat normalize(){
     double l = length();
     if ( l == 0 ) {
@@ -127,10 +195,12 @@ class Quat{
     return this;
   }
 
+  /// Inverse the current Quant
   Quat inverse() {
     return conjugate().normalize();
   }
 
+  /// Inverse the current Quant by [q]
   Quat invert(Quat q ) {
     x = q.x;
     y = q.y;
@@ -140,6 +210,7 @@ class Quat{
     return this;
   }
 
+  /// Conjugate the current Quant
   Quat conjugate() {
     x *= - 1;
     y *= - 1;
@@ -147,14 +218,17 @@ class Quat{
     return this;
   }
 
+  /// Get the length of the Current Quant
   double length(){
     return math.sqrt(x * x + y * y + z * z + w * w  );
   }
 
+  /// Get the length squared of the Current Quant
   double lengthSq() {
     return x * x +y * y + z * z + w * w;
   }
   
+  /// Copy [q] to this
   Quat copy(Quat  q ){
     x = q.x;
     y = q.y;
@@ -163,14 +237,17 @@ class Quat{
     return this;
   }
 
-  Quat clone(Quat  q ){
+  /// Clone this Quant
+  Quat clone(){
     return Quat(x,y,z,w);
   }
 
+  /// Is q the same as this
   bool testDiff(Quat  q ) {
     return equals( q ) ? false : true;
   }
 
+  /// Is [q] equal to this
   bool equals(Quat  q ) {
     return x == q.x && y == q.y && z == q.z && w == q.w;
   }
@@ -180,6 +257,7 @@ class Quat{
     return"Quat[(${x.toStringAsFixed(4)},${y.toStringAsFixed(4)},${z.toStringAsFixed(4)},${w.toStringAsFixed(4)})]";
   }
 
+  /// Set Quant using Euler equation
   Quat setFromEuler(double x, double y, double z){
     var c1 = math.cos( x * 0.5 );
     var c2 = math.cos( y * 0.5 );
@@ -197,7 +275,8 @@ class Quat{
     return this;
   }
   
-  Quat setFromAxis( axis, rad ) {
+  /// Set Quant from this axis and angle in radians
+  Quat setFromAxis(Vec3 axis, double rad) {
     axis.normalize();
     rad = rad * 0.5;
     double s = math.sin( rad );
@@ -208,6 +287,7 @@ class Quat{
     return this;
   }
 
+  /// Set Quant from a 3x3 Matrix
   Quat setFromMat33(Mat33 mat) {
     List<double> m = mat.elements;
     double trace = m[0] + m[4] + m[8];
@@ -245,14 +325,16 @@ class Quat{
     return this;
   }
 
-  void toArray( array, [int offset = 0]) {
+  /// Set this Quant in the form of an array using [array] and [offset]
+  void toArray(List<double> array, [int offset = 0]) {
     array[ offset ] = x;
     array[ offset + 1 ] = y;
     array[ offset + 2 ] = z;
     array[ offset + 3 ] = w;
   }
 
-  Quat fromArray( array, [int offset = 0] ){
+  /// Set Quant from an array
+  Quat fromArray(List<double> array, [int offset = 0] ){
     set( array[ offset ], array[ offset + 1 ], array[ offset + 2 ], array[ offset + 3 ] );
     return this;
   }

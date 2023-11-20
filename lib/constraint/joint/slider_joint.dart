@@ -8,8 +8,16 @@ import '../../math/math.dart';
 import 'base/rotational3_constraint.dart';
 import 'base/translational3_constraint.dart';
 
-// * A slider joint allows for relative translation and relative rotation between two rigid bodies along the axis.
+/// A slider joint allows for relative translation and relative rotation between two rigid bodies along the axis.
 class SliderJoint extends Joint{
+
+  /// A slider joint allows for relative translation and relative rotation between two rigid bodies along the axis.
+  /// 
+  /// [config] configuration profile of the joint
+  /// 
+  /// [lowerTranslation] the min movment the joint will slide
+  /// 
+  /// [upperTranslation] the max movment the joint will slide
   SliderJoint(JointConfig config, double lowerTranslation, double upperTranslation ):super(config){
     type = JointType.slider;
     localAxis1 = config.localAxis1.clone().normalize();
@@ -28,9 +36,9 @@ class SliderJoint extends Joint{
     t3 = Translational3Constraint(this,translationalLimitMotor, LimitMotor( tan, true ), LimitMotor( bin, true ) );
   }
 
-  // The axis in the first body's coordinate system.
+  /// The axis in the first body's coordinate system.
   late Vec3 localAxis1;
-  // The axis in the second body's coordinate system.
+  /// The axis in the second body's coordinate system.
   late Vec3 localAxis2;
 
   // make angle axis
@@ -49,11 +57,11 @@ class SliderJoint extends Joint{
   Vec3 tan = Vec3();
   Vec3 bin = Vec3();
 
-  // The limit and motor for the rotation
+  /// The limit and motor for the rotation
   late LimitMotor rotationalLimitMotor = LimitMotor(nor, false);
   late Rotational3Constraint r3;
 
-  // The limit and motor for the translation.
+  /// The limit and motor for the translation.
   late LimitMotor translationalLimitMotor;
   late Translational3Constraint t3;
 
@@ -82,7 +90,9 @@ class SliderJoint extends Joint{
 
     double limite = Math.acosClamp( Math.dotVectors( an1, an2 ) );
 
-    if(Math.dotVectors( nor, tmp ) < 0 ){rotationalLimitMotor.angle = -limite;}
+    if(Math.dotVectors( nor, tmp ) < 0 ){
+      rotationalLimitMotor.angle = -limite;
+    }
     else{ 
       rotationalLimitMotor.angle = limite;
     }
