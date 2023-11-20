@@ -202,7 +202,13 @@ class _TestBasicPageState extends State<TestBasic> {
   //----------------------------------
 
   void initOimoPhysics(){
-    world = oimo.World(oimo.WorldConfigure(isStat:true, scale:100.0));
+    world = oimo.World(
+      oimo.WorldConfigure(
+        isStat:true, 
+        scale:1.0,
+        gravity: oimo.Vec3(0,-981,0)
+      )
+    );
     populate(type);
   }
 
@@ -230,20 +236,17 @@ class _TestBasicPageState extends State<TestBasic> {
     //add ground
     world!.add(
       oimo.ObjectConfigure(
-      shapes: [oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))],
-      size:[40.0, 40.0, 390.0], 
+      shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),40.0, 40.0, 390.0)],
       position:oimo.Vec3(-180.0,20.0,0.0), 
     )) as oimo.RigidBody;
     world!.add(
       oimo.ObjectConfigure(
-      shapes: [oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))],
-      size:[40.0, 40.0, 390.0], 
+      shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),40.0, 40.0, 390.0)],
       position:oimo.Vec3(180.0,20.0,0.0), 
     )) as oimo.RigidBody;
     world!.add(
       oimo.ObjectConfigure(
-      shapes: [oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))],
-      size:[400.0, 80.0, 400.0], 
+      shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),400.0, 80.0, 400.0)],
       position:oimo.Vec3(0.0,-40.0,0.0), 
     )) as oimo.RigidBody;
 
@@ -273,8 +276,7 @@ class _TestBasicPageState extends State<TestBasic> {
         THREE.Material mat = mats['sph']!;
         mat.color = randColor;
         bodys.add(world!.add(oimo.ObjectConfigure(
-          shapes:[oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.sphere))], 
-          size:[w*0.5,w*0.5,w*0.5], 
+          shapes:[oimo.Sphere(oimo.ShapeConfig(geometry: oimo.Shapes.sphere),w*0.5)], 
           position:oimo.Vec3(x,y,z), 
           move:true,
         )));
@@ -285,8 +287,7 @@ class _TestBasicPageState extends State<TestBasic> {
         THREE.Material mat = mats['box']!;
         mat.color = randColor;
         bodys.add(world!.add(oimo.ObjectConfigure(
-          shapes:[oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.box))], 
-          size:[w,h,d], 
+          shapes:[oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),w,h,d)], 
           position:oimo.Vec3(x,y,z), 
           move:true,
         )) as oimo.RigidBody);
@@ -297,8 +298,7 @@ class _TestBasicPageState extends State<TestBasic> {
         THREE.Material mat = mats['cyl']!;
         mat.color = randColor;
         bodys.add(world!.add(oimo.ObjectConfigure(
-          shapes:[oimo.Shape(oimo.ShapeConfig(geometry: oimo.Shapes.cylinder))], 
-          size:[w*0.5,h,w*0.5], 
+          shapes:[oimo.Cylinder(oimo.ShapeConfig(geometry: oimo.Shapes.cylinder),w*0.5,h)], 
           position:oimo.Vec3(x,y,z), 
           move:true, 
         )));
@@ -328,8 +328,8 @@ class _TestBasicPageState extends State<TestBasic> {
 
       if(!body.sleeping){
         
-        mesh.position.copy(body.getPosition().toVector3());
-        mesh.quaternion.copy(body.getQuaternion().toQuaternion());
+        mesh.position.copy(body.position.toVector3());
+        mesh.quaternion.copy(body.orientation.toQuaternion());
 
         // change material
         if(mesh.material.name == 'sbox') mesh.material = mats['box'];
