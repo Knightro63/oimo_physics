@@ -47,7 +47,7 @@ If there is no shapes or type in the ObjectConfigure class it will not work. If 
 
 ## Example
 
-Find the example app [here](https://github.com/Knightro63/oimo_physics/tree/main/example).
+Find the example app [here](https://github.com/Knightro63/oimo_physics/tree/main/example) and the current web version of the code [here](https://knightro63.github.io/oimo_physics/).
 
 ## Contributing
 

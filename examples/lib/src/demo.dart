@@ -400,7 +400,9 @@ class Demo{
   void start(){
     resetCallTime = true;
     world.play();
-    buildScene(scenes.keys.first);
+    if(scenes.keys.isNotEmpty){
+      buildScene(scenes.keys.first);
+    }
   }
 
   void _updateCannonPhysics() {
