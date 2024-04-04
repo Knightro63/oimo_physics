@@ -58,11 +58,13 @@ class _SpringState extends State<Spring> {
       oimo.JointConfig(
         body1: sphereBody,
         body2: boxBody,
-        localAxis1: oimo.Vec3(0,0,1),
+        localAxis1: oimo.Vec3(1,1,1),
         localAxis2: oimo.Vec3(0,0,1),
         localAnchorPoint2: oimo.Vec3(size, size, size*0.3),
         localAnchorPoint1: oimo.Vec3(0, 0, 0),
-      ),0,1
+      ),
+      0,
+      2
     );
     spring.limitMotor.setSpring(500, 0.3);
     world.addJoint(spring);

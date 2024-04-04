@@ -2,7 +2,7 @@ import '../math/vec3.dart';
 import '../math/mat33.dart';
 
 /// Shape type
-enum Shapes{none,sphere,box,cylinder,plane,particle,tetra}
+enum Shapes{none,sphere,box,cylinder,capsule,plane,particle,octree,tetra}
 
 /// A shape configuration holds common configuration data for constructing a shape.
 /// These configurations can be reused safely.

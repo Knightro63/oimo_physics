@@ -88,7 +88,11 @@ class Contact{
     }
 
     manifold.numPoints=0;
-    detector!.detectCollision(shape1!,shape2!,manifold);
+    detector?.detectCollision( //TODO
+      shape1!,
+      shape2!,
+      manifold
+    );
     int num = manifold.numPoints;
     if(num==0){
       touching = false;

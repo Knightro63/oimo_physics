@@ -13,7 +13,7 @@ import 'package:oimo_physics_example/pages/events.dart';
 import 'package:oimo_physics_example/pages/fixed_rotation.dart';
 import 'package:oimo_physics_example/pages/friction.dart';
 import 'package:oimo_physics_example/pages/friction_gravity.dart';
-// import 'package:oimo_physics_example/pages/games_fps.dart';
+import 'package:oimo_physics_example/pages/games_fps.dart';
 import 'package:oimo_physics_example/pages/hinge.dart';
 import 'package:oimo_physics_example/pages/impulses.dart';
 import 'package:oimo_physics_example/pages/jenga.dart';
@@ -128,9 +128,9 @@ class MyAppState extends State<MyApp> {
               '/friction':(BuildContext context) {
                 return const Friction();
               },
-              // '/games_fps':(BuildContext context) {
-              //   return const TestGame();
-              // },
+              '/games_fps':(BuildContext context) {
+                return const TestGame();
+              },
               '/hinge':(BuildContext context) {
                 return const Hinge();
               },
@@ -250,7 +250,7 @@ class ExamplesPageState extends State<Examples> {
     'fixed_rotation',
     'friction_gravity',
     'friction',
-    //'games_fps',
+    'games_fps',
     'hinge',
     'impulses',
     'jenga',

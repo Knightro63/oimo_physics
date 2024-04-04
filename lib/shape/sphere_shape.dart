@@ -1,7 +1,10 @@
 import 'dart:math' as math;
+import 'package:oimo_physics/math/vec3.dart';
+
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
+import 'plane_shape.dart';
 
 /// Sphere shape
 class Sphere extends Shape{
@@ -17,9 +20,34 @@ class Sphere extends Shape{
 
   late double radius;
 
+  Vec3 get center => position;
+
+  void copy(Sphere sphere) {
+    radius = sphere.radius;
+    friction = sphere.friction;
+    restitution = sphere.restitution;
+    density = sphere.density;
+    collidesWith = sphere.collidesWith;
+    belongsTo = sphere.belongsTo;
+    relativePosition = sphere.relativePosition.clone();
+    relativeRotation = sphere.relativeRotation.clone();
+    position = sphere.position.clone();
+    rotation = sphere.rotation.clone();
+  }
+
 	double volume(){
 		return math.pi * radius * 1.333333;
 	}
+  bool intersectsBox(AABB box) {
+    return box.intersectsSphere(this);
+  }
+  bool intersectsSphere(Sphere sphere) {
+    final radiusSum = radius + sphere.radius;
+    return sphere.position.distanceToSquared(position) <= (radiusSum * radiusSum);
+  }
+  bool intersectsPlane(Plane plane) {
+    return plane.distanceToPoint(center).abs() <= radius;
+  }
 
   @override
 	void calculateMassInfo( out ) {

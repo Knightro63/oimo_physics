@@ -39,5 +39,7 @@ export 'shape/sphere_shape.dart';
 export 'shape/plane_shape.dart';
 export 'shape/cylinder_shape.dart';
 export 'shape/particle_shape.dart';
+export 'shape/capsule_shape.dart';
+export 'shape/octree_shape.dart';
 
 export 'collision/broadphase/broad_phase.dart';

@@ -73,6 +73,16 @@ class ConversionUtils{
         shape as oimo.Cylinder;
         return three.CylinderGeometry(shape.radius, shape.radius, shape.height);
       }
+
+      case oimo.Shapes.capsule: {
+        shape as oimo.Capsule;
+        return three.CylinderGeometry(shape.radius, shape.radius, shape.height);
+      }
+
+      case oimo.Shapes.octree: {
+        shape as oimo.Cylinder;
+        return three.CylinderGeometry(shape.radius, shape.radius, shape.height);
+      }
     }
   }
   static Object3D bodyToMesh2(oimo.RigidBody body, three.Material material) {
@@ -172,5 +182,50 @@ class ConversionUtils{
         throw('Only sphere, box, cylinder, and plane are allowed to be used.');
       }
     }
+  }
+  static oimo.Octree fromGraphNode(Object3D group, oimo.ShapeConfig config){
+    List<double> vertices = [];
+    List<int> indices = [];
+
+    group.updateWorldMatrix(true, true);
+    group.traverse((object){
+      if(object is Mesh){
+        Mesh obj = object;
+        late BufferGeometry geometry;
+        bool isTemp = false;
+
+        if(obj.geometry!.index != null){
+          isTemp = true;
+          geometry = obj.geometry!.clone().toNonIndexed();
+        } 
+        else {
+          geometry = obj.geometry!;
+        }
+
+			  BufferAttribute positionAttribute = geometry.getAttribute('position');
+
+				for(int i = 0; i < positionAttribute.count; i += 3) {
+					Vector3 v1 = Vector3().fromBufferAttribute(positionAttribute, i);
+					Vector3 v2 = Vector3().fromBufferAttribute(positionAttribute, i + 1);
+					Vector3 v3 = Vector3().fromBufferAttribute(positionAttribute, i + 2);
+
+					v1.applyMatrix4(obj.matrixWorld);
+					v2.applyMatrix4(obj.matrixWorld);
+					v3.applyMatrix4(obj.matrixWorld);
+
+          vertices.addAll([v1.x,v1.y,v1.z]);
+          vertices.addAll([v2.x,v2.y,v2.z]);
+          vertices.addAll([v3.x,v3.y,v3.z]);
+          
+          indices.addAll([i,i+1,i+2]);
+				}
+
+        if(isTemp){
+          geometry.dispose();
+        }
+      }
+    });
+
+    return oimo.Octree(config, vertices, indices);
   }
 }

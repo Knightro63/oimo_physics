@@ -4,7 +4,11 @@
 [![analysis](https://github.com/Knightro63/oimo_physics/actions/workflows/flutter.yml/badge.svg)](https://github.com/Knightro63/oimo_physics/actions/)
 [![License: BSD](https://img.shields.io/badge/license-BSD-purple.svg)](https://opensource.org/licenses/BSD)
 
-A Flutter plugin designed for three_dart and three_dart_jsm to allow users to add a simple physics engine to their 3D  project.
+A 3D physics engine for dart (based on oimo.js) that allows users to add physics support to their 3d projects.
+
+<picture>
+  <img alt="Image of blocks falling onto a surface." src="https://github.com/Knightro63/oimo_physics/blob/9a12df44235fb95c89dc915b7224c25654b584d0/examples/assets/images/basic_physics.png">
+</picture>
 
 This is a dart conversion of oimo.js, originally created by Saharan [@saharan](https://github.com/saharan).
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:oimo_physics/core/rigid_body.dart';
 import 'package:oimo_physics_example/src/conversion_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -130,19 +131,7 @@ class _TestGamePageState extends State<TestGame> {
     initPlatformState();
   }
   void updatePhysics() {
-    // Step world
-    final now = world.time / 1000;
-
-    if (lastCallTime == null) {
-      // last call time not saved, cant guess elapsed time. Take a simple step.
-      world.step();
-      lastCallTime = now;
-      return;
-    }
-    double timeSinceLastCall = now - lastCallTime!;
-
-    world.step(timeStep, timeSinceLastCall, stepsPerFrame);
-    lastCallTime = now;
+    world.step();
   }
   void animate() {
     if (!mounted || disposed) {
@@ -190,10 +179,20 @@ class _TestGamePageState extends State<TestGame> {
 
     GLTFLoader().setPath('assets/models/').load('collision-world.glb', (gltf){
       Object3D object = gltf["scene"];
-      oimo.Trimesh triShape = ConversionUtils.fromGraphNode(object);
-      final triBody = oimo.Body();
-      triBody.addShape(triShape);
-      world.addBody(triBody);
+      oimo.Octree triShape = ConversionUtils.fromGraphNode(object,oimo.ShapeConfig());
+      final triBody = oimo.RigidBody(
+        shapes: [triShape],
+        name: 'trimesh',
+        orientation: oimo.Quat(),
+      );
+      world.addRigidBody(triBody);
+
+      // MeshBasicMaterial triggerMaterial = MeshBasicMaterial({'color': 0x00ff00, 'wireframe': false, 'wireframeLinewidth':1.0});
+      // final geometry = three.BufferGeometry();
+      // geometry.setIndex(triShape.indices);
+      // geometry.setAttribute('position', Float32BufferAttribute(Float32Array.from(triShape.vertices), 3));
+      // scene.add(three.Mesh(geometry, triggerMaterial));
+
       scene.add(object);
 
       object.traverse((child){
@@ -206,33 +205,33 @@ class _TestGamePageState extends State<TestGame> {
       });
     });
 
-    // Create a slippery material (friction coefficient = 0.0)
-    oimo.Material physicsMaterial = oimo.Material(name:'slipperyMaterial');
-    oimo.ContactMaterial physicsPhysics = oimo.ContactMaterial(
-      physicsMaterial, 
-      physicsMaterial,
-      friction: 0.0,
-      restitution: 0.3,
-    );
-    world.addContactMaterial(physicsPhysics);
-
     // Create the user collision sphere
     const double mass = 5;
     const radius = 1.3;
-    late oimo.Shape sphereShape = oimo.Sphere(radius);
-    sphereBody = oimo.Body(mass: mass, material: physicsMaterial);
-    sphereBody.addShape(sphereShape);
-    sphereBody.position.set(0, 5, 0);
-    sphereBody.linearDamping = 0.9;
+    sphereBody = oimo.RigidBody(
+      shapes: [oimo.Sphere(
+        oimo.ShapeConfig(
+          density: mass, 
+        ),
+        radius
+      )],
+      position: oimo.Vec3(0, 5, 0),
+      type: RigidBodyType.dynamic
+    );
+    // sphereBody.linearDamping = 0.9;
 
     //Create Player
-    late oimo.Cylinder playerShape = oimo.Cylinder(
-      radiusTop:radius,
-      radiusBottom: radius
+    playerBody = oimo.RigidBody(
+      shapes: [oimo.Capsule(
+        oimo.ShapeConfig(
+          density: mass
+        ),
+        radius,
+        radius
+      )],
+      type: RigidBodyType.dynamic,
     );
-    playerBody = oimo.Body(mass: mass);
-    playerBody.addShape(playerShape);
-    world.addBody(playerBody);
+    world.addRigidBody(playerBody);
 
     //add fps controller
     fpsControl = FirstPersonControls(camera, _globalKey);
@@ -322,9 +321,9 @@ class _TestGamePageState extends State<TestGame> {
   }
 
   void throwBall() {
+    double ballRadius = 0.2;
     double shootVelocity = 15 + ( 1 - Math.exp((mouseTime-DateTime.now().millisecondsSinceEpoch) * 0.1));
-    oimo.Sphere ballShape = oimo.Sphere(0.2);
-    three.SphereGeometry ballGeometry = three.SphereGeometry(ballShape.radius, 32, 32);
+    three.SphereGeometry ballGeometry = three.SphereGeometry(ballRadius, 32, 32);
 
     three.Vector3 getShootDirection() {
       three.Vector3 vector = three.Vector3(0, 0, 1);
@@ -333,47 +332,54 @@ class _TestGamePageState extends State<TestGame> {
       return ray.direction;
     }
 
-    oimo.Body ballBody = oimo.Body(mass: 1);
-    ballBody.addShape(ballShape);
     three.Mesh ballMesh = three.Mesh(ballGeometry, three.MeshLambertMaterial({ 'color': 0xdddddd }));
 
     ballMesh.castShadow = true;
     ballMesh.receiveShadow = true;
+    three.Vector3 shootDirection = getShootDirection();
+    oimo.RigidBody ballBody = RigidBody(
+      shapes: [oimo.Sphere(
+        oimo.ShapeConfig(
+          density: 1,
+        ),
+        0.2
+      )],
+      type: RigidBodyType.dynamic,
+      linearVelocity: oimo.Vec3(
+        shootDirection.x * shootVelocity,
+        shootDirection.y * shootVelocity,
+        shootDirection.z * shootVelocity
+      )
+    );
 
     spheres.add(SphereData(
       mesh: ballMesh,
       body: ballBody,
     ));
 
-    three.Vector3 shootDirection = getShootDirection();
-    ballBody.velocity.set(
-      shootDirection.x * shootVelocity,
-      shootDirection.y * shootVelocity,
-      shootDirection.z * shootVelocity
-    );
     const radius = 1.3;
     // Move the ball outside the player sphere
-    double x = sphereBody.position.x + shootDirection.x * (radius * 1.02 + ballShape.radius);
-    double y = sphereBody.position.y + shootDirection.y * (radius * 1.02 + ballShape.radius);
-    double z = sphereBody.position.z + shootDirection.z * (radius * 1.02 + ballShape.radius);
+    double x = sphereBody.position.x + shootDirection.x * (ballRadius * 1.02 + radius);
+    double y = sphereBody.position.y + shootDirection.y * (ballRadius * 1.02 + radius);
+    double z = sphereBody.position.z + shootDirection.z * (ballRadius * 1.02 + radius);
     ballBody.position.set(x, y, z);
     ballMesh.position.copy(ballBody.position.toVector3());
 
-    world.addBody(ballBody);
+    world.addRigidBody(ballBody);
     scene.add(ballMesh);
   }
   void updatePlayer(){
     final body = playerBody;
     // Interpolated or not?
-    oimo.Vec3 position = body.interpolatedPosition;
-    //oimo.Quaternion quaternion = body.interpolatedQuaternion;
+    oimo.Vec3 position = body.position;
+    oimo.Quat quaternion = body.orientation;
 
     if(paused) {
       position = body.position;
-      //quaternion = body.quaternion;
+      quaternion = body.orientation;
     }
 
-    //camera.position.copy(position.toVector3());
+    camera.position.copy(position.toVector3());
     camera.position.copy(playerCollider.end);
   }
   void updateVisuals(){
@@ -383,11 +389,11 @@ class _TestGamePageState extends State<TestGame> {
       Object3D dummy = Object3D();
 
       // Interpolated or not?
-      oimo.Vec3 position = body.interpolatedPosition;
-      oimo.Quaternion quaternion = body.interpolatedQuaternion;
+      oimo.Vec3 position = body.position;
+      oimo.Quat quaternion = body.orientation;
       if(paused) {
         position = body.position;
-        quaternion = body.quaternion;
+        quaternion = body.orientation;
       }
 
       if (visual is InstancedMesh) {
@@ -396,7 +402,7 @@ class _TestGamePageState extends State<TestGame> {
 
         dummy.updateMatrix();
 
-        visual.setMatrixAt(body.index, dummy.matrix);
+        visual.setMatrixAt(body.id, dummy.matrix);
         visual.instanceMatrix!.needsUpdate = true;
       } 
       else {

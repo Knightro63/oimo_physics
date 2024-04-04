@@ -12,7 +12,5 @@ class BasicProxy extends Proxy{
   int id = proxyIdCount();
 
   @override
-  void update() {
-
-  }
+  void update() {}
 }

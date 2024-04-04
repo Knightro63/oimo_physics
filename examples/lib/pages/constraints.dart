@@ -369,7 +369,7 @@ class _ConstraintsState extends State<Constraints> {
           body1: bodies['$i1 $j1 $k1']!,
           body2: bodies['$i2 $j2 $k2']!
         ),
-        distance,
+        distance-0.01,
         distance
       );
       world.addJoint(distanceConstraint);

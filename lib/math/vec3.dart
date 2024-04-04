@@ -3,7 +3,7 @@ import 'quat.dart';
 import 'math.dart';
 import 'dart:math' as math;
 
-/// Class for Vector3
+/// Class for Vec3
 class Vec3{
   /// Vec3 is a vector with coordinates for 3d mapping
   /// 
@@ -357,7 +357,13 @@ class Vec3{
     }
     return this;
   }
+  Vec3 lerp(Vec3 v, num alpha) {
+    x += (v.x - x) * alpha;
+    y += (v.y - y) * alpha;
+    z += (v.z - z) * alpha;
 
+    return this;
+  }
   /// Divide this vector by [scalar]
   Vec3 divideScalar (double scalar ) {
     return multiplyScalar( 1 / scalar );
@@ -380,6 +386,24 @@ class Vec3{
     x = array[ offset ];
     y = array[ offset + 1 ];
     z = array[ offset + 2 ];
+    return this;
+  }
+  double distanceTo(Vec3 v) {
+    return math.sqrt(distanceToSquared(v));
+  }
+  double distanceToSquared(Vec3 v) {
+    final dx = x - v.x; 
+    final dy = y - v.y;
+    double dz = z- v.z;
+
+    return dx * dx + dy * dy + dz * dz;
+  }
+
+  Vec3 clamp(Vec3 min, Vec3 max) {
+    // assumes min < max, componentwise
+    x = math.max(min.x, math.min(max.x, x));
+    y = math.max(min.y, math.min(max.y, y));
+    z = math.max(min.z, math.min(max.z, z));
     return this;
   }
 }

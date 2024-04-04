@@ -289,7 +289,7 @@ class TranslationalConstraint extends Joint{
     double newMotorImpulse;
     if(enableMotor){
       newMotorImpulse=(rvn-motorSpeed!)*invMotorDenom!;
-      var oldMotorImpulse=motorImpulse;
+      double oldMotorImpulse=motorImpulse;
       motorImpulse+=newMotorImpulse;
       if(motorImpulse>maxMotorImpulse!){
         motorImpulse=maxMotorImpulse!;

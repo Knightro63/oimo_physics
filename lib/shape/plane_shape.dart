@@ -1,4 +1,5 @@
 import 'package:oimo_physics/math/quat.dart';
+import 'package:oimo_physics/shape/sphere_shape.dart';
 
 import 'mass_info.dart';
 import 'shape_config.dart';
@@ -8,7 +9,9 @@ import '../math/vec3.dart';
 
 // Plane shape.
 class Plane extends Shape{
-
+  double constant = 0;
+  final _vector1 = Vec3();
+  final _vector2 = Vec3();
   /// Plane Shape
   /// 
   /// [config] config file of the shape
@@ -20,6 +23,29 @@ class Plane extends Shape{
   }
 
   late Vec3 normal;
+
+  double distanceToPoint(Vec3 point) {
+    return normal.dot(point);
+  }
+  Vec3 projectPoint(Vec3 point, Vec3 target) {
+    return target
+        .copy(normal)
+        .multiplyScalar(-distanceToPoint(point))
+        .add(point);
+  }
+  double distanceToSphere(Sphere sphere) {
+    return distanceToPoint(sphere.position) - sphere.radius;
+  }
+  Plane setFromNormalAndCoplanarPoint(Vec3 normal, Vec3 point) {
+    this.normal.copy(normal);
+    constant = -point.dot(this.normal).toDouble();
+    return this;
+  }
+  Plane setFromCoplanarPoints(Vec3 a, Vec3 b, Vec3 c) {
+    final normal = _vector1.subVectors(c, b).cross(_vector2.subVectors(a, b)).normalize();
+    setFromNormalAndCoplanarPoint(normal, a);
+    return this;
+  }
 
   /// Calculate the volume of the plane
   double volume() {

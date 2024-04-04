@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:oimo_physics/collision/narrowphase/octree_capsule_collision_detector.dart';
+import 'package:oimo_physics/collision/narrowphase/octree_sphere_collision_detection.dart';
 import 'package:oimo_physics/constraint/joint/joint_link.dart';
 
 import '../collision/broadphase/pair_broad_phase.dart';
@@ -207,6 +209,11 @@ class World{
     detectors['Shapes.plane Shapes.box'] = BoxPlaneCollisionDetector();
     detectors['Shapes.box Shapes.plane'] = BoxPlaneCollisionDetector();
 
+    // Octree
+    detectors['Shapes.octree Shapes.sphere'] = OctreeSphereCollisionDetector();
+    detectors['Shapes.sphere Shapes.octree'] = OctreeSphereCollisionDetector();
+    detectors['Shapes.octree Shapes.capsule'] = OctreeCapsuleCollisionDetector();
+    detectors['Shapes.capsule Shapes.octree'] = OctreeCapsuleCollisionDetector();
     // TETRA add
     //this.detectors[SHAPE_TETRA][SHAPE_TETRA] = TetraTetraCollisionDetector();
 

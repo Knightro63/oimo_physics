@@ -59,8 +59,8 @@ class _CallbackState extends State<Callback> {
     world.postLoop = (){
       double progress = (world.time - startTime)*1.4; 
       
-      double y = Math.sin(-progress)*(-5)-Math.cos(progress)*0;
-      double x = Math.cos(-progress)*(-5)-Math.sin(progress)*0;
+      double y = Math.sin(-progress)*(-5);
+      double x = Math.cos(-progress)*(-5);
       moon.position.set(x, y, 0);
     };
 
