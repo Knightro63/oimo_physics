@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class SimpleFriction extends StatefulWidget {
   const SimpleFriction({
@@ -20,7 +21,7 @@ class _SimpleFrictionState extends State<SimpleFriction> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(3,-60,0),
+        gravity: vmath.Vector3(3,-60,0),
         iterations: 5,
       )
     );
@@ -40,7 +41,7 @@ class _SimpleFrictionState extends State<SimpleFriction> {
     final groundBody = oimo.RigidBody(
       mass: 0,
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -50,7 +51,7 @@ class _SimpleFrictionState extends State<SimpleFriction> {
     final boxBody1 = oimo.RigidBody(
       mass: 1, 
       shapes: [shape],
-      position: oimo.Vec3(0, 5, 0)
+      position: vmath.Vector3(0, 5, 0)
     );
     demo.addRigidBody(boxBody1);
 
@@ -58,7 +59,7 @@ class _SimpleFrictionState extends State<SimpleFriction> {
     final boxBody2 = oimo.RigidBody(
       mass: 10, 
       shapes: [oimo.Box(oimo.ShapeConfig(friction: 0.3),size*2, size*2, size*2)],
-      position: oimo.Vec3(-size * 4, 5, 0)
+      position: vmath.Vector3(-size * 4, 5, 0)
     );
     demo.addRigidBody(boxBody2);
   }
@@ -70,7 +71,7 @@ class _SimpleFrictionState extends State<SimpleFriction> {
     final groundBody = oimo.RigidBody(
       mass: 0,
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -80,7 +81,7 @@ class _SimpleFrictionState extends State<SimpleFriction> {
     final boxBody1 = oimo.RigidBody(
       mass: 1,
       shapes: [shape1],
-      position: oimo.Vec3(0,5,0)
+      position: vmath.Vector3(0,5,0)
     );
     demo.addRigidBody(boxBody1);
 
@@ -89,7 +90,7 @@ class _SimpleFrictionState extends State<SimpleFriction> {
     final boxBody2 = oimo.RigidBody(
       mass: 10,
       shapes: [shape2],
-      position: oimo.Vec3(-size * 4, 5, 0)
+      position: vmath.Vector3(-size * 4, 5, 0)
     );
     demo.addRigidBody(boxBody2);
   }

@@ -3,6 +3,7 @@ import 'package:oimo_physics/core/rigid_body.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Bounce extends StatefulWidget {
   const Bounce({
@@ -20,7 +21,7 @@ class _BounceState extends State<Bounce> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-20,0),
+        gravity: vmath.Vector3(0,-20,0),
         iterations: 3,
         broadPhaseType: oimo.BroadPhaseType.volume
       )
@@ -39,7 +40,7 @@ class _BounceState extends State<Bounce> {
     final groundBody = oimo.RigidBody(
       shapes: [groundShape],
       name: 'ground',
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -50,7 +51,7 @@ class _BounceState extends State<Bounce> {
     // Shape on plane
     final shapeBody1 = oimo.RigidBody(
       shapes: [oimo.Sphere(oimo.ShapeConfig(density: mass, restitution: 0, friction: 0),size)],
-      position: oimo.Vec3(-size * 3, height, size),
+      position: vmath.Vector3(-size * 3, height, size),
       type: RigidBodyType.dynamic
     );
     //shapeBody1.linearDamping = damping;
@@ -58,7 +59,7 @@ class _BounceState extends State<Bounce> {
 
     final shapeBody2 = oimo.RigidBody(
       shapes: [oimo.Sphere(oimo.ShapeConfig(density: mass, restitution: 0.7, friction: 0),size)],
-      position: oimo.Vec3(0, height, size),
+      position: vmath.Vector3(0, height, size),
       type: RigidBodyType.dynamic
     );
     //shapeBody2.linearDamping = damping;
@@ -66,7 +67,7 @@ class _BounceState extends State<Bounce> {
 
     final shapeBody3 = oimo.RigidBody(
       shapes: [oimo.Sphere(oimo.ShapeConfig(density: mass, restitution: 0.9, friction: 0),size)],
-      position: oimo.Vec3(size * 3, height, size),
+      position: vmath.Vector3(size * 3, height, size),
       type: RigidBodyType.dynamic
     );
     //shapeBody3.linearDamping = damping;

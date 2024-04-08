@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Compound extends StatefulWidget {
   const Compound({
@@ -20,7 +21,7 @@ class _CompoundState extends State<Compound> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-30,0),
+        gravity: vmath.Vector3(0,-30,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.force
       )
@@ -40,18 +41,18 @@ class _CompoundState extends State<Compound> {
     // Now create a Body for our Compound
     final body = oimo.RigidBody(
       shapes: [
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(-size, -size, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(-size, size, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(size, -size, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(size, size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(-size, -size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(-size, size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(size, -size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(size, size, 0)),size, size, size),
 
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(size, 0, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(0, -size, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(0, size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(size, 0, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(0, -size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(0, size, 0)),size, size, size),
       ],
       mass:1.0,
-      position: oimo.Vec3(0, 6, 0),
-      orientation: oimo.Quat().setFromEuler(0, 0, Math.PI * 0.03),
+      position: vmath.Vector3(0, 6, 0),
+      orientation: vmath.Quaternion.euler(0, 0, Math.PI * 0.03),
       type: oimo.RigidBodyType.dynamic
     );
 
@@ -63,14 +64,14 @@ class _CompoundState extends State<Compound> {
     setScene();
     final body = oimo.RigidBody(
       shapes: [
-        oimo.Sphere(oimo.ShapeConfig(relativePosition: oimo.Vec3(-1, -1, 0)),1),
-        oimo.Sphere(oimo.ShapeConfig(relativePosition: oimo.Vec3(-1, 1, 0)),1),
-        oimo.Sphere(oimo.ShapeConfig(relativePosition: oimo.Vec3(1, -1, 0)),1),
-        oimo.Sphere(oimo.ShapeConfig(relativePosition: oimo.Vec3(1, 1, 0)),1)
+        oimo.Sphere(oimo.ShapeConfig(relativePosition: vmath.Vector3(-1, -1, 0)),1),
+        oimo.Sphere(oimo.ShapeConfig(relativePosition: vmath.Vector3(-1, 1, 0)),1),
+        oimo.Sphere(oimo.ShapeConfig(relativePosition: vmath.Vector3(1, -1, 0)),1),
+        oimo.Sphere(oimo.ShapeConfig(relativePosition: vmath.Vector3(1, 1, 0)),1)
       ],
       mass:1.0,
-      position: oimo.Vec3(0, 6, 0),
-      orientation: oimo.Quat().setFromEuler(0, 0, -Math.PI * 0.03),
+      position: vmath.Vector3(0, 6, 0),
+      orientation: vmath.Quaternion.euler(0, 0, -Math.PI * 0.03),
       type: oimo.RigidBodyType.dynamic
     );
 
@@ -82,7 +83,7 @@ class _CompoundState extends State<Compound> {
     final groundBody = oimo.RigidBody(
       shapes: [groundShape],
       mass: 0,
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0),
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0),
     );
     demo.addRigidBody(groundBody);
   }

@@ -1,10 +1,10 @@
 import 'collision_detector.dart';
-import '../../math/vec3.dart';
 import '../../shape/shape_main.dart';
 import '../../shape/cylinder_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/sphere_shape.dart';
 import 'dart:math' as math;
+import 'package:vector_math/vector_math.dart' hide Sphere;
 
 /// The collision detector for Sphere on Cylinder collisions
 class SphereCylinderCollisionDetector extends CollisionDetector{
@@ -26,11 +26,11 @@ class SphereCylinderCollisionDetector extends CollisionDetector{
       c = shape2 as Cylinder;
     }
 
-    Vec3 ps = s.position;
+    Vector3 ps = s.position;
     double psx = ps.x;
     double psy = ps.y;
     double psz = ps.z;
-    Vec3 pc = c.position;
+    Vector3 pc = c.position;
     double pcx = pc.x;
     double pcy = pc.y;
     double pcz = pc.z;

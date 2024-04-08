@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Trigger extends StatefulWidget {
   const Trigger({
@@ -19,7 +20,7 @@ class _TriggerState extends State<Trigger> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,0,0),
+        gravity: vmath.Vector3(0,0,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -40,10 +41,10 @@ class _TriggerState extends State<Trigger> {
     final sphereBody = oimo.RigidBody(
       shapes: [sphereShape],
       mass: 1,
-      position: oimo.Vec3(-5, 0, 0),
+      position: vmath.Vector3(-5, 0, 0),
     );
-    oimo.Vec3 impulse = oimo.Vec3(5.5, 0, 0);
-    oimo.Vec3 topPoint = oimo.Vec3(0, radius, 0);
+    vmath.Vector3 impulse = vmath.Vector3(5.5, 0, 0);
+    vmath.Vector3 topPoint = vmath.Vector3(0, radius, 0);
     sphereBody.applyImpulse(topPoint,impulse);
     demo.addRigidBody(sphereBody);
 
@@ -52,7 +53,7 @@ class _TriggerState extends State<Trigger> {
     final triggerBody = oimo.RigidBody(
       shapes: [boxShape],
       isTrigger: true,
-      position: oimo.Vec3(5, radius, 0)
+      position: vmath.Vector3(5, radius, 0)
     );
     triggerBody.collide = (body){
       if (body == sphereBody) {

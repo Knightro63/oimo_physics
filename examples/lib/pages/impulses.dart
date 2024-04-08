@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Impulses extends StatefulWidget {
   const Impulses({
@@ -24,7 +25,7 @@ class _ImpulsesState extends State<Impulses> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,0,0),
+        gravity: vmath.Vector3.zero(),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -45,8 +46,8 @@ class _ImpulsesState extends State<Impulses> {
     );
     demo.addRigidBody(body);
 
-    final impulse = oimo.Vec3(-strength * dt, 0, 0);
-    body.applyImpulse(oimo.Vec3(),impulse);
+    final impulse = vmath.Vector3(-strength * dt, 0, 0);
+    body.applyImpulse(vmath.Vector3.zero(),impulse);
   }
   void topImpulse(){
     final shape = oimo.Sphere(oimo.ShapeConfig(),radius);
@@ -57,8 +58,8 @@ class _ImpulsesState extends State<Impulses> {
     demo.addRigidBody(body);
 
     // The top of the sphere, relative to the sphere center
-    final topPoint = oimo.Vec3(0, radius, 0);
-    final impulse = oimo.Vec3(-strength * dt, 0, 0);
+    final topPoint = vmath.Vector3(0, radius, 0);
+    final impulse = vmath.Vector3(-strength * dt, 0, 0);
     body.applyImpulse(topPoint,impulse);
   }
 
@@ -71,7 +72,7 @@ class _ImpulsesState extends State<Impulses> {
     demo.addRigidBody(body);
 
     // add a positive rotation in the z-axis
-    final torque = oimo.Vec3(0, 0, -strength);
+    final torque = vmath.Vector3(0, 0, -strength);
     body.applyTorque(torque);
   }
   void setupWorld(){

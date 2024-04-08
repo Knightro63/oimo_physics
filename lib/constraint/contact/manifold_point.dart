@@ -1,21 +1,21 @@
-import '../../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// The class holds details of the contact point.
 class ManifoldPoint{
   /// Whether this manifold point is persisting or not.
   bool warmStarted = false;
   /// The position of this manifold point.
-  Vec3 position = Vec3();
+  Vector3 position = Vector3.zero();
   /// The position in the first shape's coordinate.
-  Vec3 localPoint1 = Vec3();
+  Vector3 localPoint1 = Vector3.zero();
   /// The position in the second shape's coordinate.
-  Vec3 localPoint2 = Vec3();
+  Vector3 localPoint2 = Vector3.zero();
   /// The normal vector of this manifold point.
-  Vec3 normal = Vec3();
+  Vector3 normal = Vector3.zero();
   /// The tangent vector of this manifold point.
-  Vec3 tangent = Vec3();
+  Vector3 tangent = Vector3.zero();
   /// The binormal vector of this manifold point.
-  Vec3 binormal = Vec3();
+  Vector3 binormal = Vector3.zero();
   /// The impulse in normal direction.
   double normalImpulse = 0;
   /// The impulse in tangent direction.

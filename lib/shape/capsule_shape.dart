@@ -1,18 +1,20 @@
+import 'package:oimo_physics/shape/line.dart';
+
 import 'mass_info.dart';
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
 import 'dart:math';
-import '../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// Capsule shape
 class Capsule extends Shape{
-  late Vec3 start;
-  late Vec3 end;
+  late Vector3 start;
+  late Vector3 end;
 
-	final Vec3 _v1 = Vec3();
-	final Vec3 _v2 = Vec3();
-	final Vec3 _v3 = Vec3();
+	final Vector3 _v1 = Vector3.zero();
+	final Vector3 _v2 = Vector3.zero();
+	final Vector3 _v3 = Vector3.zero();
 
 	double eps = 1e-10;
 
@@ -34,15 +36,15 @@ class Capsule extends Shape{
   double height;
   late double halfHeight;
 
-  Vec3 normalDirection = Vec3();
-  Vec3 halfDirection = Vec3();
+  Vector3 normalDirection = Vector3.zero();
+  Vector3 halfDirection = Vector3.zero();
 
   void copy(Capsule capsule){
-    start.copy(capsule.start);
-    end.copy(capsule.end);
+    start.setFrom(capsule.start);
+    end.setFrom(capsule.end);
     radius = capsule.radius;
   }
-  void translate(Vec3 v){
+  void translate(Vector3 v){
     start.add(v);
     end.add(v);
   }
@@ -58,8 +60,8 @@ class Capsule extends Shape{
       ( p1y - maxy < radius || p2y - maxy < radius )
     );
   }
-  Vec3 getCenter(Vec3 target){
-    return target.copy(end).add(start).multiplyScalar( 0.5 );
+  Vector3 getCenter(Vector3 target){
+    return target..setFrom(end)..add(start)..scale( 0.5 );
   }
   bool intersectsBox(AABB box){
     return (
@@ -80,10 +82,10 @@ class Capsule extends Shape{
       )
     );
   }
-  List<Vec3> lineLineMinimumPoints( line1, line2 ){
-    Vec3 r = _v1.copy( line1.end ).sub( line1.start );
-    Vec3 s = _v2.copy( line2.end ).sub( line2.start );
-    Vec3 w = _v3.copy( line2.start ).sub( line1.start );
+  List<Vector3> lineLineMinimumPoints(Line line1,Line line2 ){
+    Vector3 r = _v1..setFrom( line1.end )..sub( line1.start );
+    Vector3 s = _v2..setFrom( line2.end )..sub( line2.start );
+    Vector3 w = _v3..setFrom( line2.start )..sub( line1.start );
 
     num a = r.dot( s ),
       b = r.dot( r ),
@@ -116,8 +118,8 @@ class Capsule extends Shape{
     t2 = max(0, min( 1, t2 ) );
     t1 = max(0, min( 1, t1 ) );
 
-    Vec3 point1 = r.multiplyScalar( t1 ).add( line1.start );
-    Vec3 point2 = s.multiplyScalar( t2 ).add( line2.start );
+    Vector3 point1 = r..scale( t1 )..add( line1.start );
+    Vector3 point2 = s..scale( t2 )..add( line2.start );
 
     return [point1, point2];
   }
@@ -133,20 +135,20 @@ class Capsule extends Shape{
     double inertiaY = 0.5 * rsq;
 
 		out.mass = sphereMass + mass;
-    out.inertia.set( inertiaXZ, 0, 0,  0, inertiaY, 0,  0, 0, inertiaXZ );
+    out.inertia.setValues( inertiaXZ, 0, 0,  0, inertiaY, 0,  0, 0, inertiaXZ );
   }
 
   @override
   void updateProxy() {
-    List<double> te = rotation.elements;
+    final te = rotation.storage;
     double len, wx, hy, dz, xx, yy, zz, w, h, d, p;
 
     xx = te[1] * te[1];
     yy = te[4] * te[4];
     zz = te[7] * te[7];
 
-    normalDirection.set( te[1], te[4], te[7] );
-    halfDirection.scale(normalDirection, halfHeight);
+    normalDirection.setValues( te[1], te[4], te[7] );
+    halfDirection..setFrom(normalDirection)..scale(halfHeight);
 
     wx = 1 - xx;
     len = sqrt(wx*wx + xx*yy + xx*zz);

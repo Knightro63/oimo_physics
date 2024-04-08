@@ -1,28 +1,29 @@
-import 'package:oimo_physics/math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
+import '../math/vec3.dart';
 import 'dart:math';
 
 class Line {
-  late Vec3 start;
-  late Vec3 end;
+  late Vector3 start;
+  late Vector3 end;
 
-  Line([Vec3? start, Vec3? end]) {
-    this.start = (start != null) ? start : Vec3();
-    this.end = (end != null) ? end : Vec3();
+  Line([Vector3? start, Vector3? end]) {
+    this.start = (start != null) ? start : Vector3.zero();
+    this.end = (end != null) ? end : Vector3.zero();
   }
 
-  Line set(Vec3 start, Vec3 end) {
-    this.start.copy(start);
-    this.end.copy(end);
+  Line set(Vector3 start, Vector3 end) {
+    this.start.setFrom(start);
+    this.end.setFrom(end);
     return this;
   }
-  Vec3 delta(Vec3 target) {
-    return target.subVectors(end, start);
+  Vector3 delta(Vector3 target) {
+    return target.sub2(end, start);
   }
-  double closestPointToPointParameter(Vec3 point, bool clampToLine) {
-    final _startP = Vec3();
-    final _startEnd = Vec3();
-    _startP.subVectors(point, start);
-    _startEnd.subVectors(end, start);
+  double closestPointToPointParameter(Vector3 point, bool clampToLine) {
+    final _startP = Vector3.zero();
+    final _startEnd = Vector3.zero();
+    _startP.sub2(point, start);
+    _startEnd.sub2(end, start);
 
     final startEnd2 = _startEnd.dot(_startEnd);
     final startEndStartP = _startEnd.dot(_startP);
@@ -35,8 +36,8 @@ class Line {
 
     return t;
   }
-  Vec3 closestPointToPoint(Vec3 point, bool clampToLine, Vec3 target) {
+  Vector3 closestPointToPoint(Vector3 point, bool clampToLine, Vector3 target) {
     final t = closestPointToPointParameter(point, clampToLine);
-    return delta(target).multiplyScalar(t).add(start);
+    return delta(target).multiplyScalar(t)..add(start);
   }
 }

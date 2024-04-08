@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class CollisionFilter extends StatefulWidget {
   const CollisionFilter({
@@ -21,7 +22,7 @@ class _CollisionFilterState extends State<CollisionFilter> {
       settings: oimo.WorldConfigure(
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.volume,
-        gravity: oimo.Vec3()
+        gravity: vmath.Vector3.zero()
       )
     );
     setupWorld();
@@ -52,11 +53,11 @@ class _CollisionFilterState extends State<CollisionFilter> {
       size
     );
     final sphereBody = oimo.RigidBody(
-      position: oimo.Vec3(-5, 0, 0),
+      position: vmath.Vector3(-5, 0, 0),
       shapes: [sphereShape],
       type: oimo.RigidBodyType.dynamic
     );
-    sphereBody.linearVelocity = oimo.Vec3(5, 0, 0);
+    sphereBody.linearVelocity = vmath.Vector3(5, 0, 0);
 
     // Box
     final boxBody = oimo.RigidBody(
@@ -77,7 +78,7 @@ class _CollisionFilterState extends State<CollisionFilter> {
     );
     final cylinderBody = oimo.RigidBody(
       shapes: [cylinderShape],
-      position: oimo.Vec3(5, 0, 0),
+      position: vmath.Vector3(5, 0, 0),
       type: oimo.RigidBodyType.dynamic
     );
 

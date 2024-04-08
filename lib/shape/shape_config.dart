@@ -1,5 +1,4 @@
-import '../math/vec3.dart';
-import '../math/mat33.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// Shape type
 enum Shapes{none,sphere,box,cylinder,capsule,plane,particle,octree,tetra}
@@ -14,16 +13,16 @@ class ShapeConfig{
     this.collidesWith = 0xffffffff,
     this.belongsTo =  1,
     this.geometry = Shapes.none,
-    Vec3? relativePosition,
-    Mat33? relativeRotation
+    Vector3? relativePosition,
+    Matrix3? relativeRotation
   }){
-    this.relativePosition = relativePosition ?? Vec3();
-    this.relativeRotation = relativeRotation ?? Mat33();
+    this.relativePosition = relativePosition ?? Vector3.zero();
+    this.relativeRotation = relativeRotation ?? Matrix3.identity();
   }
   /// position of the shape in parent's coordinate system.
-  late Vec3 relativePosition;
+  late Vector3 relativePosition;
   /// rotation matrix of the shape in parent's coordinate system.
-  late Mat33 relativeRotation;
+  late Matrix3 relativeRotation;
   /// coefficient of friction of the shape.
   double friction ; // 0.4
   /// coefficient of restitution of the shape.

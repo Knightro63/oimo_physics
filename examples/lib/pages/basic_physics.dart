@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:oimo_physics_example/src/conversion_utils.dart';
+import 'package:vector_math/vector_math.dart' as vmath;
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
-
 import 'package:three_dart/three_dart.dart' as three;
 import 'package:three_dart/three_dart.dart' hide Texture, Color;
-
-extension on oimo.Quat{
-  Quaternion toQuaternion(){
-    return Quaternion(x,y,z,w);
-  }
-}
-extension on oimo.Vec3{
-  Vector3 toVector3(){
-    return Vector3(x,y,z);
-  }
-}
 
 class BasicPhysics extends StatefulWidget {
   const BasicPhysics({
@@ -38,7 +28,7 @@ class _BasicPhysicsState extends State<BasicPhysics> {
       onSetupComplete: (){setState(() {});},
       updatePhysics: () => updateoimoPhysics(),
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-20,0),
+        gravity: vmath.Vector3(0,-20,0),
         iterations: 20,
         broadPhaseType: oimo.BroadPhaseType.force
       )
@@ -58,17 +48,17 @@ class _BasicPhysicsState extends State<BasicPhysics> {
 
     final b1 = oimo.ObjectConfigure(
       shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),2, 2, 39.0/2)],
-      position:oimo.Vec3(-9.0,-1.0,0.0), 
+      position:vmath.Vector3(-9.0,-1.0,0.0), 
     );
     demo.addVisual(b1,material: mats['ground']);
     final b2 = oimo.ObjectConfigure(
       shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),2, 2, 39.0/2)],
-      position:oimo.Vec3(9.0,-1.0,0.0), 
+      position:vmath.Vector3(9.0,-1.0,0.0), 
     );
     demo.addVisual(b2,material: mats['ground']);
     final b3 = oimo.ObjectConfigure(
       shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),20, 4, 20)],
-      position:oimo.Vec3(0.0,-4.0,0.0), 
+      position:vmath.Vector3(0.0,-4.0,0.0), 
     );
     demo.addVisual(b3,material: mats['ground']);
 
@@ -95,7 +85,7 @@ class _BasicPhysicsState extends State<BasicPhysics> {
         mat.color = randColor;
         oimo.ObjectConfigure sbody = oimo.ObjectConfigure(
           shapes:[oimo.Sphere(oimo.ShapeConfig(geometry: oimo.Shapes.sphere, density: 1.0),w*0.5)], 
-          position:oimo.Vec3(x,y,z), 
+          position:vmath.Vector3(x,y,z), 
           move:true,
         );
         demo.addVisual(sbody,material: mat);
@@ -105,7 +95,7 @@ class _BasicPhysicsState extends State<BasicPhysics> {
         mat.color = randColor;
         oimo.ObjectConfigure sbody = oimo.ObjectConfigure(
           shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box, density: 1.0),w,h,d)],
-          position:oimo.Vec3(x,y,z),
+          position:vmath.Vector3(x,y,z),
           move:true
         );
         demo.addVisual(sbody,material: mat);
@@ -115,7 +105,7 @@ class _BasicPhysicsState extends State<BasicPhysics> {
         mat.color = randColor;
         oimo.ObjectConfigure sbody = oimo.ObjectConfigure(
           shapes: [oimo.Cylinder(oimo.ShapeConfig(geometry: oimo.Shapes.cylinder, density: 1.0),w*0.5,h)],
-          position:oimo.Vec3(x,y,z),
+          position:vmath.Vector3(x,y,z),
           move:true
         );
         demo.addVisual(sbody, material: mat);
@@ -129,7 +119,6 @@ class _BasicPhysicsState extends State<BasicPhysics> {
     double x, y, z;
     Object3D mesh; 
     oimo.RigidBody body;
-    //print(bodys[0].getPosition());
     for(int i = 0; i < demo.bodies.length;i++){
       body = demo.bodies[i];
       mesh = demo.visuals[i];
@@ -149,7 +138,7 @@ class _BasicPhysicsState extends State<BasicPhysics> {
           x = -100 + Math.random()*200;
           z = -100 + Math.random()*200;
           y = 100 + Math.random()*1000;
-          body.position = oimo.Vec3(x,y,z);
+          body.position = vmath.Vector3(x,y,z);
         }
       } 
       else if(mesh.material?.name != null){

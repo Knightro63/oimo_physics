@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Performance extends StatefulWidget {
   const Performance({
@@ -19,7 +20,7 @@ class _PerformanceState extends State<Performance> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-50,0),
+        gravity: vmath.Vector3(0,-50,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -37,7 +38,7 @@ class _PerformanceState extends State<Performance> {
     final groundBody = oimo.RigidBody(
       shapes: [groundShape],
       mass: 0,
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -47,7 +48,7 @@ class _PerformanceState extends State<Performance> {
     for (int i = 0; i < N; i++) {
       final boxShape = oimo.Box(oimo.ShapeConfig(),size, size, size);
       // start with random positions
-      final position = oimo.Vec3(
+      final position = vmath.Vector3(
         (Math.random() * 2 - 1) * 2.5,
         Math.random() * 10,
         (Math.random() * 2 - 1) * 2.5

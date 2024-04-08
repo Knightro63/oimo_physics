@@ -3,7 +3,7 @@ import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
 import 'dart:math' as math;
-import '../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// Cylinder shape
 class Cylinder extends Shape{
@@ -24,8 +24,8 @@ class Cylinder extends Shape{
   double height;
   late double halfHeight;
 
-  Vec3 normalDirection = Vec3();
-  Vec3 halfDirection = Vec3();
+  Vector3 normalDirection = Vector3.zero();
+  Vector3 halfDirection = Vector3.zero();
 
   @override
   void calculateMassInfo(MassInfo out){
@@ -34,20 +34,20 @@ class Cylinder extends Shape{
     double inertiaXZ = ( ( 0.25 * rsq ) + ( 0.0833 * height * height ) ) * mass;
     double inertiaY = 0.5 * rsq;
     out.mass = mass;
-    out.inertia.set( inertiaXZ, 0, 0,  0, inertiaY, 0,  0, 0, inertiaXZ );
+    out.inertia.setValues( inertiaXZ, 0, 0,  0, inertiaY, 0,  0, 0, inertiaXZ );
   }
 
   @override
   void updateProxy() {
-    List<double> te = rotation.elements;
+    final te = rotation.storage;
     double len, wx, hy, dz, xx, yy, zz, w, h, d, p;
 
     xx = te[1] * te[1];
     yy = te[4] * te[4];
     zz = te[7] * te[7];
 
-    normalDirection.set( te[1], te[4], te[7] );
-    halfDirection.scale(normalDirection, halfHeight);
+    normalDirection.setValues( te[1], te[4], te[7] );
+    halfDirection..setFrom(normalDirection)..scale(halfHeight);
 
     wx = 1 - xx;
     len = math.sqrt(wx*wx + xx*yy + xx*zz);

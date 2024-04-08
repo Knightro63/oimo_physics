@@ -38,7 +38,7 @@ class Box extends Shape{
 		final mass = width * height * depth * density;
 		const divid = 1/12;
 		out.mass = mass;
-		out.inertia.set(
+		out.inertia.setValues(
 			mass * ( height * height + depth * depth ) * divid, 0, 0,
 			0, mass * ( width * width + depth * depth ) * divid, 0,
 			0, 0, mass * ( width * width + height * height ) * divid
@@ -46,7 +46,7 @@ class Box extends Shape{
 	}
   @override
 	void updateProxy() {
-		final te = rotation.elements;
+		final te = rotation.storage;
 		final di = dimentions;
 		// Width
 		di[0] = te[0];

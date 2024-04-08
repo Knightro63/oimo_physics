@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Constraints extends StatefulWidget {
   const Constraints({
@@ -20,7 +21,7 @@ class _ConstraintsState extends State<Constraints> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-40,0),
+        gravity: vmath.Vector3(0,-40,0),
         iterations: 20,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -38,8 +39,8 @@ class _ConstraintsState extends State<Constraints> {
     final groundBody = oimo.RigidBody(
       shapes: [groundShape],
       mass: 0,
-      position: oimo.Vec3(0, 0.5, 0),
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      position: vmath.Vector3(0, 0.5, 0),
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
   }
@@ -48,7 +49,7 @@ class _ConstraintsState extends State<Constraints> {
     setScene();
     final world = demo.world;
 
-    world.gravity.set(0, -10, 0);
+    world.gravity.setValues(0, -10, 0);
     world.numIterations = 20;
 
     const size = 0.5;
@@ -57,9 +58,9 @@ class _ConstraintsState extends State<Constraints> {
     const N = 10;
 
     oimo.RigidBody? previous;
-    oimo.Vec3 prevPos = oimo.Vec3();
+    vmath.Vector3 prevPos = vmath.Vector3.zero();
     for (int i = 0; i < N; i++) {
-      final newPos = oimo.Vec3(-(N - i - N / 2) * (size * 2 + 2 * space), size * 6 + space, 0);
+      final newPos = vmath.Vector3(-(N - i - N / 2) * (size * 2 + 2 * space), size * 6 + space, 0);
       // Create a box
       final boxBody = oimo.RigidBody(
         mass: mass,
@@ -75,10 +76,10 @@ class _ConstraintsState extends State<Constraints> {
           oimo.JointConfig(
             body1: previous,
             body2: boxBody,
-            localAnchorPoint1: oimo.Vec3().copy(newPos).vadd(oimo.Vec3(size,0,size)),
-            localAnchorPoint2: oimo.Vec3().copy(prevPos).vadd(oimo.Vec3(size,0,size)),
-            localAxis1: oimo.Vec3(0, 0, 1),
-            localAxis2: oimo.Vec3(0, 0, 1),
+            localAnchorPoint1: vmath.Vector3.copy(newPos)..add(vmath.Vector3(size,0,size)),
+            localAnchorPoint2: vmath.Vector3.copy(prevPos)..add(vmath.Vector3(size,0,size)),
+            localAxis1: vmath.Vector3(0, 0, 1),
+            localAxis2: vmath.Vector3(0, 0, 1),
             allowCollision: true
           ),
           0,
@@ -89,28 +90,28 @@ class _ConstraintsState extends State<Constraints> {
 
       // To keep track of which body was added last
       previous = boxBody;
-      prevPos.copy(newPos);
+      prevPos.setFrom(newPos);
     }
 
     // Create stands
     final body1 = oimo.RigidBody(
       mass: 0,
       shapes: [oimo.Box(oimo.ShapeConfig(),size*2, size*2, size*2)],
-      position: oimo.Vec3(-(-N / 2 + 1) * (size * 2 + 2 * space), size * 3, 0),
+      position: vmath.Vector3(-(-N / 2 + 1) * (size * 2 + 2 * space), size * 3, 0),
     );
     demo.addRigidBody(body1);
 
     final body2 = oimo.RigidBody(
       mass: 0,
       shapes: [oimo.Box(oimo.ShapeConfig(),size*2, size*2, size*2)],
-      position: oimo.Vec3(-(N / 2) * (size * 2 + space * 2), size * 3, 0),
+      position: vmath.Vector3(-(N / 2) * (size * 2 + space * 2), size * 3, 0),
     );
     demo.addRigidBody(body2);
   }
   void linkScene(){
     setScene();
     final world = demo.world;
-    world.gravity.set(0, -20, -1);
+    world.gravity.setValues(0, -20, -1);
 
     const size = 1.0;
     double mass = 0;
@@ -125,7 +126,7 @@ class _ConstraintsState extends State<Constraints> {
       final boxBody = oimo.RigidBody(
         mass:mass,
         shapes: [boxShape],
-        position: oimo.Vec3(0, (N - i) * (size * 2 + space * 2) + size * 2 + space, 0)
+        position: vmath.Vector3(0, (N - i) * (size * 2 + space * 2) + size * 2 + space, 0)
       );
       demo.addRigidBody(boxBody);
 
@@ -136,16 +137,16 @@ class _ConstraintsState extends State<Constraints> {
           oimo.JointConfig(
             body1: boxBody,
             body2: previous!,
-            localAnchorPoint1: oimo.Vec3(size, size + space, 0),
-            localAnchorPoint2: oimo.Vec3(size, -size - space, 0)
+            localAnchorPoint1: vmath.Vector3(size, size + space, 0),
+            localAnchorPoint2: vmath.Vector3(size, -size - space, 0)
           )
         );
         final pointConstraint2 = oimo.BallAndSocketJoint(
           oimo.JointConfig(
             body1: boxBody,
             body2: previous,
-            localAnchorPoint1: oimo.Vec3(-size, size + space, 0),
-            localAnchorPoint2: oimo.Vec3(-size, -size - space, 0)
+            localAnchorPoint1: vmath.Vector3(-size, size + space, 0),
+            localAnchorPoint2: vmath.Vector3(-size, -size - space, 0)
           )
         );
 
@@ -178,7 +179,7 @@ class _ConstraintsState extends State<Constraints> {
           mass: mass,
           shapes: [oimo.Sphere(oimo.ShapeConfig(),0.08)]
         );
-        body.position.set(-(i - cols * 0.5) * dist, 5, (j - rows * 0.5) * dist);
+        body.position.setValues(-(i - cols * 0.5) * dist, 5, (j - rows * 0.5) * dist);
         bodies['$i $j'] = body;
         demo.addRigidBody(body);
       }
@@ -210,7 +211,7 @@ class _ConstraintsState extends State<Constraints> {
     final body = oimo.RigidBody(
       shapes: [sphere],
       mass: 0,
-      position: oimo.Vec3(0, 3.5, 0)
+      position: vmath.Vector3(0, 3.5, 0)
     );
     demo.addRigidBody(body);
   }
@@ -224,15 +225,15 @@ class _ConstraintsState extends State<Constraints> {
     final spherebody = oimo.RigidBody(
       shapes: [oimo.Sphere(oimo.ShapeConfig(),size)],
       mass:mass,
-      position: oimo.Vec3(0, size * 3, 0),
-      linearVelocity: oimo.Vec3(-5, 0, 0)
+      position: vmath.Vector3(0, size * 3, 0),
+      linearVelocity: vmath.Vector3(-5, 0, 0)
     );
     demo.addRigidBody(spherebody);
 
     final spherebody2 = oimo.RigidBody(
       mass: 0,
       shapes: [oimo.Sphere(oimo.ShapeConfig(),size)],
-      position: oimo.Vec3(0, size * 7, 0)
+      position: vmath.Vector3(0, size * 7, 0)
     );
     demo.addRigidBody(spherebody2);
 
@@ -241,8 +242,8 @@ class _ConstraintsState extends State<Constraints> {
       oimo.JointConfig(
         body1: spherebody,
         body2: spherebody2,
-        localAnchorPoint1: oimo.Vec3(0, size * 2, 0),
-        localAnchorPoint2: oimo.Vec3(0, -size * 2, 0)
+        localAnchorPoint1: vmath.Vector3(0, size * 2, 0),
+        localAnchorPoint2: vmath.Vector3(0, -size * 2, 0)
       )
     );
     world.addJoint(pointConstraint);
@@ -265,8 +266,8 @@ class _ConstraintsState extends State<Constraints> {
       final sphereBody = oimo.RigidBody(
         shapes: [oimo.Sphere(oimo.ShapeConfig(),size)],
         mass: i == 0 ? 0 : mass,
-        position: oimo.Vec3(0, dist * (N - i), 0),
-        linearVelocity: oimo.Vec3(-i*1.0)
+        position: vmath.Vector3(0, dist * (N - i), 0),
+        linearVelocity: vmath.Vector3(-i*1.0,0,0)
       );
       demo.addRigidBody(sphereBody);
 
@@ -305,8 +306,8 @@ class _ConstraintsState extends State<Constraints> {
         final body = oimo.RigidBody(
           shapes: [oimo.Sphere(oimo.ShapeConfig(),0.1)],
           mass: j == rows - 1 ? 0 : mass,
-          position: oimo.Vec3(-dist * i, dist * j + 5, 0),
-          linearVelocity: oimo.Vec3(0, 0, (Math.sin(i * 0.1) + Math.sin(j * 0.1)) * 3)
+          position: vmath.Vector3(-dist * i, dist * j + 5, 0),
+          linearVelocity: vmath.Vector3(0, 0, (Math.sin(i * 0.1) + Math.sin(j * 0.1)) * 3)
         );
         bodies['$i $j'] = body;
         demo.addRigidBody(body);
@@ -354,8 +355,8 @@ class _ConstraintsState extends State<Constraints> {
           final body = oimo.RigidBody(
             shapes: [oimo.Sphere(oimo.ShapeConfig(),0.08)],
             mass:mass,
-            position: oimo.Vec3(-dist * i, dist * k + dist * Nz * 0.3 + 1, dist * j),
-            linearVelocity: oimo.Vec3(0, 0, (Math.sin(i * 0.1) + Math.sin(j * 0.1)) * 30)
+            position: vmath.Vector3(-dist * i, dist * k + dist * Nz * 0.3 + 1, dist * j),
+            linearVelocity: vmath.Vector3(0, 0, (Math.sin(i * 0.1) + Math.sin(j * 0.1)) * 30)
           );
           bodies['$i $j $k'] = body;
           demo.addRigidBody(body);

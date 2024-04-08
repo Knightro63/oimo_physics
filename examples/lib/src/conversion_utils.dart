@@ -1,13 +1,15 @@
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:three_dart/three_dart.dart' as three;
 import 'package:three_dart/three_dart.dart' hide Texture, Color;
+import 'package:vector_math/vector_math.dart' as vmath;
 
-extension on oimo.Quat{
+extension Quant on vmath.Quaternion{
   Quaternion toQuaternion(){
     return Quaternion(x,y,z,w);
   }
+
 }
-extension on oimo.Vec3{
+extension Vec3 on vmath.Vector3{
   Vector3 toVector3(){
     return Vector3(x,y,z);
   }
@@ -44,7 +46,7 @@ class GeometryCache {
 }
 
 class ConversionUtils{
-  static three.BufferGeometry? shapeToGeometry(oimo.Shape shape, {bool flatShading = true, oimo.Vec3? position}) {
+  static three.BufferGeometry? shapeToGeometry(oimo.Shape shape, {bool flatShading = true, vmath.Vector3? position}) {
     switch (shape.type) {
       case oimo.Shapes.tetra:
       case oimo.Shapes.none: {
@@ -105,14 +107,14 @@ class ConversionUtils{
     group.quaternion.copy(body.orientation.toQuaternion());
 
     List<three.Mesh> meshes = [];
-    List<oimo.Vec3> positions = [];
-    List<oimo.Quat> rotations = [];
+    List<vmath.Vector3> positions = [];
+    List<vmath.Quaternion> rotations = [];
 
     for(oimo.Shape? shapes = body.shapes; shapes != null; shapes = shapes.next){
       final geometry = shapeToGeometry(shapes);
       meshes.add(three.Mesh(geometry, material));
       positions.add(shapes.relativePosition);
-      rotations.add(oimo.Quat().setFromMat33(shapes.relativeRotation));
+      rotations.add(vmath.Quaternion(0,0,0,1)..setFromRotation(shapes.relativeRotation));
     }
     
     int i = 0;
@@ -141,7 +143,7 @@ class ConversionUtils{
     int i = 0;
     meshes.forEach((three.Mesh mesh){
       final offset = body.shapes[i].position;
-      final orientation = oimo.Quat().setFromMat33(body.shapes[i].rotation);
+      final orientation = vmath.Quaternion(0,0,0,1)..setFromRotation(body.shapes[i].rotation);
       mesh.position.copy(offset);
       mesh.quaternion.copy(orientation.toQuaternion());
       group.add(mesh);

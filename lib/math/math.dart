@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// Some math used in this api
 class Math {
@@ -99,7 +99,7 @@ class Math {
   }
 
   /// Get distance between [v1] and [v2]
-  static double distanceVector(Vec3 v1,Vec3 v2 ){
+  static double distanceVector(Vector3 v1,Vector3 v2 ){
     double  xd = v1.x - v2.x;
     double  yd = v1.y - v2.y;
     double  zd = v1.z - v2.z;
@@ -107,7 +107,7 @@ class Math {
   }
 
   /// Get the dot product between [a] and [b]
-  static double dotVectors(Vec3 a, Vec3 b ) {
+  static double dotVectors(Vector3 a, Vector3 b ) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
   }
 

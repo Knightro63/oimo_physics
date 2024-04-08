@@ -1,33 +1,33 @@
-import '../../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 class ContactPointDataBuffer{
-  Vec3 nor = Vec3();
-  Vec3 tan = Vec3();
-  Vec3 bin = Vec3();
+  Vector3 nor = Vector3.zero();
+  Vector3 tan = Vector3.zero();
+  Vector3 bin = Vector3.zero();
 
-  Vec3 norU1 = Vec3();
-  Vec3 tanU1 = Vec3();
-  Vec3 binU1 = Vec3();
+  Vector3 norU1 = Vector3.zero();
+  Vector3 tanU1 = Vector3.zero();
+  Vector3 binU1 = Vector3.zero();
 
-  Vec3 norU2 = Vec3();
-  Vec3 tanU2 = Vec3();
-  Vec3 binU2 = Vec3();
+  Vector3 norU2 = Vector3.zero();
+  Vector3 tanU2 = Vector3.zero();
+  Vector3 binU2 = Vector3.zero();
 
-  Vec3 norT1 = Vec3();
-  Vec3 tanT1 = Vec3();
-  Vec3 binT1 = Vec3();
+  Vector3 norT1 = Vector3.zero();
+  Vector3 tanT1 = Vector3.zero();
+  Vector3 binT1 = Vector3.zero();
 
-  Vec3 norT2 = Vec3();
-  Vec3 tanT2 = Vec3();
-  Vec3 binT2 = Vec3();
+  Vector3 norT2 = Vector3.zero();
+  Vector3 tanT2 = Vector3.zero();
+  Vector3 binT2 = Vector3.zero();
 
-  Vec3 norTU1 = Vec3();
-  Vec3 tanTU1 = Vec3();
-  Vec3 binTU1 = Vec3();
+  Vector3 norTU1 = Vector3.zero();
+  Vector3 tanTU1 = Vector3.zero();
+  Vector3 binTU1 = Vector3.zero();
 
-  Vec3 norTU2 = Vec3();
-  Vec3 tanTU2 = Vec3();
-  Vec3 binTU2 = Vec3();
+  Vector3 norTU2 = Vector3.zero();
+  Vector3 tanTU2 = Vector3.zero();
+  Vector3 binTU2 = Vector3.zero();
 
   double norImp = 0;
   double tanImp = 0;

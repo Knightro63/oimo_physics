@@ -1,8 +1,8 @@
+import 'dart:typed_data';
 import '../../../core/rigid_body.dart';
 import 'dart:math' as math;
 import '../joint_main.dart';
-import '../../../math/mat33.dart';
-import '../../../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// A linear constraint for all axes for various joints.
 class LinearConstraint extends Joint{
@@ -27,9 +27,9 @@ class LinearConstraint extends Joint{
   double? m1;
   double? m2;
 
-  Mat33? ii1;
-  Mat33? ii2;
-  Mat33? dd;
+  Matrix3? ii1;
+  Matrix3? ii2;
+  Matrix3? dd;
 
   double? r1x;
   double? r1y;
@@ -66,18 +66,18 @@ class LinearConstraint extends Joint{
 
 
   Joint joint;
-  late Vec3 r1;
-  late Vec3 r2;
-  late Vec3 p1;
-  late Vec3 p2;
+  late Vector3 r1;
+  late Vector3 r2;
+  late Vector3 p1;
+  late Vector3 p2;
   RigidBody? b1;
   RigidBody? b2;
-  Vec3? l1;
-  Vec3? l2;
-  Vec3? a1;
-  Vec3? a2;
-  Mat33? i1;
-  Mat33? i2;
+  Vector3? l1;
+  Vector3? l2;
+  Vector3? a1;
+  Vector3? a2;
+  Matrix3? i1;
+  Matrix3? i2;
   double impx = 0;
   double impy = 0;
   double impz = 0;
@@ -98,8 +98,8 @@ class LinearConstraint extends Joint{
     this.ii1 = i1!.clone();
     this.ii2 = i2!.clone();
 
-    List<double> ii1 = this.ii1!.elements;
-    List<double> ii2 = this.ii2!.elements;
+    Float32List ii1 = this.ii1!.storage;
+    Float32List ii2 = this.ii2!.storage;
 
     ax1x = r1z!*ii1[1]+-r1y!*ii1[2];
     ax1y = r1z!*ii1[4]+-r1y!*ii1[5];
@@ -122,8 +122,8 @@ class LinearConstraint extends Joint{
 
     double rxx = m1!+m2!;
 
-    Mat33 kk = Mat33().set( rxx, 0, 0,  0, rxx, 0,  0, 0, rxx );
-    List<double> k = kk.elements;
+    Matrix3 kk = Matrix3( rxx, 0, 0,  0, rxx, 0,  0, 0, rxx );
+    Float32List k = kk.storage;
 
     k[0] += ii1[4]*r1z!*r1z!-(ii1[7]+ii1[5])*r1y!*r1z!+ii1[8]*r1y!*r1y!;
     k[1] += (ii1[6]*r1y!+ii1[5]*r1x!)*r1z!-ii1[3]*r1z!*r1z!-ii1[8]*r1x!*r1y!;
@@ -146,11 +146,11 @@ class LinearConstraint extends Joint{
     k[8] += ii2[0]*r2y!*r2y!-(ii2[3]+ii2[1])*r2x!*r2y!+ii2[4]*r2x!*r2x!;
 
     double inv=1/( k[0]*(k[4]*k[8]-k[7]*k[5]) + k[3]*(k[7]*k[2]-k[1]*k[8]) + k[6]*(k[1]*k[5]-k[4]*k[2]) );
-    dd = Mat33().set(
+    dd = Matrix3(
       k[4]*k[8]-k[5]*k[7], k[2]*k[7]-k[1]*k[8], k[1]*k[5]-k[2]*k[4],
       k[5]*k[6]-k[3]*k[8], k[0]*k[8]-k[2]*k[6], k[2]*k[3]-k[0]*k[5],
       k[3]*k[7]-k[4]*k[6], k[1]*k[6]-k[0]*k[7], k[0]*k[4]-k[1]*k[3]
-    ).scaleEqual( inv );
+    )..scale( inv );
 
     velx = p2.x-p1.x;
     vely = p2.y-p1.y;
@@ -188,7 +188,7 @@ class LinearConstraint extends Joint{
 
   @override
   void solve(){
-    List<double> d = dd!.elements;
+    Float32List d = dd!.storage;
     double rvx = l2!.x-l1!.x+a2!.y*r2z!-a2!.z*r2y!-a1!.y*r1z!+a1!.z*r1y!-velx!;
     double rvy = l2!.y-l1!.y+a2!.z*r2x!-a2!.x*r2z!-a1!.z*r1x!+a1!.x*r1z!-vely!;
     double rvz = l2!.z-l1!.z+a2!.x*r2y!-a2!.y*r2x!-a1!.x*r1y!+a1!.y*r1x!-velz!;

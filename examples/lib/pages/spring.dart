@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
+
 
 class Spring extends StatefulWidget {
   const Spring({
@@ -19,7 +21,7 @@ class _SpringState extends State<Spring> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-10,0),
+        gravity: vmath.Vector3(0,-10,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -50,7 +52,7 @@ class _SpringState extends State<Spring> {
     final boxBody = oimo.RigidBody( 
       mass: 5,
       shapes: [boxShape],
-      position: oimo.Vec3(size, -size, 0)
+      position: vmath.Vector3(size, -size, 0)
     );
     demo.addRigidBody(boxBody);
 
@@ -58,10 +60,10 @@ class _SpringState extends State<Spring> {
       oimo.JointConfig(
         body1: sphereBody,
         body2: boxBody,
-        localAxis1: oimo.Vec3(1,1,1),
-        localAxis2: oimo.Vec3(0,0,1),
-        localAnchorPoint2: oimo.Vec3(size, size, size*0.3),
-        localAnchorPoint1: oimo.Vec3(0, 0, 0),
+        localAxis1: vmath.Vector3(1,1,1),
+        localAxis2: vmath.Vector3(0,0,1),
+        localAnchorPoint2: vmath.Vector3(size, size, size*0.3),
+        localAnchorPoint1: vmath.Vector3(0, 0, 0),
       ),
       0,
       2

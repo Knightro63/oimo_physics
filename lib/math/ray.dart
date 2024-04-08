@@ -1,19 +1,20 @@
 import 'package:oimo_physics/math/aabb.dart';
 import 'package:oimo_physics/math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 class Ray {
-  late Vec3 origin;
-  late Vec3 direction;
+  late Vector3 origin;
+  late Vector3 direction;
 
-  Ray([Vec3? origin, Vec3? direction]) {
-    this.origin = (origin != null) ? origin : Vec3();
-    this.direction = (direction != null) ? direction : Vec3(0, 0, -1);
+  Ray([Vector3? origin, Vector3? direction]) {
+    this.origin = (origin != null) ? origin : Vector3.zero();
+    this.direction = (direction != null) ? direction : Vector3(0, 0, -1);
   }
-  Vec3 at(double t, [Vec3? target]) {
-    target ??= Vec3();
-    return target.copy(direction).multiplyScalar(t).add(origin);
+  Vector3 at(double t, [Vector3? target]) {
+    target ??= Vector3.zero();
+    return target..setFrom(direction)..multiplyScalar(t).add(origin);
   }
-  Vec3? intersectBox(AABB box, [Vec3? target]) {
+  Vector3? intersectBox(AABB box, [Vector3? target]) {
     double tmin, tmax, tymin, tymax, tzmin, tzmax;
 
     final invdirx = 1 / direction.x,
@@ -71,15 +72,15 @@ class Ray {
   bool intersectsBox(AABB box) {
     return intersectBox(box) != null;
   }
-  Vec3? intersectTriangle(Vec3 a, Vec3 b, Vec3 c, bool backfaceCulling, Vec3 target) {
-    final _edge1 = Vec3();
-    final _edge2 = Vec3();
-    final _normal = Vec3();
-    final _diff = Vec3();
+  Vector3? intersectTriangle(Vector3 a, Vector3 b, Vector3 c, bool backfaceCulling, Vector3 target) {
+    final _edge1 = Vector3.zero();
+    final _edge2 = Vector3.zero();
+    final _normal = Vector3.zero();
+    final _diff = Vector3.zero();
 
-    _edge1.subVectors(b, a);
-    _edge2.subVectors(c, a);
-    _normal.crossVectors(_edge1, _edge2);
+    _edge1.sub2(b, a);
+    _edge2.sub2(c, a);
+    _normal.cross2(_edge1, _edge2);
 
     // Solve Q + t*D = b1*E1 + b2*E2 (Q = kDiff, D = ray direction,
     // E1 = kEdge1, E2 = kEdge2, N = Cross(E1,E2)) by
@@ -99,8 +100,8 @@ class Ray {
       return null;
     }
 
-    _diff.subVectors(origin, a);
-    final DdQxE2 = sign * direction.dot(_edge2.crossVectors(_diff, _edge2));
+    _diff.sub2(origin, a);
+    final DdQxE2 = sign * direction.dot(_edge2.cross2(_diff, _edge2));
 
     // b1 < 0, no intersection
     if (DdQxE2 < 0) {

@@ -3,6 +3,7 @@ import 'package:oimo_physics/core/rigid_body.dart';
 import '../src/demo.dart';
 import 'package:three_dart/three_dart.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class BodyTypes extends StatefulWidget {
   const BodyTypes({
@@ -24,7 +25,7 @@ class _BodyTypesState extends State<BodyTypes> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-40,0),
+        gravity: vmath.Vector3(0,-40,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep
       )
@@ -41,8 +42,8 @@ class _BodyTypesState extends State<BodyTypes> {
     // Static ground plane
     final groundBody = oimo.RigidBody(
       shapes: [oimo.Plane(oimo.ShapeConfig(geometry: oimo.Shapes.plane))],
-      position:oimo.Vec3(0.0,-4.0,0.0), 
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      position: vmath.Vector3(0.0,-4.0,0.0), 
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -51,21 +52,21 @@ class _BodyTypesState extends State<BodyTypes> {
       mass: 100.0,
       type: RigidBodyType.kinematic,
       shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),size, size, size)],
-      position: oimo.Vec3(0, size * 0.5, 0), 
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      position: vmath.Vector3(0, size * 0.5, 0), 
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(boxBody);
 
     // To control the box movement we must set its velocity
-    boxBody.linearVelocity.set(0, 5, 0);
+    boxBody.linearVelocity.setValues(0, 5, 0);
     double secs = 0;
     demo.addAnimationEvent((dt){
       secs += dt;
       if(secs > 1){
         if (boxBody.linearVelocity.y < 0) {
-          boxBody.linearVelocity.set(0, 5, 0);
+          boxBody.linearVelocity.setValues(0, 5, 0);
         } else {
-          boxBody.linearVelocity.set(0, -5, 0);
+          boxBody.linearVelocity.setValues(0, -5, 0);
         }
         secs = 0;
       }
@@ -75,7 +76,7 @@ class _BodyTypesState extends State<BodyTypes> {
       mass: 1.0,
       type: RigidBodyType.dynamic,
       shapes: [oimo.Sphere(oimo.ShapeConfig(geometry: oimo.Shapes.sphere, density: 0.1),size*0.5)],
-      position: oimo.Vec3(0, size * 3, 0), 
+      position: vmath.Vector3(0, size * 3, 0), 
     );
     demo.addRigidBody(sphereBody);
 }

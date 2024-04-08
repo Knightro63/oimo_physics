@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class SBOP extends StatefulWidget {
   const SBOP({
@@ -20,7 +21,7 @@ class _SBOPState extends State<SBOP> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-10,0),
+        gravity: vmath.Vector3(0,-10,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.volume,
       )
@@ -38,7 +39,7 @@ class _SBOPState extends State<SBOP> {
     final groundBody = oimo.RigidBody(
       shapes: [groundShape],
       mass: 0,
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
   }
@@ -51,7 +52,7 @@ class _SBOPState extends State<SBOP> {
     final body = oimo.RigidBody(
       shapes: [boxShape],
       mass: 3.0,
-      position: oimo.Vec3(0, size * 2, size)
+      position: vmath.Vector3(0, size * 2, size)
     );
     demo.addRigidBody(body);
   }
@@ -63,7 +64,7 @@ class _SBOPState extends State<SBOP> {
     final body = oimo.RigidBody(
       shapes: [sphereShape],
       mass: 30,
-      position: oimo.Vec3(0, size * 2, size)
+      position: vmath.Vector3(0, size * 2, size)
     );
     demo.addRigidBody(body);
   }

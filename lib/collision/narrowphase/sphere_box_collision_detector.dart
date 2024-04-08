@@ -1,10 +1,10 @@
 import 'collision_detector.dart';
-import '../../math/vec3.dart';
 import '../../shape/shape_main.dart';
 import '../../shape/box_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/sphere_shape.dart';
 import 'dart:math' as math;
+import 'package:vector_math/vector_math.dart' hide Sphere;
 
 /// A collision detector which detects collisions between sphere and box.
 class SphereBoxCollisionDetector extends CollisionDetector{
@@ -26,8 +26,8 @@ class SphereBoxCollisionDetector extends CollisionDetector{
     }
 
     List<double> D = b.dimentions;
-    Vec3 ps=s.position;
-    Vec3 pb=b.position;
+    Vector3 ps = s.position;
+    Vector3 pb = b.position;
     
     double psx=ps.x;
     double psy=ps.y;

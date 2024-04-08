@@ -1,4 +1,4 @@
-import '../../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// An information of limit and motor.
 class LimitMotor{
@@ -14,7 +14,7 @@ class LimitMotor{
 
   bool fixed;
   /// The axis of the constraint.
-  Vec3 axis;
+  Vector3 axis;
   /// The current angle for rotational constraints.
   double angle = 0;
   /// The lower limit. Set lower > upper to disable

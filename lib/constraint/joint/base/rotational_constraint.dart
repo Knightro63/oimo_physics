@@ -1,8 +1,8 @@
-import '../../../math/vec3.dart';
-import '../../../math/mat33.dart';
+import 'dart:typed_data';
 import '../joint_main.dart';
 import '../limit_motor.dart';
 import '../../../core/rigid_body.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// A rotational constraint for various joints.
 class RotationalConstraint extends Joint{
@@ -65,10 +65,10 @@ class RotationalConstraint extends Joint{
   LimitMotor limitMotor;
   late RigidBody b1;
   late RigidBody b2;
-  late Vec3 a1;
-  late Vec3 a2;
-  late Mat33 i1;
-  late Mat33 i2;
+  late Vector3 a1;
+  late Vector3 a2;
+  late Matrix3 i1;
+  late Matrix3 i2;
   double limitImpulse=0;
   double motorImpulse=0;
 
@@ -83,8 +83,8 @@ class RotationalConstraint extends Joint{
     maxMotorForce=limitMotor.maxMotorForce;
     enableMotor=maxMotorForce!>0;
 
-    List<double> ti1 = i1.elements;
-    List<double> ti2 = i2.elements;
+    Float32List ti1 = i1.storage;
+    Float32List ti2 = i2.storage;
     i1e00=ti1[0];
     i1e01=ti1[1];
     i1e02=ti1[2];

@@ -3,6 +3,7 @@ import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:three_dart/three_dart.dart' as three;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Cloth extends StatefulWidget {
   const Cloth({
@@ -21,7 +22,7 @@ late Demo demo;
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-9.81,0),
+        gravity: vmath.Vector3(0,-9.81,0),
         iterations: 20,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -52,7 +53,7 @@ late Demo demo;
       shapes: [sphereShape],
       mass: 50,
       type: oimo.RigidBodyType.static,
-      position: oimo.Vec3(-1,6,0),
+      position: vmath.Vector3(-1,6,0),
     );
     sphereBody.fixedRotation = true;
     demo.addRigidBody(sphereBody);
@@ -93,10 +94,10 @@ late Demo demo;
         final body = oimo.RigidBody(
           shapes: [oimo.Sphere(oimo.ShapeConfig(),0.08)],
           mass: j == rows? 0 : mass,
-          //position: oimo.Vec3(-restDistance * i+6, restDistance * j-4, 0),
-          position: oimo.Vec3(point.x, point.y - rows * 0.9 * restDistance, point.z),
-          //linearVelocity: oimo.Vec3(0, 0, (Math.sin(i * 0.1) + Math.sin(j * 0.1)) * 3)
-          //linearVelocity: oimo.Vec3(0, 0, -0.1 * (rows - j))
+          //position: vmath.Vector3(-restDistance * i+6, restDistance * j-4, 0),
+          position: vmath.Vector3(point.x, point.y - rows * 0.9 * restDistance, point.z),
+          //linearVelocity: vmath.Vector3(0, 0, (Math.sin(i * 0.1) + Math.sin(j * 0.1)) * 3)
+          //linearVelocity: vmath.Vector3(0, 0, -0.1 * (rows - j))
         );
         bodies['$i $j'] = body;
         demo.addRigidBody(body);
@@ -130,7 +131,7 @@ late Demo demo;
       for (int i = 0; i < cols+1; i++) {
         for (int j = 0; j < rows+1; j++) {
           int index = j * (cols + 1) + i;
-          oimo.Vec3 v = bodies['$i $j']!.position;
+          vmath.Vector3 v = bodies['$i $j']!.position;
           clothGeometry.attributes["position"].setXYZ(index, v.x, v.y, v.z);
         }
       }
@@ -142,7 +143,7 @@ late Demo demo;
 
       // Move the ball in a circular motion
       double time = world.time - startTime;
-      sphereBody.position.set(2 * Math.sin(time)-1, 2 * Math.cos(time)+2, 2 * Math.cos(time));
+      sphereBody.position.setValues(2 * Math.sin(time)-1, 2 * Math.cos(time)+2, 2 * Math.cos(time));
     };
   }
   void setupWorld(){

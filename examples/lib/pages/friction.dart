@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Friction extends StatefulWidget {
   const Friction({
@@ -20,7 +21,7 @@ class _FrictionState extends State<Friction> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(3,-60,0),
+        gravity: vmath.Vector3(3,-60,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep
       )
@@ -41,7 +42,7 @@ class _FrictionState extends State<Friction> {
     final groundBody = oimo.RigidBody(
       mass: 0, 
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -49,7 +50,7 @@ class _FrictionState extends State<Friction> {
     final boxBody1 = oimo.RigidBody( 
       mass: 1, 
       shapes: [oimo.Box(oimo.ShapeConfig(restitution: 0.3, friction: 0),size, size, size)],
-      position: oimo.Vec3(0, 5, 0)
+      position: vmath.Vector3(0, 5, 0)
     );
     demo.addRigidBody(boxBody1);
 
@@ -57,7 +58,7 @@ class _FrictionState extends State<Friction> {
     final boxBody2 = oimo.RigidBody(
       mass: 10, 
       shapes: [oimo.Box(oimo.ShapeConfig(restitution: 0.3),size, size, size)],
-      position: oimo.Vec3(-size * 2, 5, 0)
+      position: vmath.Vector3(-size * 2, 5, 0)
     );
     demo.addRigidBody(boxBody2);
   }

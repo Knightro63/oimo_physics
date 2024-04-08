@@ -4,7 +4,7 @@
 [![analysis](https://github.com/Knightro63/oimo_physics/actions/workflows/flutter.yml/badge.svg)](https://github.com/Knightro63/oimo_physics/actions/)
 [![License: BSD](https://img.shields.io/badge/license-BSD-purple.svg)](https://opensource.org/licenses/BSD)
 
-A 3D physics engine for dart (based on oimo.js) that allows users to add physics support to their 3d projects.
+A 3D physics engine for dart (based on oimo.js) that allows users to add physics support to their 3D projects.
 
 <picture>
   <img alt="Image of blocks falling onto a surface." src="https://github.com/Knightro63/oimo_physics/blob/9a12df44235fb95c89dc915b7224c25654b584d0/examples/assets/images/basic_physics.png">
@@ -14,11 +14,11 @@ This is a dart conversion of oimo.js, originally created by Saharan [@saharan](h
 
 ## Usage
 
-This project is a basic physics engine for three_dart. This package includes RigidBodies, and Joints.
+This project is a basic 3D physics engine for dart projects. This package includes RigidBodies, and Joints.
 
 ### Getting started
 
-To get started add oimo_physics, three_dart, and three_dart_jsm to your pubspec.yaml file.
+To get started add oimo_physics, and your favorite 3D rendering engine to your pubspec.yaml file.
 
 The Oimo World is the main scene that has all of the objects that will be manipulated to the scene. To get started add the oimo world then all of the objects in it.
 

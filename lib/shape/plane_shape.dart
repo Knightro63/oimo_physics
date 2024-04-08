@@ -6,43 +6,44 @@ import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
 import '../math/vec3.dart';
+import 'package:vector_math/vector_math.dart' hide Sphere;
 
 // Plane shape.
 class Plane extends Shape{
   double constant = 0;
-  final _vector1 = Vec3();
-  final _vector2 = Vec3();
+  final _vector1 = Vector3.zero();
+  final _vector2 = Vector3.zero();
   /// Plane Shape
   /// 
   /// [config] config file of the shape
   /// 
   /// [normal] the direction of the plane
-  Plane(ShapeConfig config, [Vec3? normal]):super(config){
-    this.normal = normal ?? Vec3( 0, 0, 1 );
+  Plane(ShapeConfig config, [Vector3? normal]):super(config){
+    this.normal = normal ?? Vector3( 0, 0, 1 );
     type = Shapes.plane;
   }
 
-  late Vec3 normal;
+  late Vector3 normal;
 
-  double distanceToPoint(Vec3 point) {
+  double distanceToPoint(Vector3 point) {
     return normal.dot(point);
   }
-  Vec3 projectPoint(Vec3 point, Vec3 target) {
+  Vector3 projectPoint(Vector3 point, Vector3 target) {
     return target
-        .copy(normal)
-        .multiplyScalar(-distanceToPoint(point))
-        .add(point);
+        ..setFrom(normal)
+        ..multiplyScalar(-distanceToPoint(point))
+        ..add(point);
   }
   double distanceToSphere(Sphere sphere) {
     return distanceToPoint(sphere.position) - sphere.radius;
   }
-  Plane setFromNormalAndCoplanarPoint(Vec3 normal, Vec3 point) {
-    this.normal.copy(normal);
+  Plane setFromNormalAndCoplanarPoint(Vector3 normal, Vector3 point) {
+    this.normal.setFrom(normal);
     constant = -point.dot(this.normal).toDouble();
     return this;
   }
-  Plane setFromCoplanarPoints(Vec3 a, Vec3 b, Vec3 c) {
-    final normal = _vector1.subVectors(c, b).cross(_vector2.subVectors(a, b)).normalize();
+  Plane setFromCoplanarPoints(Vector3 a, Vector3 b, Vector3 c) {
+    final normal = _vector1.sub2(c, b)..cross(_vector2.sub2(a, b))..normalize();
     setFromNormalAndCoplanarPoint(normal, a);
     return this;
   }
@@ -51,7 +52,7 @@ class Plane extends Shape{
   double volume() {
     return double.maxFinite;
   }
-  void computeNormal(Quat quat){
+  void computeNormal(Quaternion quat){
     quat.vmult(normal, normal);
   }
 
@@ -59,7 +60,7 @@ class Plane extends Shape{
   void calculateMassInfo(MassInfo out ) {
     out.mass = density;//0.0001;
     double inertia = 1;
-    out.inertia.set( inertia, 0, 0, 0, inertia, 0, 0, 0, inertia );
+    out.inertia.setValues( inertia, 0, 0, 0, inertia, 0, 0, 0, inertia );
   }
 
   @override
@@ -67,7 +68,7 @@ class Plane extends Shape{
     double p = aabbProx;
     double min = -double.maxFinite;
     double max = double.maxFinite;
-    Vec3 n = normal;
+    Vector3 n = normal;
     // The plane AABB is infinite, except if the normal is pointing along any axis
     aabb.set(
       n.x == -1 ? position.x - p : min, n.x == 1 ? position.x + p : max,

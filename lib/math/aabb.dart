@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:oimo_physics/shape/sphere_shape.dart';
 import 'package:oimo_physics/shape/triangle.dart';
-
+import 'package:vector_math/vector_math.dart' hide Triangle, Sphere;
 import 'vec3.dart';
 
 /// AABB aproximation
@@ -9,15 +9,15 @@ double aabbProx = 0.005;
 
 /// An axis-aligned bounding box.
 class AABB{
-  final Vec3 _center = Vec3();
-  final Vec3 _extents = Vec3();
-  final _triangleNormal = Vec3();
-  final _v0 = Vec3();
-  final _box3v1 = Vec3();
-  final _v2 = Vec3();
-  final _f0 = Vec3();
-  final _f1 = Vec3();
-  final _f2 = Vec3();
+  final Vector3 _center = Vector3.zero();
+  final Vector3 _extents = Vector3.zero();
+  final _triangleNormal = Vector3.zero();
+  final _v0 = Vector3.zero();
+  final _box3v1 = Vector3.zero();
+  final _v2 = Vector3.zero();
+  final _f0 = Vector3.zero();
+  final _f1 = Vector3.zero();
+  final _f2 = Vector3.zero();
 
   /// An axis-aligned bounding box.
   /// 
@@ -70,15 +70,15 @@ class AABB{
     elements[5] = v;
   }
 
-  Vec3 get min => Vec3(elements[0],elements[1],elements[2]);
-  Vec3 get max => Vec3(elements[3],elements[4],elements[5]);
+  Vector3 get min => Vector3(elements[0],elements[1],elements[2]);
+  Vector3 get max => Vector3(elements[3],elements[4],elements[5]);
 
-  set min(Vec3 v){
+  set min(Vector3 v){
     elements[0] = v.x;
     elements[1] = v.y;
     elements[2] = v.z;
   }
-  set max(Vec3 v){
+  set max(Vector3 v){
     elements[3] = v.x;
     elements[4] = v.y;
     elements[5] = v.z;
@@ -112,11 +112,11 @@ class AABB{
     // this is a more robust check for empty than ( volume <= 0 ) because volume can get positive with two negative axes
     return (max.x < min.x) || (max.y < min.y) || (max.z < min.z);
   }
-  Vec3 getCenter(Vec3 target) {
+  Vector3 getCenter(Vector3 target) {
     if (isEmpty()) {
-      target.set(0, 0, 0);
+      target.setValues(0, 0, 0);
     } else {
-      target.addVectors(min, max).multiplyScalar(0.5);
+      target.add2(min, max).multiplyScalar(0.5);
     }
 
     return target;
@@ -127,17 +127,17 @@ class AABB{
     }
     // compute box center and extents
     getCenter(_center);
-    _extents.subVectors(max, _center);
+    _extents.sub2(max, _center);
 
     // translate triangle to aabb origin
-    _v0.subVectors(triangle.a, _center);
-    _box3v1.subVectors(triangle.b, _center);
-    _v2.subVectors(triangle.c, _center);
+    _v0.sub2(triangle.a, _center);
+    _box3v1.sub2(triangle.b, _center);
+    _v2.sub2(triangle.c, _center);
 
     // compute edge vectors for triangle
-    _f0.subVectors(_box3v1, _v0);
-    _f1.subVectors(_v2, _box3v1);
-    _f2.subVectors(_v0, _v2);
+    _f0.sub2(_box3v1, _v0);
+    _f1.sub2(_v2, _box3v1);
+    _f2.sub2(_v0, _v2);
 
     // test against axes that are given by cross product combinations of the edges of the triangle and the edges of the aabb
     // make an axis testing of each of the 3 sides of the aabb against each of the 3 sides of the triangle = 9 axis of separation
@@ -183,15 +183,15 @@ class AABB{
 
     // finally testing the face normal of the triangle
     // use already existing triangle edge vectors here
-    _triangleNormal.crossVectors(_f0, _f1);
+    _triangleNormal.cross2(_f0, _f1);
     axes = [_triangleNormal.x, _triangleNormal.y, _triangleNormal.z];
 
     return satForAxes(axes, _v0, _box3v1, _v2, _extents);
   }
-  bool satForAxes(List<double> axes, Vec3 v0, Vec3 v1, Vec3 v2, Vec3 extents) {
-    Vec3 _testAxis = Vec3();
+  bool satForAxes(List<double> axes, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 extents) {
+    Vector3 _testAxis = Vector3.zero();
     for (int i = 0, j = axes.length - 3; i <= j; i += 3) {
-      _testAxis.fromArray(axes, i);
+      _testAxis.copyFromArray(axes, i);
       // project the aabb onto the seperating axis
       final r = extents.x * _testAxis.x.abs() +
           extents.y * _testAxis.y.abs() +
@@ -223,11 +223,11 @@ class AABB{
 		List<double> ue = aabb.elements;
 		return te[0] < ue[0] || te[1] < ue[1] || te[2] < ue[2] || te[3] > ue[3] || te[4] > ue[4] || te[5] > ue[5] ? true : false;
 	}
-  Vec3 clampPoint(Vec3 point, Vec3 target) {
-    return target.copy(point).clamp(min, max);
+  Vector3 clampPoint(Vector3 point, Vector3 target) {
+    return target..setFrom(point)..clamp(min, max);
   }
   bool intersectsSphere(Sphere sphere) {
-    Vec3 temp = Vec3();
+    Vector3 temp = Vector3.zero();
     // Find the point on the AABB closest to the sphere center.
     clampPoint(sphere.position, temp);
     // If that point is inside the sphere, the AABB and sphere intersect.
@@ -290,7 +290,7 @@ class AABB{
 
 	/// Set the AABB from an array
 	/// of vertices. From THREE.
-	void setFromPoints(List<Vec3> arr){
+	void setFromPoints(List<Vector3> arr){
 		makeEmpty();
 		for(int i = 0; i < arr.length; i++){
 			expandByPoint(arr[i]);
@@ -303,7 +303,7 @@ class AABB{
 	}
 
   /// Make this AABB larger by this point
-	void expandByPoint(Vec3 pt){
+	void expandByPoint(Vector3 pt){
 		List<double> te = elements;
 		set(
 			math.min(te[ 0 ], pt.x), math.min(te[ 1 ], pt.y), math.min(te[ 2 ], pt.z),

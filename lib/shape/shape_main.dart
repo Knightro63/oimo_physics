@@ -2,10 +2,8 @@ import 'package:oimo_physics/collision/broadphase/proxy_broad_phase.dart';
 import 'package:oimo_physics/constraint/contact/contact_link.dart';
 import 'package:oimo_physics/core/rigid_body.dart';
 import 'package:oimo_physics/math/aabb.dart';
-import 'package:oimo_physics/math/mat33.dart';
-import 'package:oimo_physics/math/vec3.dart';
 import 'package:oimo_physics/shape/shape_config.dart';
-
+import 'package:vector_math/vector_math.dart';
 import 'mass_info.dart';
 import '../core/utils_core.dart';
 
@@ -15,8 +13,8 @@ int shapeIdCount() { return count++; }
 /// A shape is used to detect collisions of rigid bodies.
 class Shape{
   Shape(ShapeConfig config){
-    relativePosition = Vec3().copy( config.relativePosition );
-    relativeRotation = Mat33().copy( config.relativeRotation );
+    relativePosition = Vector3.copy( config.relativePosition );
+    relativeRotation = Matrix3.copy( config.relativeRotation );
 
     density = config.density;
     friction = config.friction;
@@ -41,13 +39,13 @@ class Shape{
   /// number of the contacts with the shape.
   int numContacts = 0;
   /// center of gravity of the shape in world coordinate system.
-  Vec3 position = Vec3();
+  Vector3 position = Vector3.zero();
   /// rotation matrix of the shape in world coordinate system.
-  Mat33 rotation = Mat33();
+  Matrix3 rotation = Matrix3.identity();
   /// position of the shape in parent's coordinate system.
-  late Vec3 relativePosition;
+  late Vector3 relativePosition;
   /// rotation matrix of the shape in parent's coordinate system.
-  late Mat33 relativeRotation;
+  late Matrix3 relativeRotation;
   /// axis-aligned bounding box of the shape.
   AABB aabb = AABB();
   /// density of the shape.

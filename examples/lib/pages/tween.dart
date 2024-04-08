@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Tween extends StatefulWidget {
   const Tween({
@@ -19,7 +20,7 @@ class _TweenState extends State<Tween> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-5,0),
+        gravity: vmath.Vector3(0,-5,0),
         iterations: 50,
         broadPhaseType: oimo.BroadPhaseType.sweep,
         setPerformance: true
@@ -36,8 +37,8 @@ class _TweenState extends State<Tween> {
   void setScene(){
     final world = demo.world;
 
-    final startPosition = oimo.Vec3(-5, 2, 0);
-    oimo.Vec3 endPosition = oimo.Vec3(5, 2, 0);
+    final startPosition = vmath.Vector3(-5, 2, 0);
+    vmath.Vector3 endPosition = vmath.Vector3(5, 2, 0);
     const tweenTime = 3; // seconds
 
     oimo.Box boxShape = oimo.Box(oimo.ShapeConfig(),2,2,2);
@@ -50,12 +51,12 @@ class _TweenState extends State<Tween> {
     demo.addRigidBody(body);
 
     // Compute direction vector and get total length of the path
-    final direction = oimo.Vec3();
-    endPosition.vsub(startPosition, direction);
-    double totalLength = direction.length();
+    final direction = vmath.Vector3.zero();
+    endPosition.sub2(startPosition, direction);
+    double totalLength = direction.length;
     direction.normalize();
     double speed = totalLength / tweenTime;
-    body.linearVelocity.copy(direction).scaleEqual(speed*1.3);
+    body.linearVelocity..setFrom(direction)..scale(speed*1.3);
 
     // Save the start time
     double startTime = world.time;
@@ -64,8 +65,8 @@ class _TweenState extends State<Tween> {
       // Progress is a number where 0 is at start position and 1 is at end position
       double progress = (world.time - startTime) / tweenTime; 
       if (progress > 1) {
-        body.linearVelocity.set(0, 0, 0);
-        body.position.copy(endPosition);
+        body.linearVelocity.setValues(0, 0, 0);
+        body.position.setFrom(endPosition);
         world.postLoop = null;
       }
     }

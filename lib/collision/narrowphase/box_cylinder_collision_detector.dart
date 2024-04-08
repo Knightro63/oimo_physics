@@ -1,22 +1,23 @@
+import 'dart:typed_data';
 import 'collision_detector.dart';
-import '../../math/vec3.dart';
 import '../../shape/box_shape.dart';
 import '../../shape/cylinder_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/shape_main.dart';
 import 'dart:math' as math;
+import 'package:vector_math/vector_math.dart';
 
 /// The collision detector for Box on Cylinder collisions
 class BoxCylinderCollisionDetector extends CollisionDetector{
   /// Should sep be reimplimented
-  bool getSep(Box c1,Cylinder c2, Vec3 sep,Vec3 pos,Vec3 dep ) {
+  bool getSep(Box c1,Cylinder c2, Vector3 sep,Vector3 pos,Vector3 dep ) {
     double t1x;
     double t1y;
     double t1z;
     double t2x;
     double t2y;
     double t2z;
-    Vec3 sup=Vec3();
+    Vector3 sup = Vector3.zero();
     double len;
     double p1x = 0;
     double p1y = 0;
@@ -55,8 +56,8 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
     ny=v1z*v0x-v1x*v0z;
     nz=v1x*v0y-v1y*v0x;
     if(nx*nx+ny*ny+nz*nz==0){
-      sep.set( v1x-v0x, v1y-v0y, v1z-v0z ).normalize();
-      pos.set( (v11x+v12x)*0.5, (v11y+v12y)*0.5, (v11z+v12z)*0.5 );
+      sep..setValues( v1x-v0x, v1y-v0y, v1z-v0z )..normalize();
+      pos.setValues( (v11x+v12x)*0.5, (v11y+v12y)*0.5, (v11z+v12z)*0.5 );
       return true;
     }
     supportPointB(c1,-nx,-ny,-nz,sup);
@@ -227,8 +228,8 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
         double separation=-(v4x*nx+v4y*ny+v4z*nz);
         if((v4x-v3x)*nx+(v4y-v3y)*ny+(v4z-v3z)*nz<=0.01||separation>=0){
           if(hit){
-            sep.set( -nx, -ny, -nz );
-            pos.set( (p1x+p2x)*0.5, (p1y+p2y)*0.5, (p1z+p2z)*0.5 );
+            sep.setValues( -nx, -ny, -nz );
+            pos.setValues( (p1x+p2x)*0.5, (p1y+p2y)*0.5, (p1z+p2z)*0.5 );
             dep.x=separation;
             return true;
           }
@@ -300,8 +301,8 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
   }
 
   /// Support for point B
-  void supportPointB(Box c, double dx, double dy, double dz, Vec3 out) {
-    List<double> rot=c.rotation.elements;
+  void supportPointB(Box c, double dx, double dy, double dz, Vector3 out) {
+    Float32List rot=c.rotation.storage;
     double ldx=rot[0]*dx+rot[3]*dy+rot[6]*dz;
     double ldy=rot[1]*dx+rot[4]*dy+rot[7]*dz;
     double ldz=rot[2]*dx+rot[5]*dy+rot[8]*dz;
@@ -334,12 +335,12 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
     ldx=rot[0]*ox+rot[1]*oy+rot[2]*oz+c.position.x;
     ldy=rot[3]*ox+rot[4]*oy+rot[5]*oz+c.position.y;
     ldz=rot[6]*ox+rot[7]*oy+rot[8]*oz+c.position.z;
-    out.set( ldx, ldy, ldz );
+    out.setValues( ldx, ldy, ldz );
   }
 
   /// Support for point C
-  void supportPointC(Cylinder c, double dx, double dy, double dz, Vec3 out) {
-    List<double> rot=c.rotation.elements;
+  void supportPointC(Cylinder c, double dx, double dy, double dz, Vector3 out) {
+    Float32List rot=c.rotation.storage;
     double ldx=rot[0]*dx+rot[3]*dy+rot[6]*dz;
     double ldy=rot[1]*dx+rot[4]*dy+rot[7]*dz;
     double ldz=rot[2]*dx+rot[5]*dy+rot[8]*dz;
@@ -381,7 +382,7 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
     ldx=rot[0]*ox+rot[1]*oy+rot[2]*oz+c.position.x;
     ldy=rot[3]*ox+rot[4]*oy+rot[5]*oz+c.position.y;
     ldz=rot[6]*ox+rot[7]*oy+rot[8]*oz+c.position.z;
-    out.set( ldx, ldy, ldz );
+    out.setValues( ldx, ldy, ldz );
   }
 
   @override
@@ -400,9 +401,9 @@ class BoxCylinderCollisionDetector extends CollisionDetector{
       b = shape2 as Box;
     }
 
-    Vec3 sep=Vec3();
-    Vec3 pos=Vec3();
-    Vec3 dep=Vec3();
+    Vector3 sep=Vector3.zero();
+    Vector3 pos=Vector3.zero();
+    Vector3 dep=Vector3.zero();
 
     if(!getSep(b,c,sep,pos,dep))return;
 

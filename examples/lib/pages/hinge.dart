@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Hinge extends StatefulWidget {
   const Hinge({
@@ -20,7 +21,7 @@ class _HingeState extends State<Hinge> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-9.81,0),
+        gravity: vmath.Vector3(0,-9.81,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.volume,
       )
@@ -41,8 +42,8 @@ class _HingeState extends State<Hinge> {
     final groundBody = oimo.RigidBody(
       mass: 0, 
       shapes: [groundShape],
-      position: oimo.Vec3(0,-1.2,0),
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      position: vmath.Vector3(0,-1.2,0),
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -52,23 +53,23 @@ class _HingeState extends State<Hinge> {
     final leftFrontWheel = oimo.RigidBody(
       mass: mass, 
       shapes: [oimo.Sphere(oimo.ShapeConfig(),1.2)],
-      position: oimo.Vec3(-5, 0, 5),
-      //angularVelocity: oimo.Vec3(0,0,14)
+      position: vmath.Vector3(-5, 0, 5),
+      //angularVelocity: vmath.Vector3(0,0,14)
     );
     final rightFrontWheel = oimo.RigidBody(
       mass: mass,
       shapes: [oimo.Sphere(oimo.ShapeConfig(),1.2)],
-      position: oimo.Vec3(-5, 0, -5)
+      position: vmath.Vector3(-5, 0, -5)
     );
     final leftRearWheel = oimo.RigidBody(
       mass: mass,
       shapes: [oimo.Sphere(oimo.ShapeConfig(),1.2)],
-      position: oimo.Vec3(5, 0, 5),
+      position: vmath.Vector3(5, 0, 5),
     );
     final rightRearWheel = oimo.RigidBody(
       mass: mass,
       shapes: [oimo.Sphere(oimo.ShapeConfig(),1.2)],
-      position: oimo.Vec3(5, 0, -5),
+      position: vmath.Vector3(5, 0, -5),
     );
 
     final chassisShape = oimo.Box(oimo.ShapeConfig(),10,1, 4);
@@ -81,20 +82,20 @@ class _HingeState extends State<Hinge> {
     List constraints = [];
 
     // Hinge the wheels
-    final leftAxis = oimo.Vec3(0, 0, 1);
-    //final rightAxis = oimo.Vec3(0, 0, -1);
-    // final leftFrontAxis = oimo.Vec3(0, 0, 1);
-    // final rightFrontAxis = oimo.Vec3(0, 0, -1);
-    final leftFrontAxis = oimo.Vec3(-0.3, 0, 0.7);
-    //final rightFrontAxis = oimo.Vec3(0.3, 0, -0.7);
+    final leftAxis = vmath.Vector3(0, 0, 1);
+    //final rightAxis = vmath.Vector3(0, 0, -1);
+    // final leftFrontAxis = vmath.Vector3(0, 0, 1);
+    // final rightFrontAxis = vmath.Vector3(0, 0, -1);
+    final leftFrontAxis = vmath.Vector3(-0.3, 0, 0.7);
+    //final rightFrontAxis = vmath.Vector3(0.3, 0, -0.7);
 
     constraints.add(
       oimo.WheelJoint(
         oimo.JointConfig(
           body1: chassis,
           body2: leftFrontWheel,
-          localAnchorPoint1: oimo.Vec3(-5, 0, 5),
-          localAnchorPoint2: oimo.Vec3(0,0,0),
+          localAnchorPoint1: vmath.Vector3(-5, 0, 5),
+          localAnchorPoint2: vmath.Vector3(0,0,0),
           localAxis1: leftFrontAxis,
           localAxis2: leftAxis
         )
@@ -105,8 +106,8 @@ class _HingeState extends State<Hinge> {
     //     oimo.JointConfig(
     //       body1: chassis,
     //       body2: rightFrontWheel,
-    //       localAnchorPoint1: oimo.Vec3(-5, 0, -5),
-    //       //localAnchorPoint2: oimo.Vec3(0,0,1),
+    //       localAnchorPoint1: vmath.Vector3(-5, 0, -5),
+    //       //localAnchorPoint2: vmath.Vector3(0,0,1),
     //       localAxis1: rightFrontAxis,
     //       localAxis2: rightAxis
     //     )
@@ -117,8 +118,8 @@ class _HingeState extends State<Hinge> {
     //     oimo.JointConfig(
     //       body1: chassis,
     //       body2: leftRearWheel,
-    //       localAnchorPoint1: oimo.Vec3(5, 0, 5),
-    //       //localAnchorPoint2: oimo.Vec3(0,0,1),
+    //       localAnchorPoint1: vmath.Vector3(5, 0, 5),
+    //       //localAnchorPoint2: vmath.Vector3(0,0,1),
     //       localAxis1: leftAxis,
     //       localAxis2: leftAxis
     //     )
@@ -129,8 +130,8 @@ class _HingeState extends State<Hinge> {
     //     oimo.JointConfig(
     //       body1: chassis,
     //       body2: rightRearWheel,
-    //       localAnchorPoint1: oimo.Vec3(5, 0, -5),
-    //       //localAnchorPoint2: oimo.Vec3(0,0,1),
+    //       localAnchorPoint1: vmath.Vector3(5, 0, -5),
+    //       //localAnchorPoint2: vmath.Vector3(0,0,1),
     //       localAxis1: rightAxis,
     //       localAxis2: rightAxis
     //     )
@@ -158,7 +159,7 @@ class _HingeState extends State<Hinge> {
 
   void setScene2(){
     final world = demo.world;
-     world.gravity.set(0, -20, 5);
+     world.gravity.setValues(0, -20, 5);
 
     const size = 5.0;
     const distance = size * 0.1;
@@ -172,7 +173,7 @@ class _HingeState extends State<Hinge> {
     final staticBody = oimo.RigidBody(
       mass: 0,
       shapes: [oimo.Box(oimo.ShapeConfig(),size, size, size * 0.1*2)],
-      position: oimo.Vec3(0,size + distance * 2,0)
+      position: vmath.Vector3(0,size + distance * 2,0)
     );
     demo.addRigidBody(staticBody);
 
@@ -181,10 +182,10 @@ class _HingeState extends State<Hinge> {
       oimo.JointConfig(
         body1: staticBody,
         body2: hingedBody,
-        localAnchorPoint1: oimo.Vec3(0, -size * 0.5 - distance, 0,),
-        localAnchorPoint2: oimo.Vec3(0, size * 0.5 + distance, 0),
-        localAxis1: oimo.Vec3(-1, 0, 0),
-        localAxis2: oimo.Vec3(-1, 0, 0)
+        localAnchorPoint1: vmath.Vector3(0, -size * 0.5 - distance, 0,),
+        localAnchorPoint2: vmath.Vector3(0, size * 0.5 + distance, 0),
+        localAxis1: vmath.Vector3(-1, 0, 0),
+        localAxis2: vmath.Vector3(-1, 0, 0)
       ),
       0,Math.PI
     );

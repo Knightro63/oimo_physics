@@ -1,10 +1,9 @@
 import 'dart:math' as math;
-import 'package:oimo_physics/math/vec3.dart';
-
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
 import 'plane_shape.dart';
+import 'package:vector_math/vector_math.dart' hide Plane;
 
 /// Sphere shape
 class Sphere extends Shape{
@@ -20,7 +19,7 @@ class Sphere extends Shape{
 
   late double radius;
 
-  Vec3 get center => position;
+  Vector3 get center => position;
 
   void copy(Sphere sphere) {
     radius = sphere.radius;
@@ -54,7 +53,7 @@ class Sphere extends Shape{
 		double mass = volume() * radius * radius * density;
 		out.mass = mass;
 		double inertia = mass * radius * radius * 0.4;
-		out.inertia.set( inertia, 0, 0, 0, inertia, 0, 0, 0, inertia );
+		out.inertia.setValues( inertia, 0, 0, 0, inertia, 0, 0, 0, inertia );
 	}
 
   @override

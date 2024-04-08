@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Pile extends StatefulWidget {
   const Pile({
@@ -20,7 +21,7 @@ class _PileState extends State<Pile> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-50,0),
+        gravity: vmath.Vector3(0,-50,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep
       )
@@ -40,7 +41,7 @@ class _PileState extends State<Pile> {
     final groundBody = oimo.RigidBody(
       mass: 0, 
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -48,8 +49,8 @@ class _PileState extends State<Pile> {
     final planeXmin = oimo.RigidBody(
       mass: 0,
       shapes: [planeShapeXmin],
-      orientation: oimo.Quat().setFromEuler(0, Math.PI / 2, 0),
-      position: oimo.Vec3(-5, 0, 0)
+      orientation: vmath.Quaternion.euler(0, Math.PI / 2, 0),
+      position: vmath.Vector3(-5, 0, 0)
     );
     world.addRigidBody(planeXmin);
 
@@ -58,8 +59,8 @@ class _PileState extends State<Pile> {
     final planeXmax = oimo.RigidBody(
       mass: 0,
       shapes: [planeShapeXmax],
-      orientation: oimo.Quat().setFromEuler(0, -Math.PI / 2, 0),
-      position: oimo.Vec3(5, 0, 0)
+      orientation: vmath.Quaternion.euler(0, -Math.PI / 2, 0),
+      position: vmath.Vector3(5, 0, 0)
     );
     world.addRigidBody(planeXmax);
     
@@ -68,8 +69,8 @@ class _PileState extends State<Pile> {
     final planeZmin = oimo.RigidBody(
       mass: 0,
       shapes: [planeShapeZmin],
-      orientation: oimo.Quat().setFromEuler(0, 0, 0),
-      position: oimo.Vec3(0, 0, -5)
+      orientation: vmath.Quaternion.euler(0, 0, 0),
+      position: vmath.Vector3(0, 0, -5)
     );
     world.addRigidBody(planeZmin);
 
@@ -78,8 +79,8 @@ class _PileState extends State<Pile> {
     final planeZmax = oimo.RigidBody(
       mass: 0,
       shapes: [planeShapeZmax],
-      orientation: oimo.Quat().setFromEuler(0, Math.PI, 0),
-      position: oimo.Vec3(0, 0, 5)
+      orientation: vmath.Quaternion.euler(0, Math.PI, 0),
+      position: vmath.Vector3(0, 0, 5)
     );
     world.addRigidBody(planeZmax);
 
@@ -93,7 +94,7 @@ class _PileState extends State<Pile> {
       final sphereBody = oimo.RigidBody(
         shapes: [sphereShape],
         mass: 5,
-        position: oimo.Vec3(-size * 2 * Math.sin(i), size * 2 * 7, size * 2 * Math.cos(i)),
+        position: vmath.Vector3(-size * 2 * Math.sin(i), size * 2 * 7, size * 2 * Math.cos(i)),
       );
       demo.addRigidBody(sphereBody);
       bodies.add(sphereBody);

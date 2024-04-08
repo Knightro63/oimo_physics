@@ -1,21 +1,22 @@
 import 'collision_detector.dart';
-import '../../math/vec3.dart';
 import '../../shape/sphere_shape.dart';
 import '../../shape/plane_shape.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/shape_main.dart';
 import 'dart:math' as math;
+import '../../math/vec3.dart';
+import 'package:vector_math/vector_math.dart' hide Plane, Sphere;
 
 /// A collision detector which detects collisions between sphere and plane.
 class SpherePlaneCollisionDetector extends CollisionDetector{
 
-  Vec3 n = Vec3();
-  Vec3 p = Vec3();
+  Vector3 n = Vector3.zero();
+  Vector3 p = Vector3.zero();
 
   @override
   void detectCollision(Shape shape1,Shape shape2,ContactManifold manifold ) {
-    Vec3 n = this.n;
-    Vec3 p = this.p;
+    Vector3 n = this.n;
+    Vector3 p = this.p;
 
     Plane pn;
     Sphere s;
@@ -34,7 +35,7 @@ class SpherePlaneCollisionDetector extends CollisionDetector{
     double rad = s.radius;
     double len;
 
-    n.sub( s.position, pn.position );
+    n.sub2( s.position, pn.position );
     //var h = _Math.dotVectors( pn.normal, n );
 
     n.x *= pn.normal.x;//+ rad;
@@ -42,18 +43,18 @@ class SpherePlaneCollisionDetector extends CollisionDetector{
     n.z *= pn.normal.z;//+ rad;
 
     
-    len = n.lengthSq();
+    len = n.length2;
     
     if(len > 0 && len < rad * rad){//&& h > rad*rad ){
       len = math.sqrt(len);
       //len = _Math.sqrt( h );
-      n.copy(pn.normal).inverse();
+      n..setFrom(pn.normal)..inverse();
       //n.scaleEqual( 1/len );
 
       //(0, -1, 0)
 
       //n.normalize();
-      p.copy( s.position ).addScaledVector( n, rad );
+      p..setFrom( s.position )..addScaledVector( n, rad );
       manifold.addPointVec( p, n, len - rad, flip );
     }
   }

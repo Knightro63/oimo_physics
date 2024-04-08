@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Shapes extends StatefulWidget {
   const Shapes({
@@ -20,7 +21,7 @@ class _ShapesState extends State<Shapes> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-30,0),
+        gravity: vmath.Vector3(0,-30,0),
         iterations: 17,
       )
     );
@@ -38,7 +39,7 @@ class _ShapesState extends State<Shapes> {
     final groundBody = oimo.RigidBody(
       mass: 0,
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -50,7 +51,7 @@ class _ShapesState extends State<Shapes> {
     final sphereBody = oimo.RigidBody(
       mass:mass,
       shapes: [sphereShape],
-      position: oimo.Vec3(-size * 2, size + 1, size * 2)
+      position: vmath.Vector3(-size * 2, size + 1, size * 2)
     );
     demo.addRigidBody(sphereBody);
 
@@ -63,7 +64,7 @@ class _ShapesState extends State<Shapes> {
     final cylinderBody = oimo.RigidBody(
       mass:mass,
       shapes: [cylinderShape],
-      position: oimo.Vec3(size * 2, size + 1, size * 2)
+      position: vmath.Vector3(size * 2, size + 1, size * 2)
     );
     demo.addRigidBody(cylinderBody);
 
@@ -76,8 +77,8 @@ class _ShapesState extends State<Shapes> {
     final cylinderBody2 = oimo.RigidBody(
       mass:mass,
       shapes: [cylinderShape2],
-      position: oimo.Vec3(size * 2, size * 4 + 1, size * 2),
-      orientation: oimo.Quat().setFromEuler(Math.PI / 2, Math.PI / 2, 0)
+      position: vmath.Vector3(size * 2, size * 4 + 1, size * 2),
+      orientation: vmath.Quaternion.euler(0,Math.PI / 2, Math.PI / 2)
     );
     demo.addRigidBody(cylinderBody2);
 
@@ -86,7 +87,7 @@ class _ShapesState extends State<Shapes> {
     final boxBody = oimo.RigidBody(
       mass:mass,
       shapes: [boxShape],
-      position: oimo.Vec3(size * 2, size + 1, -size * 2)
+      position: vmath.Vector3(size * 2, size + 1, -size * 2)
     );
     demo.addRigidBody(boxBody);
 
@@ -94,12 +95,12 @@ class _ShapesState extends State<Shapes> {
     final compoundBody = oimo.RigidBody(
       mass:mass,
       shapes: [
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(0, size, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(0, 0, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(0, -size, 0)),size, size, size),
-        oimo.Box(oimo.ShapeConfig(relativePosition: oimo.Vec3(size, -size, 0)),size, size, size)
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(0, size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(0, 0, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(0, -size, 0)),size, size, size),
+        oimo.Box(oimo.ShapeConfig(relativePosition: vmath.Vector3(size, -size, 0)),size, size, size)
       ],
-      position: oimo.Vec3(size * 4, size + 1, size * 4)
+      position: vmath.Vector3(size * 4, size + 1, size * 4)
     );
     demo.addRigidBody(compoundBody);
   }

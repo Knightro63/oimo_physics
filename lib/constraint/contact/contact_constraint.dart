@@ -1,4 +1,3 @@
-import '../../math/mat33.dart';
 import 'dart:math' as math;
 import '../constraint_main.dart';
 import 'contact_point_data_buffer.dart';
@@ -7,6 +6,7 @@ import 'contact_manifold.dart';
 import '../../math/vec3.dart';
 import 'manifold_point.dart';
 import '../../math/math.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// A constraint used on contacts
 class ContactConstraint extends Constraint{
@@ -26,29 +26,29 @@ class ContactConstraint extends Constraint{
   double? restitution;
   /// The coefficient of friction of the constraint.
   double? friction;
-  Vec3? p1;
-  Vec3? p2;
-  Vec3? lv1;
-  Vec3? lv2;
-  Vec3? av1;
-  Vec3? av2;
-  Mat33? i1;
-  Mat33? i2;
+  Vector3? p1;
+  Vector3? p2;
+  Vector3? lv1;
+  Vector3? lv2;
+  Vector3? av1;
+  Vector3? av2;
+  Matrix3? i1;
+  Matrix3? i2;
 
   //ii1 = null;
   //ii2 = null;
 
-  Vec3 tmp = Vec3();
-  Vec3 tmpC1 = Vec3();
-  Vec3 tmpC2 = Vec3();
+  Vector3 tmp = Vector3.zero();
+  Vector3 tmpC1 = Vector3.zero();
+  Vector3 tmpC2 = Vector3.zero();
 
-  Vec3 tmpP1 = Vec3();
-  Vec3 tmpP2 = Vec3();
+  Vector3 tmpP1 = Vector3.zero();
+  Vector3 tmpP2 = Vector3.zero();
 
-  Vec3 tmplv1 = Vec3();
-  Vec3 tmplv2 = Vec3();
-  Vec3 tmpav1 = Vec3();
-  Vec3 tmpav2 = Vec3();
+  Vector3 tmplv1 = Vector3.zero();
+  Vector3 tmplv2 = Vector3.zero();
+  Vector3 tmpav1 = Vector3.zero();
+  Vector3 tmpav2 = Vector3.zero();
 
   double? m1;
   double? m2;
@@ -93,24 +93,24 @@ class ContactConstraint extends Constraint{
     ContactPointDataBuffer? c = cs;
     ManifoldPoint p;
     double rvn, len, norImp, norTar, sepV;
-    Mat33 i1, i2;
+    Matrix3 i1, i2;
 
     for(int i=0; i < num; i++){
       p = ps[i];
 
-      tmpP1.sub( p.position, p1 );
-      tmpP2.sub( p.position, p2 );
+      tmpP1.sub2( p.position, p1! );
+      tmpP2.sub2( p.position, p2! );
 
-      tmpC1.crossVectors(av1!, tmpP1 );
-      tmpC2.crossVectors(av2!, tmpP2 );
+      tmpC1.cross2(av1!, tmpP1 );
+      tmpC2.cross2(av2!, tmpP2 );
 
       c!.norImp = p.normalImpulse;
       c.tanImp = p.tangentImpulse;
       c.binImp = p.binormalImpulse;
 
-      c.nor.copy( p.normal );
+      c.nor.setFrom( p.normal );
 
-      tmp.set(
+      tmp.setValues(
         ( lv2!.x + tmpC2.x ) - ( lv1!.x + tmpC1.x ),
         ( lv2!.y + tmpC2.y ) - ( lv1!.y + tmpC1.y ),
         ( lv2!.z + tmpC2.z ) - ( lv1!.z + tmpC1.z )
@@ -118,7 +118,7 @@ class ContactConstraint extends Constraint{
 
       rvn = Math.dotVectors( c.nor, tmp );
 
-      c.tan.set(
+      c.tan.setValues(
         tmp.x - rvn * c.nor.x,
         tmp.y - rvn * c.nor.y,
         tmp.z - rvn * c.nor.z
@@ -132,49 +132,49 @@ class ContactConstraint extends Constraint{
 
       c.tan.normalize();
 
-      c.bin.crossVectors( c.nor, c.tan );
+      c.bin.cross2( c.nor, c.tan );
 
-      c.norU1.scale( c.nor, m1! );
-      c.norU2.scale( c.nor, m2! );
+      c.norU1.scale2( c.nor, m1! );
+      c.norU2.scale2( c.nor, m2! );
 
-      c.tanU1.scale( c.tan, m1! );
-      c.tanU2.scale( c.tan, m2! );
+      c.tanU1.scale2( c.tan, m1! );
+      c.tanU2.scale2( c.tan, m2! );
 
-      c.binU1.scale( c.bin, m1! );
-      c.binU2.scale( c.bin, m2! );
+      c.binU1.scale2( c.bin, m1! );
+      c.binU2.scale2( c.bin, m2! );
 
-      c.norT1.crossVectors( tmpP1, c.nor );
-      c.tanT1.crossVectors( tmpP1, c.tan );
-      c.binT1.crossVectors( tmpP1, c.bin );
+      c.norT1.cross2( tmpP1, c.nor );
+      c.tanT1.cross2( tmpP1, c.tan );
+      c.binT1.cross2( tmpP1, c.bin );
 
-      c.norT2.crossVectors( tmpP2, c.nor );
-      c.tanT2.crossVectors( tmpP2, c.tan );
-      c.binT2.crossVectors( tmpP2, c.bin );
+      c.norT2.cross2( tmpP2, c.nor );
+      c.tanT2.cross2( tmpP2, c.tan );
+      c.binT2.cross2( tmpP2, c.bin );
 
       i1 = this.i1!;
       i2 = this.i2!;
 
-      c.norTU1.copy( c.norT1 ).applyMatrix3( i1, true );
-      c.tanTU1.copy( c.tanT1 ).applyMatrix3( i1, true );
-      c.binTU1.copy( c.binT1 ).applyMatrix3( i1, true );
+      c.norTU1..setFrom( c.norT1 )..applyMatrix3Transpose( i1 );
+      c.tanTU1..setFrom( c.tanT1 )..applyMatrix3Transpose( i1 );
+      c.binTU1..setFrom( c.binT1 )..applyMatrix3Transpose( i1 );
 
-      c.norTU2.copy( c.norT2 ).applyMatrix3( i2, true );
-      c.tanTU2.copy( c.tanT2 ).applyMatrix3( i2, true );
-      c.binTU2.copy( c.binT2 ).applyMatrix3( i2, true );
+      c.norTU2..setFrom( c.norT2 )..applyMatrix3Transpose( i2 );
+      c.tanTU2..setFrom( c.tanT2 )..applyMatrix3Transpose( i2 );
+      c.binTU2..setFrom( c.binT2 )..applyMatrix3Transpose( i2 );
 
-      tmpC1.crossVectors( c.norTU1, tmpP1 );
-      tmpC2.crossVectors( c.norTU2, tmpP2 );
-      tmp.add( tmpC1, tmpC2 );
+      tmpC1.cross2( c.norTU1, tmpP1 );
+      tmpC2.cross2( c.norTU2, tmpP2 );
+      tmp.add2( tmpC1, tmpC2 );
       c.norDen = 1 / ( m1m2 +Math.dotVectors( c.nor, tmp ));
 
-      tmpC1.crossVectors( c.tanTU1, tmpP1 );
-      tmpC2.crossVectors( c.tanTU2, tmpP2 );
-      tmp.add( tmpC1, tmpC2 );
+      tmpC1.cross2( c.tanTU1, tmpP1 );
+      tmpC2.cross2( c.tanTU2, tmpP2 );
+      tmp.add2( tmpC1, tmpC2 );
       c.tanDen = 1 / ( m1m2 +Math.dotVectors( c.tan, tmp ));
 
-      tmpC1.crossVectors( c.binTU1, tmpP1 );
-      tmpC2.crossVectors( c.binTU2, tmpP2 );
-      tmp.add( tmpC1, tmpC2 );
+      tmpC1.cross2( c.binTU1, tmpP1 );
+      tmpC2.cross2( c.binTU2, tmpP2 );
+      tmp.add2( tmpC1, tmpC2 );
       c.binDen = 1 / ( m1m2 +Math.dotVectors( c.bin, tmp ));
 
       if( p.warmStarted ){
@@ -207,10 +207,10 @@ class ContactConstraint extends Constraint{
 
   @override
   void solve(){
-    tmplv1.copy( lv1! );
-    tmplv2.copy( lv2! );
-    tmpav1.copy( av1! );
-    tmpav2.copy( av2! );
+    tmplv1.setFrom( lv1! );
+    tmplv2.setFrom( lv2! );
+    tmpav1.setFrom( av1! );
+    tmpav2.setFrom( av2! );
 
     double oldImp1, newImp1, oldImp2, newImp2, rvn, norImp, tanImp, binImp, max, len;
     ContactPointDataBuffer c = cs;
@@ -221,7 +221,7 @@ class ContactConstraint extends Constraint{
       binImp = c.binImp;
       max = -norImp * friction!;
 
-      tmp.sub( tmplv2, tmplv1 );
+      tmp.sub2( tmplv2, tmplv1 );
 
       rvn = Math.dotVectors( tmp, c.tan ) + Math.dotVectors( tmpav2, c.tanT2 ) - Math.dotVectors( tmpav1, c.tanT1 );
   
@@ -247,41 +247,41 @@ class ContactConstraint extends Constraint{
       newImp2 = binImp-oldImp2;
 
       //
-      tmp.set( 
+      tmp.setValues( 
         c.tanU1.x*newImp1 + c.binU1.x*newImp2,
         c.tanU1.y*newImp1 + c.binU1.y*newImp2,
         c.tanU1.z*newImp1 + c.binU1.z*newImp2
       );
 
-      tmplv1.addEqual( tmp );
+      tmplv1.add( tmp );
 
-      tmp.set(
+      tmp.setValues(
         c.tanTU1.x*newImp1 + c.binTU1.x*newImp2,
         c.tanTU1.y*newImp1 + c.binTU1.y*newImp2,
         c.tanTU1.z*newImp1 + c.binTU1.z*newImp2
       );
 
-      tmpav1.addEqual( tmp );
+      tmpav1.add( tmp );
 
-      tmp.set(
+      tmp.setValues(
         c.tanU2.x*newImp1 + c.binU2.x*newImp2,
         c.tanU2.y*newImp1 + c.binU2.y*newImp2,
         c.tanU2.z*newImp1 + c.binU2.z*newImp2
       );
 
-      tmplv2.subEqual( tmp );
+      tmplv2.sub( tmp );
 
-      tmp.set(
+      tmp.setValues(
           c.tanTU2.x*newImp1 + c.binTU2.x*newImp2,
           c.tanTU2.y*newImp1 + c.binTU2.y*newImp2,
           c.tanTU2.z*newImp1 + c.binTU2.z*newImp2
       );
 
-      tmpav2.subEqual( tmp );
+      tmpav2.sub( tmp );
 
       // restitution part
 
-      tmp.sub( tmplv2, tmplv1 );
+      tmp.sub2( tmplv2, tmplv1 );
 
       rvn = Math.dotVectors( tmp, c.nor ) + Math.dotVectors( tmpav2, c.norT2 ) - Math.dotVectors( tmpav1, c.norT1 );
 
@@ -305,10 +305,10 @@ class ContactConstraint extends Constraint{
       c = c.next!;
     }
 
-    lv1!.copy( tmplv1 );
-    lv2!.copy( tmplv2 );
-    av1!.copy( tmpav1 );
-    av2!.copy( tmpav2 );
+    lv1!.setFrom( tmplv1 );
+    lv2!.setFrom( tmplv2 );
+    av1!.setFrom( tmpav1 );
+    av2!.setFrom( tmpav2 );
   }
 
   @override
@@ -317,9 +317,9 @@ class ContactConstraint extends Constraint{
     ManifoldPoint p;
     for(int i = (num-1).toInt();i >=0; i--){
       p = ps[i];
-      p.normal.copy( c!.nor );
-      p.tangent.copy( c.tan );
-      p.binormal.copy( c.bin );
+      p.normal.setFrom( c!.nor );
+      p.tangent.setFrom( c.tan );
+      p.binormal.setFrom( c.bin );
 
       p.normalImpulse = c.norImp;
       p.tangentImpulse = c.tanImp;

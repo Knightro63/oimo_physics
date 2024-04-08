@@ -25,6 +25,7 @@ import '../constraint/joint/slider_joint.dart';
 import '../constraint/joint/wheel_joint.dart';
 
 import '../shape/shape_config.dart';
+import '../math/vec3.dart';
 
 import '../collision/broadphase/broad_phase.dart';
 import '../collision/broadphase/brute_force_broad_phase.dart';
@@ -32,8 +33,7 @@ import '../collision/broadphase/dbvt/dbvt_broad_phase.dart';
 import 'utils_core.dart';
 import '../shape/shape_main.dart';
 import '../math/math.dart';
-import '../math/quat.dart';
-import '../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 import '../constraint/constraint_main.dart';
 import 'core_main.dart';
 import 'rigid_body.dart';
@@ -63,15 +63,15 @@ class ObjectConfigure{
     this.body1,
     this.body2,
 
-    Vec3? position,
-    Vec3? position2,
-    Vec3? positionShape,
-    Quat? rotation,
-    Quat? rotationShape,
+    Vector3? position,
+    Vector3? position2,
+    Vector3? positionShape,
+    Quaternion? rotation,
+    Quaternion? rotationShape,
     //this.size = const [0,0,0],
 
-    Vec3? axis1,
-    Vec3? axis2,
+    Vector3? axis1,
+    Vector3? axis2,
 
     this.motorSpeed,
     this.motorForce,
@@ -80,14 +80,14 @@ class ObjectConfigure{
     this.lowerMotorLimit,
     this.upperMotorLimit
   }){
-    this.position = position?.clone() ?? Vec3();
-    this.position2 = position2?.clone() ?? Vec3();
-    this.positionShape = positionShape?.clone() ?? Vec3();
-    this.rotation = rotation?.clone() ?? Quat();
-    this.rotationShape = rotationShape?.clone() ?? Quat();
+    this.position = position?.clone() ?? Vector3.zero();
+    this.position2 = position2?.clone() ?? Vector3.zero();
+    this.positionShape = positionShape?.clone() ?? Vector3.zero();
+    this.rotation = rotation?.clone() ?? Quaternion(0,0,0,1);
+    this.rotationShape = rotationShape?.clone() ?? Quaternion(0,0,0,1);
 
-    this.axis1 = axis1?.clone() ?? Vec3();
-    this.axis2 = axis2?.clone() ?? Vec3();
+    this.axis1 = axis1?.clone() ?? Vector3.zero();
+    this.axis2 = axis2?.clone() ?? Vector3.zero();
 
     this.shapeConfig = shapeConfig ?? ShapeConfig();
 
@@ -102,11 +102,11 @@ class ObjectConfigure{
   bool kinematic;
   bool neverSleep;
 
-  late Vec3 position;
-  late Vec3 position2;
-  late Vec3 positionShape;
-  late Quat rotation;
-  late Quat rotationShape;
+  late Vector3 position;
+  late Vector3 position2;
+  late Vector3 positionShape;
+  late Quaternion rotation;
+  late Quaternion rotationShape;
   //late List<double> size;
 
   late ShapeConfig shapeConfig;
@@ -123,8 +123,8 @@ class ObjectConfigure{
   late double max;
   late double min;
 
-  late Vec3 axis1;
-  late Vec3 axis2;
+  late Vector3 axis1;
+  late Vector3 axis2;
 
   double? motorSpeed; 
   double? motorForce;
@@ -144,9 +144,9 @@ class WorldConfigure {
     this.enableRandomizer = true,
     this.iterations = 8,
     this.setPerformance = false,
-    Vec3? gravity
+    Vector3? gravity
   }){
-    this.gravity = gravity ?? Vec3(0,-9.8,0);
+    this.gravity = gravity ?? Vector3(0,-9.8,0);
   }
 
   double scale;
@@ -156,7 +156,7 @@ class WorldConfigure {
   bool isStat;
   BroadPhaseType broadPhaseType;
   bool setPerformance;
-  late Vec3 gravity;
+  late Vector3 gravity;
 }
 
 /// The class of physical computing world.
@@ -273,7 +273,7 @@ class World{
   int numIslands=0;
 
   /// The gravity in the world.
-  late Vec3 gravity;
+  late Vector3 gravity;
   
   int numShapeTypes = 5;//4;//3;
   Map<String,CollisionDetector> detectors={};
@@ -299,7 +299,7 @@ class World{
     timer = null;
   }
   void setGravity(List<double> ar){
-    gravity.fromArray( ar );
+    gravity.copyFromArray( ar );
   }
   String getInfo(){
     return isStat?(performance?.show() ?? '') : '';
@@ -533,8 +533,8 @@ class World{
   /// Should call sleep
   bool callSleep(RigidBody body) {
     if( !body.allowSleep ) return false;
-    if( body.linearVelocity.lengthSq() > 0.04 ) return false;
-    if( body.angularVelocity.lengthSq() > 0.25 ) return false;
+    if( body.linearVelocity.length2 > 0.04 ) return false;
+    if( body.angularVelocity.length2 > 0.25 ) return false;
     return true;
   }
 
@@ -739,11 +739,11 @@ class World{
       } while( stackCount != 0 );
 
       // update velocities
-      Vec3 gVel = Vec3().addScaledVector(gravity, timeStep);
+      Vector3 gVel = Vector3.copy(gravity)..scale(timeStep);
       for(int j=0; j< islandNumRigidBodies; j++){
         body = islandRigidBodies[j];
         if(body!.isDynamic){
-          body.linearVelocity.addEqual(gVel);
+          body.linearVelocity.add(gVel);
         }
       }
 
@@ -842,8 +842,8 @@ class World{
 
     // rigidbody
     final body = RigidBody( 
-      position: Vec3().scale(config.position, invScale),
-      orientation: Quat().scale(config.rotation, invScale),
+      position: Vector3.copy(config.position)..scale(invScale),
+      orientation: Quaternion.copy(config.rotation)..scale(invScale),
       type: config.kinematic?RigidBodyType.kinematic:config.move?RigidBodyType.dynamic:RigidBodyType.static,
       allowSleep: !config.neverSleep,
       name: config.name,
@@ -864,8 +864,8 @@ class World{
 
     final axe1 = config.axis1;
     final axe2 = config.axis2;
-    final pos1 = Vec3().scale(config.position,invScale);
-    final pos2 = Vec3().scale(config.position2,invScale);
+    final pos1 = Vector3.copy(config.position)..scale(invScale);
+    final pos2 = Vector3.copy(config.position2)..scale(invScale);
 
     double min = config.min;
     double max = config.max;
@@ -883,10 +883,10 @@ class World{
     jc.scale = scale;
     jc.invScale = this.invScale;
     jc.allowCollision = config.allowCollision;
-    jc.localAxis1.copy( axe1 );
-    jc.localAxis2.copy( axe2 );
-    jc.localAnchorPoint1.copy( pos1 );
-    jc.localAnchorPoint2.copy( pos2 );
+    jc.localAxis1.setFrom( axe1 );
+    jc.localAxis2.setFrom( axe2 );
+    jc.localAnchorPoint1.setFrom( pos1 );
+    jc.localAnchorPoint2.setFrom( pos2 );
 
     RigidBody? b1 = config.body1;
     RigidBody? b2 = config.body2;

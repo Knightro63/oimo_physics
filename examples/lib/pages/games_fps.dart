@@ -12,17 +12,8 @@ import 'package:three_dart/three_dart.dart' as three;
 import 'package:three_dart/three_dart.dart' hide Texture, Color;
 import 'package:three_dart_jsm/three_dart_jsm.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
-extension on oimo.Vec3{
-  Vector3 toVector3(){
-    return Vector3(x,y,z);
-  }
-}
-extension on oimo.Quat{
-  Quaternion toQuaternion(){
-    return Quaternion(x,y,z,w);
-  }
-}
 class SphereData{
   SphereData({
     required this.mesh,
@@ -116,7 +107,7 @@ class _TestGamePageState extends State<TestGame> {
   void initoimoPhysics(){
     world = oimo.World();
     lastCallTime = world.time;
-    world.gravity.set(0, -gravity, 0);
+    world.gravity.setValues(0, -gravity, 0);
   }
   void initSize(BuildContext context) {
     if (screenSize != null) {
@@ -183,7 +174,7 @@ class _TestGamePageState extends State<TestGame> {
       final triBody = oimo.RigidBody(
         shapes: [triShape],
         name: 'trimesh',
-        orientation: oimo.Quat(),
+        orientation: vmath.Quaternion(0,0,0,1),
       );
       world.addRigidBody(triBody);
 
@@ -215,7 +206,7 @@ class _TestGamePageState extends State<TestGame> {
         ),
         radius
       )],
-      position: oimo.Vec3(0, 5, 0),
+      position: vmath.Vector3(0, 5, 0),
       type: RigidBodyType.dynamic
     );
     // sphereBody.linearDamping = 0.9;
@@ -345,7 +336,7 @@ class _TestGamePageState extends State<TestGame> {
         0.2
       )],
       type: RigidBodyType.dynamic,
-      linearVelocity: oimo.Vec3(
+      linearVelocity: vmath.Vector3(
         shootDirection.x * shootVelocity,
         shootDirection.y * shootVelocity,
         shootDirection.z * shootVelocity
@@ -362,7 +353,7 @@ class _TestGamePageState extends State<TestGame> {
     double x = sphereBody.position.x + shootDirection.x * (ballRadius * 1.02 + radius);
     double y = sphereBody.position.y + shootDirection.y * (ballRadius * 1.02 + radius);
     double z = sphereBody.position.z + shootDirection.z * (ballRadius * 1.02 + radius);
-    ballBody.position.set(x, y, z);
+    ballBody.position.setValues(x, y, z);
     ballMesh.position.copy(ballBody.position.toVector3());
 
     world.addRigidBody(ballBody);
@@ -371,12 +362,12 @@ class _TestGamePageState extends State<TestGame> {
   void updatePlayer(){
     final body = playerBody;
     // Interpolated or not?
-    oimo.Vec3 position = body.position;
-    oimo.Quat quaternion = body.orientation;
+    vmath.Vector3 position = body.position;
+    //vmath.Quaternion quaternion = body.orientation;
 
     if(paused) {
       position = body.position;
-      quaternion = body.orientation;
+      //quaternion = body.orientation;
     }
 
     camera.position.copy(position.toVector3());
@@ -389,8 +380,8 @@ class _TestGamePageState extends State<TestGame> {
       Object3D dummy = Object3D();
 
       // Interpolated or not?
-      oimo.Vec3 position = body.position;
-      oimo.Quat quaternion = body.orientation;
+      vmath.Vector3 position = body.position;
+      vmath.Quaternion quaternion = body.orientation;
       if(paused) {
         position = body.position;
         quaternion = body.orientation;

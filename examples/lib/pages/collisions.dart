@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'dart:math' as math;
-
-extension on oimo.Quat{
-  Quaternion toQuaternion(){
-    return Quaternion(x,y,z,w);
-  }
-}
-extension on oimo.Vec3{
-  Vector3 toVector3(){
-    return Vector3(x,y,z);
-  }
-}
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Collisions extends StatefulWidget {
   const Collisions({
@@ -34,7 +23,7 @@ class _CollisionsState extends State<Collisions> {
       settings: oimo.WorldConfigure(
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.volume,
-        gravity: oimo.Vec3()
+        gravity: vmath.Vector3.zero()
       )
     );
     setupWorld();
@@ -56,20 +45,20 @@ class _CollisionsState extends State<Collisions> {
     final body1 = oimo.RigidBody(
       shapes: [oimo.Sphere(oimo.ShapeConfig(),1)],
       type: oimo.RigidBodyType.dynamic,
-      position: oimo.Vec3(-5, 0, 0),
+      position: vmath.Vector3(-5, 0, 0),
       mass: 5
     );
-    body1.linearVelocity.set(5, 0, 0);
+    body1.linearVelocity.setValues(5, 0, 0);
     demo.addRigidBody(body1);
 
     // Sphere 2
     final body2 = oimo.RigidBody(
       shapes: [oimo.Sphere(oimo.ShapeConfig(),1)],
       type: oimo.RigidBodyType.dynamic,
-      position: oimo.Vec3(5, 0, 0),
+      position: vmath.Vector3(5, 0, 0),
       mass: 5
     );
-    body2.linearVelocity.set(-5, 0, 0);
+    body2.linearVelocity.setValues(-5, 0, 0);
     demo.addRigidBody(body2);
   }
   void setScene1(){
@@ -79,77 +68,77 @@ class _CollisionsState extends State<Collisions> {
     final body1 = oimo.RigidBody(
       shapes: [boxShape],
       type: oimo.RigidBodyType.dynamic,
-      position: oimo.Vec3(-5, 0, 0),
+      position: vmath.Vector3(-5, 0, 0),
       mass: 5
     );
-    body1.linearVelocity.set(5, 0, 0);
+    body1.linearVelocity.setValues(5, 0, 0);
     demo.addRigidBody(body1);
 
     // Sphere
     final body2 = oimo.RigidBody(
       shapes: [sphereShape],
       type: oimo.RigidBodyType.dynamic,
-      position: oimo.Vec3(5, 0, 0),
+      position: vmath.Vector3(5, 0, 0),
       mass: 5
     );
-    body2.linearVelocity.set(-5, 0, 0);
+    body2.linearVelocity.setValues(-5, 0, 0);
     demo.addRigidBody(body2);
   }
   void setScene2(){
     final boxShape = oimo.Box(oimo.ShapeConfig(),2, 2, 2);
     final sphereShape = oimo.Sphere(oimo.ShapeConfig(),1);
-    final quaternion = oimo.Quat().setFromEuler(0, math.pi * 0.25, 0);
+    final quaternion = vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, math.pi * 0.25, 0);
 
     // Box
     final body1 = oimo.RigidBody(
-      position: oimo.Vec3(-5,0,0),
+      position: vmath.Vector3(-5,0,0),
       orientation: quaternion,
       type: oimo.RigidBodyType.dynamic,
       shapes: [boxShape],
       mass: 5
     );
-    body1.linearVelocity = oimo.Vec3(5,0,0);
+    body1.linearVelocity = vmath.Vector3(5,0,0);
     demo.addRigidBody(body1);
 
     // Sphere
     final body2 = oimo.RigidBody(
-      position: oimo.Vec3(5,0,0),
+      position: vmath.Vector3(5,0,0),
       type: oimo.RigidBodyType.dynamic,
       shapes: [sphereShape],
       mass: 5
     );
-    body2.linearVelocity = oimo.Vec3(-5,0,0);
+    body2.linearVelocity = vmath.Vector3(-5,0,0);
     demo.addRigidBody(body2);
   }
   void setScene3(){
     final boxShape = oimo.Box(oimo.ShapeConfig(),2, 2, 2);
     final sphereShape = oimo.Sphere(oimo.ShapeConfig(),1);
-    final quaternion1 = oimo.Quat();
-    quaternion1.setFromEuler(0, math.pi * 0.25, 0);
-    final quaternion2 = oimo.Quat();
-    quaternion2.setFromEuler(0, 0, math.pi * 0.25);
+    final quaternion1 = vmath.Quaternion(0,0,1,0);
+    quaternion1.setEuler(0, 0,math.pi * 0.25);
+    final quaternion2 = vmath.Quaternion(0,0,1,0);
+    quaternion2.setEuler(math.pi * 0.25,0,0);
     final quaternion = quaternion1.mult(quaternion2);
     // Box
     final body1 = oimo.RigidBody(
       shapes: [boxShape],
       type: oimo.RigidBodyType.dynamic,
-      position: oimo.Vec3(-5, 0, 0),
+      position: vmath.Vector3(-5, 0, 0),
       orientation: quaternion,
       mass: 5
     );
 
-    body1.linearVelocity.set(5, 0, 0);
+    body1.linearVelocity.setValues(5, 0, 0);
     demo.addRigidBody(body1);
 
     // Sphere
     final body2 = oimo.RigidBody(
       shapes: [sphereShape],
       type: oimo.RigidBodyType.dynamic,
-      position: oimo.Vec3(5, 0, 0),
+      position: vmath.Vector3(5, 0, 0),
       mass: 5,
     );
     body2.fixedRotation = true;
-    body2.linearVelocity.set(-5, 0, 0);
+    body2.linearVelocity.setValues(-5, 0, 0);
     demo.addRigidBody(body2);
   }
   void setupWorld(){

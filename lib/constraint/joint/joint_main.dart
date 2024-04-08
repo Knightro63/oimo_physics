@@ -3,6 +3,7 @@ import '../constraint_main.dart';
 import 'joint_link.dart';
 import 'joint_config.dart';
 import '../../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// Joint types
 enum JointType{none,distance,socket,hinge,wheel,slider,prismatic}
@@ -16,8 +17,8 @@ class Joint extends Constraint{
     body1 = config.body1;
     body2 = config.body2;
   
-    localAnchorPoint1 = Vec3().copy( config.localAnchorPoint1 );
-    localAnchorPoint2 = Vec3().copy( config.localAnchorPoint2 );
+    localAnchorPoint1 = Vector3.copy( config.localAnchorPoint1 );
+    localAnchorPoint2 = Vector3.copy( config.localAnchorPoint2 );
 
     allowCollision = config.allowCollision;
 
@@ -40,17 +41,17 @@ class Joint extends Constraint{
   Joint? next;
 
   /// anchor point on the first rigid body in local coordinate system.
-  late Vec3 localAnchorPoint1;
+  late Vector3 localAnchorPoint1;
   /// anchor point on the second rigid body in local coordinate system.
-  late Vec3 localAnchorPoint2;
+  late Vector3 localAnchorPoint2;
   /// anchor point on the first rigid body in world coordinate system relative to the body's origin.
-  Vec3 relativeAnchorPoint1 = Vec3();
+  Vector3 relativeAnchorPoint1 = Vector3.zero();
   /// anchor point on the second rigid body in world coordinate system relative to the body's origin.
-  Vec3 relativeAnchorPoint2 = Vec3();
+  Vector3 relativeAnchorPoint2 = Vector3.zero();
   ///  anchor point on the first rigid body in world coordinate system.
-  Vec3 anchorPoint1 = Vec3();
+  Vector3 anchorPoint1 = Vector3.zero();
   /// anchor point on the second rigid body in world coordinate system.
-  Vec3 anchorPoint2 = Vec3();
+  Vector3 anchorPoint2 = Vector3.zero();
   /// Whether allow collision between connected rigid bodies or not.
   late bool allowCollision;
 
@@ -72,11 +73,11 @@ class Joint extends Constraint{
 
   /// Update all the anchor points.a
   void updateAnchorPoints() {
-    relativeAnchorPoint1.copy( localAnchorPoint1 ).applyMatrix3(body1!.rotation, true );
-    relativeAnchorPoint2.copy(localAnchorPoint2 ).applyMatrix3(body2!.rotation, true );
+    relativeAnchorPoint1..setFrom( localAnchorPoint1 )..applyMatrix3Transpose(body1!.rotation );
+    relativeAnchorPoint2..setFrom(localAnchorPoint2 )..applyMatrix3Transpose(body2!.rotation );
 
-    anchorPoint1.add( relativeAnchorPoint1, body1!.position );
-    anchorPoint2.add( relativeAnchorPoint2, body2!.position );
+    anchorPoint1.add2( relativeAnchorPoint1, body1!.position );
+    anchorPoint2.add2( relativeAnchorPoint2, body2!.position );
   }
 
   /// Attach the joint from the bodies.
@@ -170,9 +171,9 @@ class Joint extends Constraint{
   }
 
   /// get the scaled position of the joint
-  List<Vec3> getPosition() {
-    Vec3 p1 = Vec3().scale(anchorPoint1, scale);
-    Vec3 p2 = Vec3().scale(anchorPoint2, scale);
+  List<Vector3> getPosition() {
+    Vector3 p1 = Vector3.copy(anchorPoint1)..scale(scale);
+    Vector3 p2 = Vector3.copy(anchorPoint2)..scale(scale);
     return [p1, p2];
   }
 }

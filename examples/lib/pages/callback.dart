@@ -3,6 +3,7 @@ import 'package:oimo_physics/core/rigid_body.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Callback extends StatefulWidget {
   const Callback({
@@ -21,7 +22,7 @@ class _CallbackState extends State<Callback> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-40,0),
+        gravity: vmath.Vector3(0,-40,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep
       )
@@ -45,7 +46,7 @@ class _CallbackState extends State<Callback> {
     );
     final moon = oimo.RigidBody(
       shapes: [moonShape],
-      position: oimo.Vec3(-5, 0, 0),
+      position: vmath.Vector3(-5, 0, 0),
       type: RigidBodyType.kinematic
     );
 
@@ -61,7 +62,7 @@ class _CallbackState extends State<Callback> {
       
       double y = Math.sin(-progress)*(-5);
       double x = Math.cos(-progress)*(-5);
-      moon.position.set(x, y, 0);
+      moon.position.setValues(x, y, 0);
     };
 
     demo.addRigidBody(moon);

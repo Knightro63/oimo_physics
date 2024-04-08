@@ -9,9 +9,10 @@ import 'package:oimo_physics/shape/triangle.dart';
 import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import 'dart:math' as math;
+import 'package:vector_math/vector_math.dart' hide Plane, Triangle;
 
 class OctreeCapsuleCollisionDetector extends CollisionDetector{
-	final Vec3 _v1 = Vec3();
+	final Vector3 _v1 = Vector3.zero();
 	final Plane _plane = Plane(ShapeConfig());
 	final Line _line1 = Line();
 	final Line _line2 = Line();
@@ -49,16 +50,16 @@ class OctreeCapsuleCollisionDetector extends CollisionDetector{
     }
 
     if(hit){
-      Vec3 collisionVector = _capsule.getCenter(Vec3()).sub( capsule.getCenter(_v1));
-      double depth = collisionVector.length();
-      return OctreeData(point: Vec3(), normal: collisionVector.normalize(), depth: depth);
+      Vector3 collisionVector = _capsule.getCenter(Vector3.zero())..sub( capsule.getCenter(_v1));
+      double depth = collisionVector.length;
+      return OctreeData(point: Vector3.zero(), normal: collisionVector..normalize(), depth: depth);
     }
 
     return null;
   }
 
   OctreeData? triangleCapsuleIntersect(Capsule capsule, Triangle triangle) {
-    Vec3 point1, point2;
+    Vector3 point1, point2;
     Line line1, line2;
 
     triangle.getPlane(_plane);
@@ -71,7 +72,7 @@ class OctreeCapsuleCollisionDetector extends CollisionDetector{
     }
 
     double delta = (d1 / (d1.abs() + d2.abs())).abs();
-    Vec3 intersectPoint = _v1.copy( capsule.start ).lerp( capsule.end, delta );
+    Vector3 intersectPoint = _v1..setFrom( capsule.start )..lerp( capsule.end, delta );
 
     if(triangle.containsPoint( intersectPoint)){
       return OctreeData(normal: _plane.normal.clone(), point: intersectPoint.clone(), depth: math.min( d1, d2 ).toDouble().abs());
@@ -81,7 +82,7 @@ class OctreeCapsuleCollisionDetector extends CollisionDetector{
 
     line1 = _line1.set( capsule.start, capsule.end );
 
-    List<List<Vec3>> lines = [
+    List<List<Vector3>> lines = [
       [ triangle.a, triangle.b ],
       [ triangle.b, triangle.c ],
       [ triangle.c, triangle.a ]
@@ -90,11 +91,11 @@ class OctreeCapsuleCollisionDetector extends CollisionDetector{
     for (int i = 0; i < lines.length; i++){
       line2 = _line2.set( lines[ i ][ 0 ], lines[ i ][ 1 ] );
 
-      List<Vec3> pt = capsule.lineLineMinimumPoints( line1, line2 );
+      List<Vector3> pt = capsule.lineLineMinimumPoints( line1, line2 );
       point1  = pt[0];
       point2 = pt[1];
       if ( point1.distanceToSquared( point2 ) < r2 ) {
-        return OctreeData(normal: point1.clone().sub( point2 ).normalize(), point: point2.clone(), depth: capsule.radius - point1.distanceTo( point2 ));
+        return OctreeData(normal: point1.clone()..sub( point2 )..normalize(), point: point2.clone(), depth: capsule.radius - point1.distanceTo( point2 ));
       }
     }
 

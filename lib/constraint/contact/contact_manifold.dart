@@ -1,7 +1,8 @@
 import 'manifold_point.dart';
-import '../../math/vec3.dart';
 import '../../core/rigid_body.dart';
 import '../../shape/shape_main.dart';
+import 'package:vector_math/vector_math.dart';
+import '../../math/vec3.dart';
 
 /// A contact manifold between two shapes.
 class ContactManifold{
@@ -37,15 +38,15 @@ class ContactManifold{
   /// [penetration] depth of the contact
   /// 
   /// [flip] flip direction of contact
-  void addPointVec(Vec3 pos, [Vec3? norm, double penetration = 0, bool flip = false]) {
+  void addPointVec(Vector3 pos, [Vector3? norm, double penetration = 0, bool flip = false]) {
     ManifoldPoint p = points[numPoints++];
 
-    p.position.copy(pos);
-    p.localPoint1.sub(pos, body1!.position).applyMatrix3(body1!.rotation );
-    p.localPoint2.sub(pos, body2!.position).applyMatrix3(body2!.rotation );
+    p.position.setFrom(pos);
+    p.localPoint1.sub2(pos, body1!.position).applyMatrix3(body1!.rotation );
+    p.localPoint2.sub2(pos, body2!.position).applyMatrix3(body2!.rotation );
 
     if(norm != null){
-      p.normal.copy(norm);
+      p.normal.setFrom(norm);
     }
 
     if(flip){
@@ -77,13 +78,13 @@ class ContactManifold{
   void addPoint(double x,double y,double z,double nx,double ny,double nz,double penetration,bool flip){
     ManifoldPoint p = points[numPoints++];
 
-    p.position.set( x, y, z );
-    p.localPoint1.sub( p.position, body1!.position ).applyMatrix3(body1!.rotation );
-    p.localPoint2.sub( p.position, body2!.position ).applyMatrix3(body2!.rotation );
+    p.position.setValues( x, y, z );
+    p.localPoint1.sub2( p.position, body1!.position ).applyMatrix3(body1!.rotation );
+    p.localPoint2.sub2( p.position, body2!.position ).applyMatrix3(body2!.rotation );
 
     p.normalImpulse = 0;
 
-    p.normal.set( nx, ny, nz );
+    p.normal.setValues( nx, ny, nz );
     if( flip ) p.normal.inverse();
 
     p.penetration = penetration;

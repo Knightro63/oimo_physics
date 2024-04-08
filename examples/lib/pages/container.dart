@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class ContainerCP extends StatefulWidget {
   const ContainerCP({
@@ -20,7 +21,7 @@ class _ContainerState extends State<ContainerCP> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-30,0),
+        gravity: vmath.Vector3(0,-30,0),
         iterations: 10,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -41,7 +42,7 @@ class _ContainerState extends State<ContainerCP> {
     final groundBody = oimo.RigidBody(
       mass: 0, 
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(-Math.PI / 2, 0, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -50,8 +51,8 @@ class _ContainerState extends State<ContainerCP> {
     final planeXmin = oimo.RigidBody(
       mass: 0, 
       shapes: [planeShapeXmin],
-      position: oimo.Vec3(-5, 0, 0),
-      orientation: oimo.Quat().setFromEuler(0, Math.PI / 2, 0)
+      position: vmath.Vector3(-5, 0, 0),
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, Math.PI / 2, 0)
     );
     world.addRigidBody(planeXmin);
 
@@ -60,8 +61,8 @@ class _ContainerState extends State<ContainerCP> {
     final planeXmax = oimo.RigidBody(
       mass: 0, 
       shapes: [planeShapeXmax],
-      position: oimo.Vec3(5, 0, 0),
-      orientation: oimo.Quat().setFromEuler(0, -Math.PI / 2, 0)
+      position: vmath.Vector3(5, 0, 0),
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, -Math.PI / 2, 0)
     );
     world.addRigidBody(planeXmax);
 
@@ -70,8 +71,8 @@ class _ContainerState extends State<ContainerCP> {
     final planeZmin = oimo.RigidBody(
       mass: 0, 
       shapes: [planeShapeZmin],
-      position: oimo.Vec3(0, 0, -5),
-      orientation: oimo.Quat().setFromEuler(0, 0, 0)
+      position: vmath.Vector3(0, 0, -5),
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, 0, 0)
     );
     world.addRigidBody(planeZmin);
 
@@ -80,8 +81,8 @@ class _ContainerState extends State<ContainerCP> {
     final planeZmax = oimo.RigidBody(
       mass: 0, 
       shapes: [planeShapeZmax],
-      position: oimo.Vec3(0, 0, 5),
-      orientation: oimo.Quat().setFromEuler(0, Math.PI, 0)
+      position: vmath.Vector3(0, 0, 5),
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, Math.PI, 0)
     );
     world.addRigidBody(planeZmax);
 
@@ -97,7 +98,7 @@ class _ContainerState extends State<ContainerCP> {
           final sphereBody = oimo.RigidBody(
             mass: 5, 
             shapes: [sphereShape],
-            position: oimo.Vec3(
+            position: vmath.Vector3(
               -(i * 2 - nx * 0.5 + (Math.random() - 0.5) * randRange),
               1 + k * 2.1 + heightOffset,
               j * 2 - ny * 0.5 + (Math.random() - 0.5) * randRange

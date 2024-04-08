@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class RagdollData{
   RagdollData({
@@ -29,7 +30,7 @@ class _RagDollState extends State<RagDoll> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-5,0),
+        gravity: vmath.Vector3(0,-5,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -47,8 +48,8 @@ class _RagDollState extends State<RagDoll> {
     final groundBody = oimo.RigidBody(
       mass: 0,
       shapes: [groundShape],
-      position: oimo.Vec3(0, -1, 0),
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, -0.5, 0)
+      position: vmath.Vector3(0, -1, 0),
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, -0.5)
     );
     demo.addRigidBody(groundBody);
   }
@@ -70,8 +71,8 @@ class _RagDollState extends State<RagDoll> {
 
     data.bodies.forEach((body){
       // Move the ragdoll up
-      final position = oimo.Vec3(0, 10, 0);
-      body.position.vadd(position, body.position);
+      final position = vmath.Vector3(0, 10, 0);
+      body.position.add2(position, body.position);
       demo.addRigidBody(body);
     });
 
@@ -100,8 +101,8 @@ class _RagDollState extends State<RagDoll> {
       // twistAngle: Math.PI / 8,
     data.bodies.forEach((body){
       // Move the ragdoll up
-      final position = oimo.Vec3(0, 10, 0);
-      body.position.vadd(position, body.position);
+      final position = vmath.Vector3(0, 10, 0);
+      body.position.add2(position, body.position);
       demo.addRigidBody(body);
     });
 
@@ -127,8 +128,8 @@ class _RagDollState extends State<RagDoll> {
 
     data.bodies.forEach((body){
       // Move the ragdoll up
-      final position = oimo.Vec3(0, 10, 0);
-      body.position.vadd(position, body.position);
+      final position = vmath.Vector3(0, 10, 0);
+      body.position.add2(position, body.position);
       demo.addRigidBody(body);
     });
 
@@ -141,7 +142,7 @@ class _RagDollState extends State<RagDoll> {
     final sphereBody = oimo.RigidBody(
       mass: 0,
       shapes: [sphereShape],
-      position: oimo.Vec3(0, -1, 0)
+      position: vmath.Vector3(0, -1, 0)
     );
     return sphereBody;
   }
@@ -175,7 +176,7 @@ class _RagDollState extends State<RagDoll> {
       lowerLegSize, lowerArmSize, lowerLegLength
     )],
       mass: 1,
-      position: oimo.Vec3(shouldersDistance / 2, 0, lowerLegLength / 2),
+      position: vmath.Vector3(shouldersDistance / 2, 0, lowerLegLength / 2),
     );
     final lowerRightLeg = oimo.RigidBody(
       shapes: [oimo.Box(
@@ -183,7 +184,7 @@ class _RagDollState extends State<RagDoll> {
       lowerLegSize, lowerArmSize, lowerLegLength
     )],
       mass: 1,
-      position: oimo.Vec3(-shouldersDistance / 2, 0, lowerLegLength / 2),
+      position: vmath.Vector3(-shouldersDistance / 2, 0, lowerLegLength / 2),
     );
     bodies.add(lowerLeftLeg);
     bodies.add(lowerRightLeg);
@@ -195,7 +196,7 @@ class _RagDollState extends State<RagDoll> {
       upperLegSize, lowerArmSize, upperLegLength
     )],
       mass: 1,
-      position: oimo.Vec3(
+      position: vmath.Vector3(
         shouldersDistance / 2,
         0,
         lowerLeftLeg.position.z + lowerLegLength / 2 + upperLegLength / 2
@@ -207,7 +208,7 @@ class _RagDollState extends State<RagDoll> {
       upperLegSize, lowerArmSize, upperLegLength
     )],
       mass: 1,
-      position: oimo.Vec3(
+      position: vmath.Vector3(
         -shouldersDistance / 2,
         0,
         lowerRightLeg.position.z + lowerLegLength / 2 + upperLegLength / 2
@@ -223,7 +224,7 @@ class _RagDollState extends State<RagDoll> {
       shouldersDistance, lowerArmSize, pelvisLength
     )],
       mass: 1,
-      position: oimo.Vec3(0, 0, upperLeftLeg.position.z + upperLegLength / 2 + pelvisLength / 2),
+      position: vmath.Vector3(0, 0, upperLeftLeg.position.z + upperLegLength / 2 + pelvisLength / 2),
     );
     bodies.add(pelvis);
 
@@ -234,7 +235,7 @@ class _RagDollState extends State<RagDoll> {
       shouldersDistance, lowerArmSize, upperBodyLength
     )],
       mass: 1,
-      position: oimo.Vec3(0, 0, pelvis.position.z + pelvisLength / 2 + upperBodyLength / 2),
+      position: vmath.Vector3(0, 0, pelvis.position.z + pelvisLength / 2 + upperBodyLength / 2),
     );
     bodies.add(upperBody);
 
@@ -242,7 +243,7 @@ class _RagDollState extends State<RagDoll> {
     final head = oimo.RigidBody(
       shapes: [oimo.Sphere(oimo.ShapeConfig(),headRadius)],
       mass: 1,
-      position: oimo.Vec3(0, 0, upperBody.position.z + upperBodyLength / 2 + headRadius + neckLength),
+      position: vmath.Vector3(0, 0, upperBody.position.z + upperBodyLength / 2 + headRadius + neckLength),
     );
     bodies.add(head);
 
@@ -250,7 +251,7 @@ class _RagDollState extends State<RagDoll> {
     final upperLeftArm = oimo.RigidBody(
       shapes: [oimo.Box(oimo.ShapeConfig(),upperArmLength, upperArmSize, upperArmSize)],
       mass: 1,
-      position: oimo.Vec3(
+      position: vmath.Vector3(
         shouldersDistance / 2 + upperArmLength / 2,
         0,
         upperBody.position.z + upperBodyLength / 2
@@ -259,7 +260,7 @@ class _RagDollState extends State<RagDoll> {
     final upperRightArm = oimo.RigidBody(
       mass: 1,
       shapes: [oimo.Box(oimo.ShapeConfig(),upperArmLength, upperArmSize, upperArmSize)],
-      position: oimo.Vec3(
+      position: vmath.Vector3(
         -shouldersDistance / 2 - upperArmLength / 2,
         0,
         upperBody.position.z + upperBodyLength / 2
@@ -275,7 +276,7 @@ class _RagDollState extends State<RagDoll> {
       lowerArmLength, lowerArmSize, lowerArmSize
     )],
       mass: 1,
-      position: oimo.Vec3(
+      position: vmath.Vector3(
         upperLeftArm.position.x + lowerArmLength / 2 + upperArmLength / 2,
         0,
         upperLeftArm.position.z
@@ -287,7 +288,7 @@ class _RagDollState extends State<RagDoll> {
       lowerArmLength, lowerArmSize, lowerArmSize
     )],
       mass: 1,
-      position: oimo.Vec3(
+      position: vmath.Vector3(
         upperRightArm.position.x - lowerArmLength / 2 - upperArmLength / 2,
         0,
         upperRightArm.position.z
@@ -301,10 +302,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:head, 
         body2:upperBody,
-        localAnchorPoint1: oimo.Vec3(0, 0, -headRadius - neckLength / 2),
-        localAnchorPoint2: oimo.Vec3(0, 0, upperBodyLength / 2),
-        localAxis1: oimo.Vec3(0,1,0),
-        localAxis2: oimo.Vec3(0,1,0),
+        localAnchorPoint1: vmath.Vector3(0, 0, -headRadius - neckLength / 2),
+        localAnchorPoint2: vmath.Vector3(0, 0, upperBodyLength / 2),
+        localAxis1: vmath.Vector3(0,1,0),
+        localAxis2: vmath.Vector3(0,1,0),
       ),
       angle,
       twistAngle,
@@ -316,10 +317,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:lowerLeftLeg, 
         body2:upperLeftLeg,
-        localAnchorPoint1: oimo.Vec3(0, 0, lowerLegLength / 2),
-        localAnchorPoint2: oimo.Vec3(0, 0, -upperLegLength / 2),
-        localAxis1: oimo.Vec3(1,0,0),
-        localAxis2: oimo.Vec3(1,0,0),
+        localAnchorPoint1: vmath.Vector3(0, 0, lowerLegLength / 2),
+        localAnchorPoint2: vmath.Vector3(0, 0, -upperLegLength / 2),
+        localAxis1: vmath.Vector3(1,0,0),
+        localAxis2: vmath.Vector3(1,0,0),
       ),
       angle,
       twistAngle,
@@ -328,10 +329,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:lowerRightLeg, 
         body2:upperRightLeg, 
-        localAnchorPoint1: oimo.Vec3(0, 0, lowerLegLength / 2),
-        localAnchorPoint2: oimo.Vec3(0, 0, -upperLegLength / 2),
-        localAxis1: oimo.Vec3(1,0,0),
-        localAxis2: oimo.Vec3(1,0,0),
+        localAnchorPoint1: vmath.Vector3(0, 0, lowerLegLength / 2),
+        localAnchorPoint2: vmath.Vector3(0, 0, -upperLegLength / 2),
+        localAxis1: vmath.Vector3(1,0,0),
+        localAxis2: vmath.Vector3(1,0,0),
       ),
       angle,
       twistAngle,
@@ -344,10 +345,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1: upperLeftLeg, 
         body2: pelvis,
-        localAnchorPoint1: oimo.Vec3(0, 0, upperLegLength / 2),
-        localAnchorPoint2: oimo.Vec3(shouldersDistance / 2, 0, -pelvisLength / 2),
-        localAxis1: oimo.Vec3(0,1,0),
-        localAxis2: oimo.Vec3(0,1,0),
+        localAnchorPoint1: vmath.Vector3(0, 0, upperLegLength / 2),
+        localAnchorPoint2: vmath.Vector3(shouldersDistance / 2, 0, -pelvisLength / 2),
+        localAxis1: vmath.Vector3(0,1,0),
+        localAxis2: vmath.Vector3(0,1,0),
       ),
       angle,
       twistAngle,
@@ -356,10 +357,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:upperRightLeg, 
         body2:pelvis,
-        localAnchorPoint1: oimo.Vec3(0, 0, upperLegLength / 2),
-        localAnchorPoint2: oimo.Vec3(-shouldersDistance / 2, 0, -pelvisLength / 2),
-        localAxis1: oimo.Vec3(0,1,0),
-        localAxis2: oimo.Vec3(0,1,0),
+        localAnchorPoint1: vmath.Vector3(0, 0, upperLegLength / 2),
+        localAnchorPoint2: vmath.Vector3(-shouldersDistance / 2, 0, -pelvisLength / 2),
+        localAxis1: vmath.Vector3(0,1,0),
+        localAxis2: vmath.Vector3(0,1,0),
       ),
       angle,
       twistAngle,
@@ -372,10 +373,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:pelvis, 
         body2:upperBody,
-        localAnchorPoint1: oimo.Vec3(0, 0, pelvisLength / 2),
-        localAnchorPoint2: oimo.Vec3(0, 0, -upperBodyLength / 2),
-         localAxis1: oimo.Vec3(1,0,0),
-        localAxis2: oimo.Vec3(1,0,0),
+        localAnchorPoint1: vmath.Vector3(0, 0, pelvisLength / 2),
+        localAnchorPoint2: vmath.Vector3(0, 0, -upperBodyLength / 2),
+         localAxis1: vmath.Vector3(1,0,0),
+        localAxis2: vmath.Vector3(1,0,0),
       ),
       angle,
       twistAngle,
@@ -387,10 +388,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:upperBody, 
         body2:upperLeftArm,
-        localAnchorPoint1: oimo.Vec3(shouldersDistance / 2, 0, upperBodyLength / 2),
-        localAnchorPoint2: oimo.Vec3(-upperArmLength / 2, 0, 0),
-        localAxis1: oimo.Vec3(1,0,0),
-        localAxis2: oimo.Vec3(1,0,0),
+        localAnchorPoint1: vmath.Vector3(shouldersDistance / 2, 0, upperBodyLength / 2),
+        localAnchorPoint2: vmath.Vector3(-upperArmLength / 2, 0, 0),
+        localAxis1: vmath.Vector3(1,0,0),
+        localAxis2: vmath.Vector3(1,0,0),
       ),
       0,
       angleShoulders,
@@ -399,10 +400,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:upperBody, 
         body2:upperRightArm,
-        localAnchorPoint1: oimo.Vec3(-shouldersDistance / 2, 0, upperBodyLength / 2),
-        localAnchorPoint2: oimo.Vec3(upperArmLength / 2, 0, 0),
-        localAxis1: oimo.Vec3(0,1,1),
-        localAxis2: oimo.Vec3(0,1,1),
+        localAnchorPoint1: vmath.Vector3(-shouldersDistance / 2, 0, upperBodyLength / 2),
+        localAnchorPoint2: vmath.Vector3(upperArmLength / 2, 0, 0),
+        localAxis1: vmath.Vector3(0,1,1),
+        localAxis2: vmath.Vector3(0,1,1),
       ),
       0,
       angleShoulders,
@@ -415,10 +416,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:lowerLeftArm, 
         body2:upperLeftArm,
-        localAnchorPoint1: oimo.Vec3(-lowerArmLength / 2, 0, 0),
-        localAnchorPoint2: oimo.Vec3(upperArmLength / 2, 0, 0),
-        localAxis1: oimo.Vec3(0,1,0),
-        localAxis2: oimo.Vec3(0,1,0),
+        localAnchorPoint1: vmath.Vector3(-lowerArmLength / 2, 0, 0),
+        localAnchorPoint2: vmath.Vector3(upperArmLength / 2, 0, 0),
+        localAxis1: vmath.Vector3(0,1,0),
+        localAxis2: vmath.Vector3(0,1,0),
       ),
       angle,
       twistAngle,
@@ -427,10 +428,10 @@ class _RagDollState extends State<RagDoll> {
       oimo.JointConfig(
         body1:lowerRightArm, 
         body2:upperRightArm,
-        localAnchorPoint1: oimo.Vec3(lowerArmLength / 2, 0, 0),
-        localAnchorPoint2: oimo.Vec3(-upperArmLength / 2, 0, 0),
-        localAxis1: oimo.Vec3(0,1,0),
-        localAxis2: oimo.Vec3(0,1,0),
+        localAnchorPoint1: vmath.Vector3(lowerArmLength / 2, 0, 0),
+        localAnchorPoint2: vmath.Vector3(-upperArmLength / 2, 0, 0),
+        localAxis1: vmath.Vector3(0,1,0),
+        localAxis2: vmath.Vector3(0,1,0),
       ),
       angle,
       twistAngle,

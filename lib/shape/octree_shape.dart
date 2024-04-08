@@ -2,6 +2,7 @@ import 'package:oimo_physics/oimo_physics.dart';
 import 'package:oimo_physics/shape/mass_info.dart';
 import 'dart:math' as math;
 import '../shape/triangle.dart';
+import 'package:vector_math/vector_math.dart' hide Triangle;
 
 class OctreeData{
   OctreeData({
@@ -10,8 +11,8 @@ class OctreeData{
     required this.depth
   });
 
-  Vec3? point;
-  Vec3 normal;
+  Vector3? point;
+  Vector3 normal;
   double depth;
 
   @override
@@ -35,8 +36,8 @@ class OctreeNode{
     this.box = box ?? AABB();
 	}
 
-  final Vec3 _v2 = Vec3();
-  final Vec3 _v1 = Vec3();
+  final Vector3 _v2 = Vector3.zero();
+  final Vector3 _v1 = Vector3.zero();
 
   void addTriangle(Triangle triangle){
     bounds ??= AABB();
@@ -60,15 +61,15 @@ class OctreeNode{
   }
   void split(int level){
     List<OctreeNode> _subTrees = [];
-    Vec3 halfsize = _v2.copy(box.max).sub(box.min).multiplyScalar(0.5);
+    Vector3 halfsize = _v2..setFrom(box.max)..sub(box.min)..multiplyScalar(0.5);
 
     for (int x = 0; x < 2; x ++ ) {
       for (int y = 0; y < 2; y ++ ) {
         for (int z = 0; z < 2; z ++ ) {
           AABB _box = AABB();
-          final Vec3 v = _v1.set(x.toDouble(), y.toDouble(), z.toDouble());
-          _box.min = _box.min.copy(box.min).add(v.multiply(halfsize));
-          _box.max = _box.max.copy(_box.min).add(halfsize);
+          final Vector3 v = _v1..setValues(x.toDouble(), y.toDouble(), z.toDouble());
+          _box.min = _box.min..setFrom(box.min)..add(v..multiply(halfsize));
+          _box.max = _box.max..setFrom(_box.min)..add(halfsize);
           _subTrees.add(OctreeNode(_box.clone()));
         }
       }
@@ -131,9 +132,9 @@ class Octree extends Shape{
 
   void _fromGraphNode(){
     for(int i = 0; i < _vertices.length; i += 9) {
-      Vec3 v1 = Vec3(_vertices[i],_vertices[i+1],_vertices[i+2]);
-      Vec3 v2 = Vec3(_vertices[i+3],_vertices[i+4],_vertices[i+5]);
-      Vec3 v3 = Vec3(_vertices[i+6],_vertices[i+7],_vertices[i+8]);
+      Vector3 v1 = Vector3(_vertices[i],_vertices[i+1],_vertices[i+2]);
+      Vector3 v2 = Vector3(_vertices[i+3],_vertices[i+4],_vertices[i+5]);
+      Vector3 v3 = Vector3(_vertices[i+6],_vertices[i+7],_vertices[i+8]);
 
       // v1;//.applyMatrix4(obj.matrixWorld);
       // v2;//.applyMatrix4(obj.matrixWorld);
@@ -149,12 +150,12 @@ class Octree extends Shape{
   void calculateMassInfo(MassInfo out) {
     out.mass = density;//0.0001;
     double inertia = 1;
-    out.inertia.set( inertia, 0, 0, 0, inertia, 0, 0, 0, inertia );
+    out.inertia.setValues( inertia, 0, 0, 0, inertia, 0, 0, 0, inertia );
   }
 
   @override
   void updateProxy() {
-    print('Bounds: ${node.bounds}');
+    //print('Bounds: ${node.bounds}');
     // The plane AABB is infinite, except if the normal is pointing along any axis
     aabb.set(
       node.bounds!.minX, 

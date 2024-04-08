@@ -1,7 +1,7 @@
 import 'mass_info.dart';
 import 'shape_config.dart';
 import 'shape_main.dart';
-import '../math/vec3.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// A Particule shape
 class Particle extends Shape{
@@ -15,7 +15,7 @@ class Particle extends Shape{
     type = Shapes.particle;
   }
 
-  late Vec3 normal;
+  late Vector3 normal;
 
   /// Calculate the volume of the particle
   double volume() {
@@ -25,7 +25,7 @@ class Particle extends Shape{
   @override
   void calculateMassInfo(MassInfo out) {
     double inertia = 0;
-    out.inertia.set(inertia, 0, 0, 0, inertia, 0, 0, 0, inertia);
+    out.inertia.setValues(inertia, 0, 0, 0, inertia, 0, 0, 0, inertia);
   }
   @override
   void updateProxy() {

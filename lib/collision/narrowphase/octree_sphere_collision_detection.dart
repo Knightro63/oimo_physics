@@ -9,10 +9,11 @@ import 'package:oimo_physics/shape/plane_shape.dart';
 import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import 'dart:math' as math;
+import 'package:vector_math/vector_math.dart' hide Plane, Triangle, Sphere;
 
 class OctreeSphereCollisionDetector extends CollisionDetector{
-	final Vec3 _v1 = Vec3();
-	final Vec3 _v2 = Vec3();
+	final Vector3 _v1 = Vector3.zero();
+	final Vector3 _v2 = Vector3.zero();
 	final Plane _plane = Plane(ShapeConfig());
 	final Line _line1 = Line();
 	final Sphere _sphere = Sphere(ShapeConfig(),1);
@@ -52,7 +53,7 @@ class OctreeSphereCollisionDetector extends CollisionDetector{
       );
     }
 
-    List<List<Vec3>> lines = [
+    List<List<Vector3>> lines = [
       [ triangle.a, triangle.b ],
       [ triangle.b, triangle.c ],
       [ triangle.c, triangle.a ]
@@ -63,7 +64,7 @@ class OctreeSphereCollisionDetector extends CollisionDetector{
       _line1.closestPointToPoint( _v1, true, _v2 );
 
       double d = _v2.distanceToSquared( sphere.center );
-      Vec3 n = sphere.center.clone().sub( _v2 ).normalize();
+      Vector3 n = sphere.center.clone()..sub( _v2 )..normalize();
       if ( d < r2 ) {
         return OctreeData(
           normal: n, 
@@ -90,12 +91,12 @@ class OctreeSphereCollisionDetector extends CollisionDetector{
     }
 
     if(hit){
-      Vec3 collisionVector = _sphere.center.clone().sub(sphere.center);
-      double depth = collisionVector.length();
+      Vector3 collisionVector = _sphere.center.clone()..sub(sphere.center);
+      double depth = collisionVector.length;
       print('here3');
       return OctreeData(
-        point:  _sphere.center.clone().addScaledVector(collisionVector.normalize(), sphere.radius),
-        normal: collisionVector.normalize(), 
+        point:  _sphere.center.clone().addScaledVector(collisionVector..normalize(), sphere.radius),
+        normal: collisionVector..normalize(), 
         depth: depth
       );
     }

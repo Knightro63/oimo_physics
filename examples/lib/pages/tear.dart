@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Tear extends StatefulWidget {
   const Tear({
@@ -19,7 +20,7 @@ class _TearState extends State<Tear> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-10,0),
+        gravity: vmath.Vector3(0,-10,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -53,7 +54,7 @@ class _TearState extends State<Tear> {
       oimo.RigidBody sphereBody = oimo.RigidBody(
         shapes: [oimo.Sphere(oimo.ShapeConfig(),size)],
         mass: (i == 0 ? 0 : mass),
-        position: oimo.Vec3(0, (N - i) * distance - 9, 0)
+        position: vmath.Vector3(0, (N - i) * distance - 9, 0)
       );
       demo.addRigidBody(sphereBody);
 
@@ -82,8 +83,8 @@ class _TearState extends State<Tear> {
     // Throw a body on the chain to break it!
     oimo.RigidBody sphereBody = oimo.RigidBody(
       mass: mass * 2,
-      position: oimo.Vec3(-20, 3, 0),
-      linearVelocity: oimo.Vec3(30),
+      position: vmath.Vector3(-20, 3, 0),
+      linearVelocity: vmath.Vector3(30,0,0),
       shapes: [oimo.Sphere(oimo.ShapeConfig(),size)]
     );
     demo.addRigidBody(sphereBody);

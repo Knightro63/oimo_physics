@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class Jenga extends StatefulWidget {
   const Jenga({
@@ -20,7 +21,7 @@ class _JengaState extends State<Jenga> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-5,0),
+        gravity: vmath.Vector3(0,-5,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep
       )
@@ -41,16 +42,16 @@ class _JengaState extends State<Jenga> {
     // Layers
     for (int i = 0; i < 10; i++) {
       for (int j = 0; j < 3; j++) {
-        oimo.Vec3 halfExtents;
+        vmath.Vector3 halfExtents;
 
         int dx;
         int dz;
         if (i % 2 == 0) {
-          halfExtents = oimo.Vec3(size*2, size*2, size * 6);
+          halfExtents = vmath.Vector3(size*2, size*2, size * 6);
           dx = 1;
           dz = 0;
         } else {
-          halfExtents = oimo.Vec3(size * 6, size*2, size*2);
+          halfExtents = vmath.Vector3(size * 6, size*2, size*2);
           dx = 0;
           dz = 1;
         }
@@ -64,7 +65,7 @@ class _JengaState extends State<Jenga> {
         oimo.RigidBody body = oimo.RigidBody(
           shapes: [shape],
           mass: mass,
-          position: oimo.Vec3(
+          position: vmath.Vector3(
             2 * (size + gap) * (j - 1) * dx,
             2 * (size + gap) * (i + 1),
             2 * (size + gap) * (j - 1) * dz
@@ -80,7 +81,7 @@ class _JengaState extends State<Jenga> {
     oimo.RigidBody groundBody = oimo.RigidBody(
       mass: 0, 
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
   }

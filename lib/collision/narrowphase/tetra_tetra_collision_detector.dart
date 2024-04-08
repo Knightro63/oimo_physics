@@ -1,8 +1,8 @@
 import 'collision_detector.dart';
-import '../../math/vec3.dart';
 import '../../shape/shape_main.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import '../../shape/tetra_shape.dart';
+import 'package:vector_math/vector_math.dart';
 
 /// Class for checking collisions between 2 tetras,
 /// a shape that is made with 4 vertices and 4 faces
@@ -14,10 +14,10 @@ class TetraTetraCollisionDetector extends CollisionDetector{
   void detectCollision(Shape shape1, Shape shape2,ContactManifold manifold){
     if(shape1 is Tetra && shape2 is Tetra){
       int i, j;
-      Vec3 vec; 
+      Vector3 vec; 
       List<Face> fs1 = shape1.faces;
-      List<Vec3> vs1 = shape1.verts;
-      Vec3 j1, j2, j3;
+      List<Vector3> vs1 = shape1.verts;
+      Vector3 j1, j2, j3;
       int ts = 0; // Triangle vertices `j1`, `j2` and `j3`
 
       // fs is undeclared
@@ -48,7 +48,7 @@ class TetraTetraCollisionDetector extends CollisionDetector{
 
   // Taken from: http://jsfiddle.net/PerroAZUL/zdaY8/1/
   /// Check the triangle for intersections
-  bool tricheck(Vec3 p,Vec3 p0,Vec3 p1,Vec3 p2){
+  bool tricheck(Vector3 p,Vector3 p0,Vector3 p1,Vector3 p2){
     double A = 0.5 * (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y);
     int sg = A < 0 ? -1 : 1;
     double s = (p0.y * p2.x - p0.x * p2.y + (p2.y - p0.y) * p.x + (p0.x - p2.x) * p.y) * sg;
@@ -57,7 +57,7 @@ class TetraTetraCollisionDetector extends CollisionDetector{
   }
 
   /// point from x and y
-  Vec3 pt(x, y){
-    return Vec3(x,y);
+  Vector3 pt(x, y){
+    return Vector3(x,y,0);
   }
 }

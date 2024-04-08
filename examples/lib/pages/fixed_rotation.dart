@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:three_dart/three_dart.dart';
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
+import 'package:vector_math/vector_math.dart' as vmath;
 
 class FixedRotation extends StatefulWidget {
   const FixedRotation({
@@ -20,7 +21,7 @@ class _FixedRotationState extends State<FixedRotation> {
     demo = Demo(
       onSetupComplete: (){setState(() {});},
       settings: oimo.WorldConfigure(
-        gravity: oimo.Vec3(0,-10,0),
+        gravity: vmath.Vector3(0,-10,0),
         iterations: 5,
         broadPhaseType: oimo.BroadPhaseType.sweep,
       )
@@ -38,7 +39,7 @@ class _FixedRotationState extends State<FixedRotation> {
     final groundBody = oimo.RigidBody(
       mass: 0,
       shapes: [groundShape],
-      orientation: oimo.Quat().setFromEuler(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -53,7 +54,7 @@ class _FixedRotationState extends State<FixedRotation> {
     final boxBody1 = oimo.RigidBody(
       mass: 1,
       shapes: [shape1],
-      position: oimo.Vec3(0, 1, 0),
+      position: vmath.Vector3(0, 1, 0),
       type: oimo.RigidBodyType.dynamic
     );
     boxBody1.fixedRotation = true;
@@ -68,7 +69,7 @@ class _FixedRotationState extends State<FixedRotation> {
     final boxBody2 = oimo.RigidBody(
       mass: 1,
       shapes: [shape2],
-      position: oimo.Vec3(-(1 * 3) / 2, 1 * 4, 0),
+      position: vmath.Vector3(-(1 * 3) / 2, 1 * 4, 0),
       type: oimo.RigidBodyType.dynamic,
     );
     boxBody2.fixedRotation = true;

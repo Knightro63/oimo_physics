@@ -6,9 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_gl/flutter_gl.dart';
 import 'package:oimo_physics/core/rigid_body.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
-import 'package:three_dart/three_dart.dart' as THREE;
-import 'package:three_dart/three_dart.dart' hide Texture, Color;
+import 'package:three_dart/three_dart.dart' as three;
 import 'package:three_dart_jsm/three_dart_jsm.dart';
+
+import 'package:vector_math/vector_math.dart' hide Colors;
 
 void main() {
   runApp(const MyApp());
@@ -31,14 +32,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-extension on oimo.Quat{
-  Quaternion toQuaternion(){
-    return Quaternion(x,y,z,w);
+extension on Quaternion{
+  three.Quaternion toQuaternion(){
+    return three.Quaternion(x,y,z,w);
   }
 }
-extension on oimo.Vec3{
-  Vector3 toVector3(){
-    return Vector3(x,y,z);
+extension on Vector3{
+  three.Vector3 toVector3(){
+    return three.Vector3(x,y,z);
   }
 }
 class TestBasic extends StatefulWidget {
@@ -59,26 +60,26 @@ class _TestBasicPageState extends State<TestBasic> {
   //late Object3D object;
   bool animationReady = false;
   late FlutterGlPlugin three3dRender;
-  WebGLRenderTarget? renderTarget;
-  WebGLRenderer? renderer;
+  three.WebGLRenderTarget? renderTarget;
+  three.WebGLRenderer? renderer;
   late OrbitControls controls;
   int? fboId;
   late double width;
   late double height;
   Size? screenSize;
-  late Scene scene;
-  late Camera camera;
+  late three.Scene scene;
+  late three.Camera camera;
   double dpr = 1.0;
   bool verbose = false;
   bool disposed = false;
   final GlobalKey<DomLikeListenableState> _globalKey = GlobalKey<DomLikeListenableState>();
   dynamic sourceTexture;
 
-  List<Mesh> meshs = [];
-  List<Mesh> grounds = [];
+  List<three.Mesh> meshs = [];
+  List<three.Mesh> grounds = [];
 
-  Map<String,BufferGeometry> geos = {};
-  Map<String,THREE.Material> mats = {};
+  Map<String,three.BufferGeometry> geos = {};
+  Map<String,three.Material> mats = {};
 
   //oimo var
   oimo.World? world;
@@ -125,9 +126,9 @@ class _TestBasicPageState extends State<TestBasic> {
   }
   Future<void> initPage() async {
     
-    scene = Scene();
+    scene = three.Scene();
 
-    camera = PerspectiveCamera(60, width / height, 1, 10000);
+    camera = three.PerspectiveCamera(60, width / height, 1, 10000);
     camera.position.set(0,160,400);
     camera.rotation.order = 'YXZ';
 
@@ -135,47 +136,47 @@ class _TestBasicPageState extends State<TestBasic> {
     //controls.target.set(0,20,0);
     //controls.update();
     
-    scene.add(AmbientLight( 0x3D4143 ) );
-    DirectionalLight light = DirectionalLight( 0xffffff , 1.4);
+    scene.add(three.AmbientLight( 0x3D4143 ) );
+    three.DirectionalLight light = three.DirectionalLight( 0xffffff , 1.4);
     light.position.set( 300, 1000, 500 );
     light.target!.position.set( 0, 0, 0 );
     light.castShadow = true;
 
     int d = 300;
-    light.shadow!.camera = OrthographicCamera( -d, d, d, -d,  500, 1600 );
+    light.shadow!.camera = three.OrthographicCamera( -d, d, d, -d,  500, 1600 );
     light.shadow!.bias = 0.0001;
     light.shadow!.mapSize.width = light.shadow!.mapSize.height = 1024;
 
     scene.add( light );
 
     // background
-    BufferGeometry buffgeoBack = THREE.IcosahedronGeometry(3000,2);
-    Mesh back = THREE.Mesh( 
+    three.BufferGeometry buffgeoBack = three.IcosahedronGeometry(3000,2);
+    three.Mesh back = three.Mesh( 
       buffgeoBack, 
-      THREE.MeshLambertMaterial()
+      three.MeshLambertMaterial()
     );
     scene.add( back );
 
     // geometrys
-    geos['sphere'] = THREE.SphereGeometry(1,16,10);
-    geos['box'] =  THREE.BoxGeometry(1,1,1);
-    geos['cylinder'] = THREE.CylinderGeometry(1,1,1);
+    geos['sphere'] = three.SphereGeometry(1,16,10);
+    geos['box'] =  three.BoxGeometry(1,1,1);
+    geos['cylinder'] = three.CylinderGeometry(1,1,1);
     
     // materials
-    mats['sph']    = MeshPhongMaterial({'shininess': 10, 'name':'sph'});
+    mats['sph']    = three.MeshPhongMaterial({'shininess': 10, 'name':'sph'});
     
-    mats['box']    = MeshPhongMaterial({'shininess': 10, 'name':'box'});
-    mats['cyl']    = MeshPhongMaterial({'shininess': 10, 'name':'cyl'});
-    mats['ssph']   = MeshPhongMaterial({'shininess': 10, 'name':'ssph'});
-    mats['sbox']   = MeshPhongMaterial({'shininess': 10, 'name':'sbox'});
-    mats['scyl']   = MeshPhongMaterial({'shininess': 10, 'name':'scyl'});
-    mats['ground'] = MeshPhongMaterial({'shininess': 10, 'color':0x3D4143, 'transparent':true, 'opacity':0.5});
+    mats['box']    = three.MeshPhongMaterial({'shininess': 10, 'name':'box'});
+    mats['cyl']    = three.MeshPhongMaterial({'shininess': 10, 'name':'cyl'});
+    mats['ssph']   = three.MeshPhongMaterial({'shininess': 10, 'name':'ssph'});
+    mats['sbox']   = three.MeshPhongMaterial({'shininess': 10, 'name':'sbox'});
+    mats['scyl']   = three.MeshPhongMaterial({'shininess': 10, 'name':'scyl'});
+    mats['ground'] = three.MeshPhongMaterial({'shininess': 10, 'color':0x3D4143, 'transparent':true, 'opacity':0.5});
 
     animationReady = true;
   }
 
   void addStaticBox(List<double> size,List<double> position,List<double> rotation) {
-    Mesh mesh = THREE.Mesh( geos['box'], mats['ground'] );
+    three.Mesh mesh = three.Mesh( geos['box'], mats['ground'] );
     mesh.scale.set( size[0], size[1], size[2] );
     mesh.position.set( position[0], position[1], position[2] );
     mesh.rotation.set( rotation[0]*ToRad, rotation[1]*ToRad, rotation[2]*ToRad );
@@ -206,7 +207,7 @@ class _TestBasicPageState extends State<TestBasic> {
       oimo.WorldConfigure(
         isStat:true, 
         scale:1.0,
-        gravity: oimo.Vec3(0,-981,0)
+        gravity: Vector3(0,-981,0)
       )
     );
     populate(type);
@@ -237,17 +238,17 @@ class _TestBasicPageState extends State<TestBasic> {
     world!.add(
       oimo.ObjectConfigure(
       shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),40.0, 40.0, 390.0)],
-      position:oimo.Vec3(-180.0,20.0,0.0), 
+      position:Vector3(-180.0,20.0,0.0), 
     )) as oimo.RigidBody;
     world!.add(
       oimo.ObjectConfigure(
       shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),40.0, 40.0, 390.0)],
-      position:oimo.Vec3(180.0,20.0,0.0), 
+      position:Vector3(180.0,20.0,0.0), 
     )) as oimo.RigidBody;
     world!.add(
       oimo.ObjectConfigure(
       shapes: [oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),400.0, 80.0, 400.0)],
-      position:oimo.Vec3(0.0,-40.0,0.0), 
+      position:Vector3(0.0,-40.0,0.0), 
     )) as oimo.RigidBody;
 
     addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
@@ -259,50 +260,50 @@ class _TestBasicPageState extends State<TestBasic> {
     int t;
     for(int i = 0; i < max;i++){
       if(type==4) {
-        t = Math.floor(Math.random()*3)+1;
+        t = three.Math.floor(three.Math.random()*3)+1;
       }
       else {
         t = type;
       }
-      x = -100 + Math.random()*200;
-      z = -100 + Math.random()*200;
-      y = 100 + Math.random()*1000;
-      w = 10 + Math.random()*10;
-      h = 10 + Math.random()*10;
-      d = 10 + Math.random()*10;
-      THREE.Color randColor = THREE.Color().setHex((Math.random() * 0xFFFFFF).toInt());
+      x = -100 + three.Math.random()*200;
+      z = -100 + three.Math.random()*200;
+      y = 100 + three.Math.random()*1000;
+      w = 10 + three.Math.random()*10;
+      h = 10 + three.Math.random()*10;
+      d = 10 + three.Math.random()*10;
+      three.Color randColor = three.Color().setHex((three.Math.random() * 0xFFFFFF).toInt());
 
       if(t==1){
-        THREE.Material mat = mats['sph']!;
+        three.Material mat = mats['sph']!;
         mat.color = randColor;
         bodys.add(world!.add(oimo.ObjectConfigure(
           shapes:[oimo.Sphere(oimo.ShapeConfig(geometry: oimo.Shapes.sphere),w*0.5)], 
-          position:oimo.Vec3(x,y,z), 
+          position:Vector3(x,y,z), 
           move:true,
         )));
-        meshs.add(THREE.Mesh( geos['sphere'], mat));
+        meshs.add(three.Mesh( geos['sphere'], mat));
         meshs[i].scale.set( w*0.5, w*0.5, w*0.5 );
       } 
       else if(t==2){
-        THREE.Material mat = mats['box']!;
+        three.Material mat = mats['box']!;
         mat.color = randColor;
         bodys.add(world!.add(oimo.ObjectConfigure(
           shapes:[oimo.Box(oimo.ShapeConfig(geometry: oimo.Shapes.box),w,h,d)], 
-          position:oimo.Vec3(x,y,z), 
+          position:Vector3(x,y,z), 
           move:true,
         )) as oimo.RigidBody);
-        meshs.add(THREE.Mesh( geos['box'], mat ));
+        meshs.add(three.Mesh( geos['box'], mat ));
         meshs[i].scale.set( w, h, d );
       } 
       else if(t==3){
-        THREE.Material mat = mats['cyl']!;
+        three.Material mat = mats['cyl']!;
         mat.color = randColor;
         bodys.add(world!.add(oimo.ObjectConfigure(
           shapes:[oimo.Cylinder(oimo.ShapeConfig(geometry: oimo.Shapes.cylinder),w*0.5,h)], 
-          position:oimo.Vec3(x,y,z), 
+          position:Vector3(x,y,z), 
           move:true, 
         )));
-        meshs.add(THREE.Mesh( geos['cylinder'], mat));
+        meshs.add(three.Mesh( geos['cylinder'], mat));
         meshs[i].scale.set( w*0.5, h, w*0.5 );
       }
 
@@ -319,7 +320,7 @@ class _TestBasicPageState extends State<TestBasic> {
     world!.step();
 
     var x, y, z;
-    Mesh mesh; 
+    three.Mesh mesh; 
     oimo.RigidBody body;
     //print(bodys[0].getPosition());
     for(int i = 0; i < bodys.length;i++){
@@ -338,9 +339,9 @@ class _TestBasicPageState extends State<TestBasic> {
 
         // reset position
         if(mesh.position.y<-100){
-          x = -100 + Math.random()*200;
-          z = -100 + Math.random()*200;
-          y = 100 + Math.random()*1000;
+          x = -100 + three.Math.random()*200;
+          z = -100 + three.Math.random()*200;
+          y = 100 + three.Math.random()*1000;
           body.resetPosition(x,y,z);
         }
       } 
@@ -374,16 +375,16 @@ class _TestBasicPageState extends State<TestBasic> {
       _options['logarithmicDepthBuffer'] = true;
     }
 
-    renderer = WebGLRenderer(_options);
+    renderer = three.WebGLRenderer(_options);
     renderer!.setPixelRatio(dpr);
     renderer!.setSize(width, height, false);
     renderer!.shadowMap.enabled = true;
-    renderer!.shadowMap.type = THREE.PCFShadowMap;
-    //renderer!.outputEncoding = THREE.sRGBEncoding;
+    renderer!.shadowMap.type = three.PCFShadowMap;
+    //renderer!.outputEncoding = three.sRGBEncoding;
 
     if(!kIsWeb){
-      WebGLRenderTargetOptions pars = WebGLRenderTargetOptions({"format": RGBAFormat,"samples": 8});
-      renderTarget = WebGLRenderTarget((width * dpr).toInt(), (height * dpr).toInt(), pars);
+      three.WebGLRenderTargetOptions pars = three.WebGLRenderTargetOptions({"format": three.RGBAFormat,"samples": 8});
+      renderTarget =three.WebGLRenderTarget((width * dpr).toInt(), (height * dpr).toInt(), pars);
       renderer!.setRenderTarget(renderTarget);
       sourceTexture = renderer!.getRenderTargetGLTexture(renderTarget!);
     }

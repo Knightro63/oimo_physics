@@ -1,9 +1,9 @@
+import 'dart:typed_data';
+
 import '../joint_main.dart';
 import '../../../core/rigid_body.dart';
 import '../limit_motor.dart';
-import '../../../math/mat33.dart';
-import '../../../math/vec3.dart';
-
+import 'package:vector_math/vector_math.dart';
 
 /// A translational constraint for various joints.
 class TranslationalConstraint extends Joint{
@@ -95,16 +95,16 @@ class TranslationalConstraint extends Joint{
     LimitMotor limitMotor;
     late RigidBody b1;
     late RigidBody b2;
-    late Vec3 p1;
-    late Vec3 p2;
-    late Vec3 r1;
-    late Vec3 r2;
-    late Vec3 l1;
-    late Vec3 l2;
-    late Vec3 a1;
-    late Vec3 a2;
-    late Mat33 i1;
-    late Mat33 i2;
+    late Vector3 p1;
+    late Vector3 p2;
+    late Vector3 r1;
+    late Vector3 r2;
+    late Vector3 l1;
+    late Vector3 l2;
+    late Vector3 a1;
+    late Vector3 a2;
+    late Matrix3 i1;
+    late Matrix3 i2;
     double limitImpulse=0;
     double motorImpulse=0;
     
@@ -121,8 +121,8 @@ class TranslationalConstraint extends Joint{
     m1=b1.inverseMass;
     m2=b2.inverseMass;
 
-    List<double> ti1 = i1.elements;
-    List<double> ti2 = i2.elements;
+    Float32List ti1 = i1.storage;
+    Float32List ti2 = i2.storage;
 
     i1e00=ti1[0];
     i1e01=ti1[1];

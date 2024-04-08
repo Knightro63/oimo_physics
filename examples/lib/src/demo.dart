@@ -12,24 +12,9 @@ import 'package:three_dart/three_dart.dart' hide Texture, Color;
 import 'package:three_dart_jsm/three_dart_jsm.dart';
 import 'conversion_utils.dart';
 import 'package:flutter/services.dart';
+import 'package:vector_math/vector_math.dart' as vmath;
 
 enum RenderMode{solid,wireframe}
-
-extension on oimo.Quat{
-  Quaternion toQuaternion(){
-    return Quaternion(x,y,z,w);
-  }
-}
-extension on oimo.Vec3{
-  Vector3 toVector3(){
-    return Vector3(x,y,z);
-  }
-}
-extension on three.Vector3{
-  oimo.Vec3 toVec3(){
-    return oimo.Vec3(x,y,z);
-  }
-}
 
 /**
  * Demo utility class. If you want to learn how to connect oimo.js with three.js, please look at the examples/threejs_* instead.
@@ -97,7 +82,7 @@ class Demo{
   int mouseTime = 0;
   bool mounted = false;
 
-  MeshBasicMaterial _wireframeMaterial = MeshBasicMaterial({'color': 0xffffff, 'wireframe': true});
+  MeshBasicMaterial _wireframeMaterial = MeshBasicMaterial({'color': 0xffffff, 'wireframe': false});
   MeshLambertMaterial _solidMaterial = MeshLambertMaterial({'color': 0xdddddd});
   late three.Material _currentMaterial;
 
@@ -166,7 +151,7 @@ class Demo{
     three.BoxGeometry bboxGeometry = three.BoxGeometry(1, 1, 1);
     three.MeshBasicMaterial bboxMaterial = three.MeshBasicMaterial({
       'color': materialColor,
-      'wireframe': true,
+      'wireframe': false,
     });
 
     bboxMeshCache = GeometryCache(scene, (){
@@ -489,8 +474,8 @@ class Demo{
       Object3D dummy = Object3D();
 
       // Interpolated or not?
-      oimo.Vec3 position = body.position;
-      oimo.Quat quaternion = body.orientation;
+      vmath.Vector3 position = body.position;
+      vmath.Quaternion quaternion = body.orientation;
       if (paused) {
         position = body.position;
         quaternion = body.orientation;
@@ -548,10 +533,10 @@ class Demo{
   }
   void restartCurrentScene() {
     bodies.forEach((body){
-      body.position.copy(body.initPosition);
-      body.linearVelocity.copy(body.initLinearVelocity);
-      body.angularVelocity.copy(body.initAngularVelocity);
-      body.orientation.copy(body.initOrientation);
+      body.position.setFrom(body.initPosition);
+      body.linearVelocity.setFrom(body.initLinearVelocity);
+      body.angularVelocity.setFrom(body.initAngularVelocity);
+      body.orientation.setFrom(body.initOrientation);
     });
   }
 
