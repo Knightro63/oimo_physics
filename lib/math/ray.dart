@@ -12,7 +12,7 @@ class Ray {
   }
   Vector3 at(double t, [Vector3? target]) {
     target ??= Vector3.zero();
-    return target..setFrom(direction)..multiplyScalar(t).add(origin);
+    return target..setFrom(direction)..scale(t)..add(origin);
   }
   Vector3? intersectBox(AABB box, [Vector3? target]) {
     double tmin, tmax, tymin, tymax, tzmin, tzmax;

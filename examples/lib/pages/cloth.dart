@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:three_dart/three_dart.dart';
+import 'dart:math' as math;
 import '../src/demo.dart';
+import 'package:three_js_geometry/three_js_geometry.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
-import 'package:three_dart/three_dart.dart' as three;
+import 'package:three_js/three_js.dart' as three;
 import 'package:vector_math/vector_math.dart' as vmath;
 
 class Cloth extends StatefulWidget {
@@ -64,26 +65,26 @@ late Demo demo;
       double y = (v + 0.5) * restDistance * rows;
       double z = 0;
 
-      target.set(x, y, z);
+      target.setValues(x, y, z);
 
       return target;
     }
 
-    three.Texture clothTexture = await three.TextureLoader(null).loadAsync('assets/images/sunflower.jpg');
+    three.Texture clothTexture = (await three.TextureLoader().fromAsset('assets/images/sunflower.jpg'))!;
     clothTexture.wrapS = three.RepeatWrapping;
     clothTexture.wrapT = three.RepeatWrapping;
     clothTexture.anisotropy = 16;
     clothTexture.encoding = three.sRGBEncoding;
-    three.MeshPhongMaterial clothMaterial = three.MeshPhongMaterial({
+    three.MeshPhongMaterial clothMaterial = three.MeshPhongMaterial.fromMap({
       'map': clothTexture,
       'side': three.DoubleSide,
     });
     // Cloth geometry
-    final clothGeometry = three.ParametricGeometry(clothFunction, rows, cols);
+    final clothGeometry = ParametricGeometry(clothFunction, rows, cols);
 
     // Cloth mesh
     three.Mesh clothMesh = three.Mesh(clothGeometry, clothMaterial);
-    demo.scene.add(clothMesh);
+    demo.threeJs.scene.add(clothMesh);
 
     Map<String,oimo.RigidBody> bodies = {}; // bodies['i j'] => particle
     for (int i = 0; i < cols+1; i++) {
@@ -143,7 +144,7 @@ late Demo demo;
 
       // Move the ball in a circular motion
       double time = world.time - startTime;
-      sphereBody.position.setValues(2 * Math.sin(time)-1, 2 * Math.cos(time)+2, 2 * Math.cos(time));
+      sphereBody.position.setValues(2 * math.sin(time)-1, 2 * math.cos(time)+2, 2 * math.cos(time));
     };
   }
   void setupWorld(){

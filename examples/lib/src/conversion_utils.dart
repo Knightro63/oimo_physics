@@ -1,31 +1,31 @@
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
-import 'package:three_dart/three_dart.dart' as three;
-import 'package:three_dart/three_dart.dart' hide Texture, Color;
+import 'package:three_js/three_js.dart' as three;
+import 'package:three_js_geometry/three_js_geometry.dart';
 import 'package:vector_math/vector_math.dart' as vmath;
 
 extension Quant on vmath.Quaternion{
-  Quaternion toQuaternion(){
-    return Quaternion(x,y,z,w);
+  three.Quaternion toQuaternion(){
+    return three.Quaternion(x,y,z,w);
   }
 
 }
 extension Vec3 on vmath.Vector3{
-  Vector3 toVector3(){
-    return Vector3(x,y,z);
+  three.Vector3 toVector3(){
+    return three.Vector3(x,y,z);
   }
 }
 
 class GeometryCache {
-  List<Object3D> geometries = [];
+  List<three.Object3D> geometries = [];
   List gone = [];
 
-  Scene scene;
+  three.Scene scene;
   Function createFunc;
 
   GeometryCache(this.scene, this.createFunc);
 
-  Object3D request(){
-    Object3D geometry = geometries.isNotEmpty ? geometries.removeLast() : createFunc();
+  three.Object3D request(){
+    three.Object3D geometry = geometries.isNotEmpty ? geometries.removeLast() : createFunc();
 
     scene.add(geometry);
     gone.add(geometry);
@@ -73,24 +73,43 @@ class ConversionUtils{
 
       case oimo.Shapes.cylinder: {
         shape as oimo.Cylinder;
-        return three.CylinderGeometry(shape.radius, shape.radius, shape.height);
+        return CylinderGeometry(shape.radius, shape.radius, shape.height);
       }
 
       case oimo.Shapes.capsule: {
         shape as oimo.Capsule;
-        return three.CylinderGeometry(shape.radius, shape.radius, shape.height);
+        return CylinderGeometry(shape.radius, shape.radius, shape.height);
       }
 
       case oimo.Shapes.octree: {
-        shape as oimo.Cylinder;
-        return three.CylinderGeometry(shape.radius, shape.radius, shape.height);
+        shape as oimo.Octree;
+        final geometry = three.BufferGeometry();
+        
+        geometry.setIndex(shape.indices);
+        geometry.setAttributeFromString('position', three.Float32BufferAttribute(three.Float32Array.fromList(shape.vertices), 3));
+        if(shape.normals != null){
+          geometry.setAttributeFromString('normal', three.Float32BufferAttribute(three.Float32Array.fromList(shape.normals!), 3));
+        }
+        // if(shape.uvs != null){
+        //   geometry.setAttribute('uv', Float32BufferAttribute(Float32Array.from(shape.uvs!), 2));
+        // }
+
+        geometry.computeBoundingSphere();
+
+        // if (flatShading) {
+          geometry.computeFaceNormals();
+        // } else {
+        //   geometry.computeVertexNormals();
+        // }
+
+        return geometry;
       }
     }
   }
-  static Object3D bodyToMesh2(oimo.RigidBody body, three.Material material) {
-    final group = Group();
-    group.position.copy(body.position.toVector3());
-    group.quaternion.copy(body.orientation.toQuaternion());
+  static three.Object3D bodyToMesh2(oimo.RigidBody body, three.Material material) {
+    final group = three.Group();
+    group.position.setFrom(body.position.toVector3());
+    group.quaternion.setFrom(body.orientation.toQuaternion());
     for(oimo.Shape? shape = body.shapes; shape!=null; shape = shape.next){
       final geometry = shapeToGeometry(shape);
       final mesh = three.Mesh(geometry, material);
@@ -101,10 +120,10 @@ class ConversionUtils{
 
     return group;
   }
-  static Object3D bodyToMesh(oimo.RigidBody body, three.Material material) {
-    final group = Group();
-    group.position.copy(body.position.toVector3());
-    group.quaternion.copy(body.orientation.toQuaternion());
+  static three.Object3D bodyToMesh(oimo.RigidBody body, three.Material material) {
+    final group = three.Group();
+    group.position.setFrom(body.position.toVector3());
+    group.quaternion.setFrom(body.orientation.toQuaternion());
 
     List<three.Mesh> meshes = [];
     List<vmath.Vector3> positions = [];
@@ -122,8 +141,8 @@ class ConversionUtils{
       final offset = positions[i];
       final orientation = rotations[i];
       if(meshes.length > 1){
-        mesh.position.copy(offset);
-        mesh.quaternion.copy(orientation.toQuaternion());
+        mesh.position.setFrom(offset.toVector3());
+        mesh.quaternion.setFrom(orientation.toQuaternion());
       }
       group.add(mesh);
       i++;
@@ -131,10 +150,10 @@ class ConversionUtils{
 
     return group;
   }
-  static Object3D objectToMesh(oimo.ObjectConfigure body, three.Material material) {
-    final group = Group();
-    group.position.copy(body.position.toVector3());
-    group.quaternion.copy(body.rotation.toQuaternion());
+  static three.Object3D objectToMesh(oimo.ObjectConfigure body, three.Material material) {
+    final group = three.Group();
+    group.position.setFrom(body.position.toVector3());
+    group.quaternion.setFrom(body.rotation.toQuaternion());
     final meshes = body.shapes.map((shape){
       final geometry = shapeToGeometry(shape);
       return three.Mesh(geometry, material);
@@ -144,8 +163,8 @@ class ConversionUtils{
     meshes.forEach((three.Mesh mesh){
       final offset = body.shapes[i].position;
       final orientation = vmath.Quaternion(0,0,0,1)..setFromRotation(body.shapes[i].rotation);
-      mesh.position.copy(offset);
-      mesh.quaternion.copy(orientation.toQuaternion());
+      mesh.position.setFrom(offset.toVector3());
+      mesh.quaternion.setFrom(orientation.toQuaternion());
       group.add(mesh);
       i++;
     });
@@ -153,7 +172,7 @@ class ConversionUtils{
     return group;
   }
 
-  static oimo.Shape geometryToShape(BufferGeometry geometry, oimo.ShapeConfig config) {
+  static oimo.Shape geometryToShape(three.BufferGeometry geometry, oimo.ShapeConfig config) {
     switch (geometry.type) {
       case 'BoxGeometry':
       case 'BoxBufferGeometry': {
@@ -185,16 +204,17 @@ class ConversionUtils{
       }
     }
   }
-  static oimo.Octree fromGraphNode(Object3D group, oimo.ShapeConfig config){
+  static oimo.Octree fromGraphNode(three.Object3D group, oimo.ShapeConfig config){
     List<double> vertices = [];
     List<int> indices = [];
+    List<double> normals = [];
 
     group.updateWorldMatrix(true, true);
     group.traverse((object){
-      if(object is Mesh){
-        Mesh obj = object;
-        late BufferGeometry geometry;
-        bool isTemp = false;
+      if(object is three.Mesh){
+        three.Mesh obj = object;
+        late three.BufferGeometry geometry;
+        bool isTemp = true;
 
         if(obj.geometry!.index != null){
           isTemp = true;
@@ -204,12 +224,13 @@ class ConversionUtils{
           geometry = obj.geometry!;
         }
 
-			  BufferAttribute positionAttribute = geometry.getAttribute('position');
+			  three.BufferAttribute positionAttribute = geometry.getAttributeFromString('position');
+        three.BufferAttribute normalAttribute = geometry.getAttributeFromString('normal');
 
 				for(int i = 0; i < positionAttribute.count; i += 3) {
-					Vector3 v1 = Vector3().fromBufferAttribute(positionAttribute, i);
-					Vector3 v2 = Vector3().fromBufferAttribute(positionAttribute, i + 1);
-					Vector3 v3 = Vector3().fromBufferAttribute(positionAttribute, i + 2);
+					three.Vector3 v1 = three.Vector3().fromBuffer(positionAttribute, i);
+					three.Vector3 v2 = three.Vector3().fromBuffer(positionAttribute, i + 1);
+					three.Vector3 v3 = three.Vector3().fromBuffer(positionAttribute, i + 2);
 
 					v1.applyMatrix4(obj.matrixWorld);
 					v2.applyMatrix4(obj.matrixWorld);
@@ -222,12 +243,17 @@ class ConversionUtils{
           indices.addAll([i,i+1,i+2]);
 				}
 
+        for(int i = 0; i < normalAttribute.count; i++){
+          three.Vector3 v1 = three.Vector3().fromBuffer(normalAttribute, i);
+          normals.addAll([v1.x,v1.y,v1.z]);
+        }
+
         if(isTemp){
           geometry.dispose();
         }
       }
     });
 
-    return oimo.Octree(config, vertices, indices);
+    return oimo.Octree(config, vertices, indices, normals);
   }
 }

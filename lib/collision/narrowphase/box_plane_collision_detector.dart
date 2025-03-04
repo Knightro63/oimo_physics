@@ -149,7 +149,7 @@ class BoxPlaneCollisionDetector extends CollisionDetector{
         }
       }
 
-      p..setFrom( pn.position )..addScaledVector( n, 1 );
+      p..setFrom( pn.position )..addScaled( n, 1 );
       manifold.addPointVec( p, n, len, flip );
     }
   }

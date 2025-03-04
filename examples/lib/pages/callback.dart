@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oimo_physics/core/rigid_body.dart';
-import 'package:three_dart/three_dart.dart';
+import 'dart:math' as math;
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:vector_math/vector_math.dart' as vmath;
@@ -60,8 +60,8 @@ class _CallbackState extends State<Callback> {
     world.postLoop = (){
       double progress = (world.time - startTime)*1.4; 
       
-      double y = Math.sin(-progress)*(-5);
-      double x = Math.cos(-progress)*(-5);
+      double y = math.sin(-progress)*(-5);
+      double x = math.cos(-progress)*(-5);
       moon.position.setValues(x, y, 0);
     };
 

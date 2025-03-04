@@ -1,7 +1,7 @@
 import 'package:oimo_physics/oimo_physics.dart';
 import 'package:oimo_physics/shape/mass_info.dart';
 import 'dart:math' as math;
-import '../shape/triangle.dart';
+import '../math/triangle.dart';
 import 'package:vector_math/vector_math.dart' hide Triangle;
 
 class OctreeData{
@@ -61,7 +61,7 @@ class OctreeNode{
   }
   void split(int level){
     List<OctreeNode> _subTrees = [];
-    Vector3 halfsize = _v2..setFrom(box.max)..sub(box.min)..multiplyScalar(0.5);
+    Vector3 halfsize = _v2..setFrom(box.max)..sub(box.min)..scale(0.5);
 
     for (int x = 0; x < 2; x ++ ) {
       for (int y = 0; y < 2; y ++ ) {
@@ -104,7 +104,7 @@ class Octree extends Shape{
   late final List<double> _vertices;
   /// Array of integers, indicating which vertices each triangle consists of. The length of this array is thus 3 times the doubleber of triangles.
   late final List<int> _indices; 
-  // late final List<double>? _normals;
+  late final List<double>? _normals;
   // late final List<double>? _uvs;
   late OctreeNode node;
 
@@ -113,7 +113,7 @@ class Octree extends Shape{
     List<double> vertices, 
     List<int> indices,
     [
-      // List<double>? normals,
+      List<double>? normals,
       // List<double>? uvs,
       AABB? aabb,
     ]
@@ -121,7 +121,7 @@ class Octree extends Shape{
     type = Shapes.octree;
     _vertices = vertices;
     _indices = indices;
-    // _normals = normals;
+    _normals = normals;
     // _uvs = uvs;
     node = OctreeNode(aabb);
     _fromGraphNode();
@@ -129,18 +129,14 @@ class Octree extends Shape{
 
   List<int> get indices => _indices;
   List<double> get vertices => _vertices;
+  List<double>? get normals => _normals;
 
   void _fromGraphNode(){
     for(int i = 0; i < _vertices.length; i += 9) {
       Vector3 v1 = Vector3(_vertices[i],_vertices[i+1],_vertices[i+2]);
       Vector3 v2 = Vector3(_vertices[i+3],_vertices[i+4],_vertices[i+5]);
       Vector3 v3 = Vector3(_vertices[i+6],_vertices[i+7],_vertices[i+8]);
-
-      // v1;//.applyMatrix4(obj.matrixWorld);
-      // v2;//.applyMatrix4(obj.matrixWorld);
-      // v3;//.applyMatrix4(obj.matrixWorld);
-
-      node.addTriangle(Triangle(v1.clone(), v2.clone(), v3.clone()));
+      node.addTriangle(Triangle(v1, v2, v3));
     }
 
     node.build();

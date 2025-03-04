@@ -25,7 +25,6 @@ import '../constraint/joint/slider_joint.dart';
 import '../constraint/joint/wheel_joint.dart';
 
 import '../shape/shape_config.dart';
-import '../math/vec3.dart';
 
 import '../collision/broadphase/broad_phase.dart';
 import '../collision/broadphase/brute_force_broad_phase.dart';
@@ -662,7 +661,7 @@ class World{
       if( base.addedToIsland || base.isStatic || base.sleeping ) continue;// ignore
       if( base.isLonely() ){// update single body
         if(base.isDynamic){
-          base.linearVelocity.addScaledVector(gravity, timeStep);
+          base.linearVelocity.addScaled(gravity, timeStep);
         }
         if( callSleep( base ) ) {
           base.sleepTime += timeStep;

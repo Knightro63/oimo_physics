@@ -2,8 +2,8 @@ import 'dart:math' as math;
 import 'shape_config.dart';
 import '../math/aabb.dart';
 import 'shape_main.dart';
-import 'plane_shape.dart';
-import 'package:vector_math/vector_math.dart' hide Plane;
+import 'package:vector_math/vector_math.dart';
+import '../math/plane.dart';
 
 /// Sphere shape
 class Sphere extends Shape{

@@ -3,17 +3,17 @@ import 'package:oimo_physics/math/vec3.dart';
 import 'package:oimo_physics/shape/capsule_shape.dart';
 import 'package:oimo_physics/shape/line.dart';
 import 'package:oimo_physics/shape/octree_shape.dart';
-import 'package:oimo_physics/shape/plane_shape.dart';
 import 'package:oimo_physics/shape/shape_config.dart';
-import 'package:oimo_physics/shape/triangle.dart';
+import 'package:oimo_physics/math/triangle.dart';
 import '../../shape/shape_main.dart';
+import '../../math/plane.dart';
 import '../../constraint/contact/contact_manifold.dart';
 import 'dart:math' as math;
-import 'package:vector_math/vector_math.dart' hide Plane, Triangle;
+import 'package:vector_math/vector_math.dart' hide Triangle;
 
 class OctreeCapsuleCollisionDetector extends CollisionDetector{
 	final Vector3 _v1 = Vector3.zero();
-	final Plane _plane = Plane(ShapeConfig());
+	final Plane _plane = Plane();
 	final Line _line1 = Line();
 	final Line _line2 = Line();
 	final Capsule _capsule = Capsule(ShapeConfig(),1,1);
@@ -45,7 +45,7 @@ class OctreeCapsuleCollisionDetector extends CollisionDetector{
       OctreeData? result = triangleCapsuleIntersect(_capsule, triangles[i]);
       if (result != null){
         hit = true;
-        _capsule.translate(result.normal.multiplyScalar(result.depth));
+        _capsule.translate(result.normal..scale(result.depth));
       }
     }
 

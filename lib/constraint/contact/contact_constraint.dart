@@ -179,8 +179,8 @@ class ContactConstraint extends Constraint{
 
       if( p.warmStarted ){
         norImp = p.normalImpulse;
-        lv1!.addScaledVector( c.norU1, norImp );
-        av1!.addScaledVector( c.norTU1, norImp );
+        lv1!.addScaled( c.norU1, norImp );
+        av1!.addScaled( c.norTU1, norImp );
         lv2!.subScaledVector( c.norU2, norImp );
         av2!.subScaledVector( c.norTU2, norImp );
         c.norImp = norImp;
@@ -292,8 +292,8 @@ class ContactConstraint extends Constraint{
 
       newImp1 = norImp - oldImp1;
 
-      tmplv1.addScaledVector( c.norU1, newImp1 );
-      tmpav1.addScaledVector( c.norTU1, newImp1 );
+      tmplv1.addScaled( c.norU1, newImp1 );
+      tmpav1.addScaled( c.norTU1, newImp1 );
       tmplv2.subScaledVector( c.norU2, newImp1 );
       tmpav2.subScaledVector( c.norTU2, newImp1 );
 

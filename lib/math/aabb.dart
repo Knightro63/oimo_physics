@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:oimo_physics/shape/sphere_shape.dart';
-import 'package:oimo_physics/shape/triangle.dart';
+import 'package:oimo_physics/math/triangle.dart';
 import 'package:vector_math/vector_math.dart' hide Triangle, Sphere;
 import 'vec3.dart';
 
@@ -116,7 +116,7 @@ class AABB{
     if (isEmpty()) {
       target.setValues(0, 0, 0);
     } else {
-      target.add2(min, max).multiplyScalar(0.5);
+      target.add2(min, max).scale(0.5);
     }
 
     return target;

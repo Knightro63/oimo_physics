@@ -68,13 +68,13 @@ class AngularConstraint extends Joint{
 
     inv = relativeOrientation.w*2;
 
-    vel..setFrom(relativeOrientation.toVector3())..multiplyScalar(inv);
+    vel..setFrom(relativeOrientation.toVector3())..scale(inv);
 
     len = vel.length;
 
     if( len > 0.02 ) {
       len = (0.02-len)/len*invTimeStep*0.05;
-      vel.multiplyScalar(len);
+      vel.scale(len);
     }
     else{
       vel.setValues(0,0,0);

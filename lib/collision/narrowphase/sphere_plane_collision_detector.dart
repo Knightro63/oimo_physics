@@ -54,7 +54,7 @@ class SpherePlaneCollisionDetector extends CollisionDetector{
       //(0, -1, 0)
 
       //n.normalize();
-      p..setFrom( s.position )..addScaledVector( n, rad );
+      p..setFrom( s.position )..addScaled( n, rad );
       manifold.addPointVec( p, n, len - rad, flip );
     }
   }

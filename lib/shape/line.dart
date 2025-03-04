@@ -38,6 +38,6 @@ class Line {
   }
   Vector3 closestPointToPoint(Vector3 point, bool clampToLine, Vector3 target) {
     final t = closestPointToPointParameter(point, clampToLine);
-    return delta(target).multiplyScalar(t)..add(start);
+    return delta(target)..scale(t)..add(start);
   }
 }

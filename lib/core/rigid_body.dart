@@ -250,7 +250,7 @@ class RigidBody extends Core{
     for(Shape? shape = shapes; shape != null; shape = shape.next){
       shape.calculateMassInfo(massInfo);
       double shapeMass = massInfo.mass;
-      tmpV.addScaledVector(shape.relativePosition, shapeMass);
+      tmpV.addScaled(shape.relativePosition, shapeMass);
       mass += shapeMass;
       rotateInertia(shape.relativeRotation, massInfo.inertia, tmpM );
       localInertia.add(tmpM);
@@ -344,7 +344,7 @@ class RigidBody extends Core{
         angularVelocity.setValues(0,0,0);
         break;
       case RigidBodyType.dynamic:
-        position.addScaledVector(linearVelocity, timeStep.toDouble());
+        position.addScaled(linearVelocity, timeStep.toDouble());
         if(fixedRotation){
           angularVelocity.setValues(0,0,0);
         }
@@ -360,7 +360,7 @@ class RigidBody extends Core{
         else{
           orientation.addTime(angularVelocity, timeStep.toDouble());
         }
-        position.addScaledVector(linearVelocity, timeStep.toDouble());
+        position.addScaled(linearVelocity, timeStep.toDouble());
         break;
       default: printError("RigidBody", "Invalid type.");
     }
@@ -395,7 +395,7 @@ class RigidBody extends Core{
   /// APPLY IMPULSE FORCE
   ///---------------------------------------------
   void applyImpulse(Vector3 position, Vector3 force){
-    linearVelocity.addScaledVector(force, inverseMass);
+    linearVelocity.addScaled(force, inverseMass);
     position..sub( this.position )..cross( force )..applyMatrix3Transpose(inverseInertia );
     angularVelocity.add( position );
   }
@@ -412,7 +412,7 @@ class RigidBody extends Core{
   /// SET DYNAMIQUE POSITION AND ROTATION
   ///---------------------------------------------
   void setPosition(Vector3 pos){
-    position..setFrom( pos )..multiplyScalar( invScale );
+    position..setFrom( pos )..scale( invScale );
   }
 
   void setQuaternion(Quaternion q){
@@ -429,7 +429,7 @@ class RigidBody extends Core{
   void resetPosition(double x,double y,double z){
     linearVelocity.setValues( 0, 0, 0 );
     angularVelocity.setValues( 0, 0, 0 );
-    position..setValues( x, y, z )..multiplyScalar( invScale );
+    position..setValues( x, y, z )..scale( invScale );
     awake();
   }
 

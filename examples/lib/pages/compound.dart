@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:three_dart/three_dart.dart';
+import 'dart:math' as math;
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:vector_math/vector_math.dart' as vmath;
@@ -52,7 +52,7 @@ class _CompoundState extends State<Compound> {
       ],
       mass:1.0,
       position: vmath.Vector3(0, 6, 0),
-      orientation: vmath.Quaternion.euler(0, 0, Math.PI * 0.03),
+      orientation: vmath.Quaternion.euler(0, 0, math.pi * 0.03),
       type: oimo.RigidBodyType.dynamic
     );
 
@@ -71,7 +71,7 @@ class _CompoundState extends State<Compound> {
       ],
       mass:1.0,
       position: vmath.Vector3(0, 6, 0),
-      orientation: vmath.Quaternion.euler(0, 0, -Math.PI * 0.03),
+      orientation: vmath.Quaternion.euler(0, 0, -math.pi * 0.03),
       type: oimo.RigidBodyType.dynamic
     );
 
@@ -83,7 +83,7 @@ class _CompoundState extends State<Compound> {
     final groundBody = oimo.RigidBody(
       shapes: [groundShape],
       mass: 0,
-      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0),
+      orientation: vmath.Quaternion.euler(0,-math.pi / 2, 0),
     );
     demo.addRigidBody(groundBody);
   }

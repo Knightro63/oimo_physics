@@ -1,5 +1,5 @@
-import 'package:oimo_physics/shape/plane_shape.dart';
-import 'package:vector_math/vector_math.dart' hide Plane;
+import 'package:vector_math/vector_math.dart';
+import 'plane.dart';
 import '../math/vec3.dart';
 
 class Triangle {

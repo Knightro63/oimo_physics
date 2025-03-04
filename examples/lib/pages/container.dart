@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:three_dart/three_dart.dart';
+import 'dart:math' as math;
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:vector_math/vector_math.dart' as vmath;
@@ -42,7 +42,7 @@ class _ContainerState extends State<ContainerCP> {
     final groundBody = oimo.RigidBody(
       mass: 0, 
       shapes: [groundShape],
-      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(-Math.PI / 2, 0, 0)
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(-math.pi / 2, 0, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -52,7 +52,7 @@ class _ContainerState extends State<ContainerCP> {
       mass: 0, 
       shapes: [planeShapeXmin],
       position: vmath.Vector3(-5, 0, 0),
-      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, Math.PI / 2, 0)
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, math.pi / 2, 0)
     );
     world.addRigidBody(planeXmin);
 
@@ -62,7 +62,7 @@ class _ContainerState extends State<ContainerCP> {
       mass: 0, 
       shapes: [planeShapeXmax],
       position: vmath.Vector3(5, 0, 0),
-      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, -Math.PI / 2, 0)
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, -math.pi / 2, 0)
     );
     world.addRigidBody(planeXmax);
 
@@ -82,7 +82,7 @@ class _ContainerState extends State<ContainerCP> {
       mass: 0, 
       shapes: [planeShapeZmax],
       position: vmath.Vector3(0, 0, 5),
-      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, Math.PI, 0)
+      orientation: vmath.Quaternion(0,0,0,1).eulerFromXYZ(0, math.pi, 0)
     );
     world.addRigidBody(planeZmax);
 
@@ -99,9 +99,9 @@ class _ContainerState extends State<ContainerCP> {
             mass: 5, 
             shapes: [sphereShape],
             position: vmath.Vector3(
-              -(i * 2 - nx * 0.5 + (Math.random() - 0.5) * randRange),
+              -(i * 2 - nx * 0.5 + (math.Random().nextDouble() - 0.5) * randRange),
               1 + k * 2.1 + heightOffset,
-              j * 2 - ny * 0.5 + (Math.random() - 0.5) * randRange
+              j * 2 - ny * 0.5 + (math.Random().nextDouble() - 0.5) * randRange
             ),
             allowSleep: true,
             type: oimo.RigidBodyType.dynamic

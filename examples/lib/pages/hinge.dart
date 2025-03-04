@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:three_dart/three_dart.dart';
+import 'dart:math' as math;
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:vector_math/vector_math.dart' as vmath;
@@ -43,7 +43,7 @@ class _HingeState extends State<Hinge> {
       mass: 0, 
       shapes: [groundShape],
       position: vmath.Vector3(0,-1.2,0),
-      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
+      orientation: vmath.Quaternion.euler(0,-math.pi / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -187,7 +187,8 @@ class _HingeState extends State<Hinge> {
         localAxis1: vmath.Vector3(-1, 0, 0),
         localAxis2: vmath.Vector3(-1, 0, 0)
       ),
-      0,Math.PI
+      0,
+      math.pi
     );
     world.addJoint(finalraint);
   }

@@ -88,6 +88,6 @@ class RayCollisionDetector extends CollisionDetector{
     }
 
     // Ray intersects triangle.
-    return Vector3.copy( direction )..multiplyScalar(qdn / dnd)..add( origin );
+    return Vector3.copy( direction )..scale(qdn / dnd)..add( origin );
   }
 }

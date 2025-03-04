@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:three_dart/three_dart.dart';
+import 'dart:math' as math;
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:vector_math/vector_math.dart' as vmath;
@@ -49,7 +49,7 @@ class _RagDollState extends State<RagDoll> {
       mass: 0,
       shapes: [groundShape],
       position: vmath.Vector3(0, -1, 0),
-      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, -0.5)
+      orientation: vmath.Quaternion.euler(0,-math.pi / 2, -0.5)
     );
     demo.addRigidBody(groundBody);
   }
@@ -64,9 +64,9 @@ class _RagDollState extends State<RagDoll> {
     // It returns an array of body parts and their constraints
     final RagdollData data = createRagdoll(
       scale: 3,
-      angle: Math.PI / 4,
-      angleShoulders: Math.PI / 3,
-      twistAngle: Math.PI / 8,
+      angle: math.pi / 4,
+      angleShoulders: math.pi / 3,
+      twistAngle: math.pi / 8,
     );
 
     data.bodies.forEach((body){
@@ -92,13 +92,13 @@ class _RagDollState extends State<RagDoll> {
     // It returns an array of body parts and their constraints
     final RagdollData data = createRagdoll(
       scale: 3,
-      angle: Math.PI/4,
-      angleShoulders: Math.PI,
-      twistAngle: Math.PI/5,
+      angle: math.pi/4,
+      angleShoulders: math.pi,
+      twistAngle: math.pi/5,
     );
-      // angle: Math.PI / 4,
-      // angleShoulders: Math.PI / 3,
-      // twistAngle: Math.PI / 8,
+      // angle: math.pi / 4,
+      // angleShoulders: math.pi / 3,
+      // twistAngle: math.pi / 8,
     data.bodies.forEach((body){
       // Move the ragdoll up
       final position = vmath.Vector3(0, 10, 0);

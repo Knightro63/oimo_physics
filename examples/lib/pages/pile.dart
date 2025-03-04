@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:three_dart/three_dart.dart';
+import 'dart:math' as math;
 import '../src/demo.dart';
 import 'package:oimo_physics/oimo_physics.dart' as oimo;
 import 'package:vector_math/vector_math.dart' as vmath;
@@ -41,7 +41,7 @@ class _PileState extends State<Pile> {
     final groundBody = oimo.RigidBody(
       mass: 0, 
       shapes: [groundShape],
-      orientation: vmath.Quaternion.euler(0,-Math.PI / 2, 0)
+      orientation: vmath.Quaternion.euler(0,-math.pi / 2, 0)
     );
     demo.addRigidBody(groundBody);
 
@@ -49,7 +49,7 @@ class _PileState extends State<Pile> {
     final planeXmin = oimo.RigidBody(
       mass: 0,
       shapes: [planeShapeXmin],
-      orientation: vmath.Quaternion.euler(0, Math.PI / 2, 0),
+      orientation: vmath.Quaternion.euler(0, math.pi / 2, 0),
       position: vmath.Vector3(-5, 0, 0)
     );
     world.addRigidBody(planeXmin);
@@ -59,7 +59,7 @@ class _PileState extends State<Pile> {
     final planeXmax = oimo.RigidBody(
       mass: 0,
       shapes: [planeShapeXmax],
-      orientation: vmath.Quaternion.euler(0, -Math.PI / 2, 0),
+      orientation: vmath.Quaternion.euler(0, -math.pi / 2, 0),
       position: vmath.Vector3(5, 0, 0)
     );
     world.addRigidBody(planeXmax);
@@ -79,7 +79,7 @@ class _PileState extends State<Pile> {
     final planeZmax = oimo.RigidBody(
       mass: 0,
       shapes: [planeShapeZmax],
-      orientation: vmath.Quaternion.euler(0, Math.PI, 0),
+      orientation: vmath.Quaternion.euler(0, math.pi, 0),
       position: vmath.Vector3(0, 0, 5)
     );
     world.addRigidBody(planeZmax);
@@ -94,7 +94,7 @@ class _PileState extends State<Pile> {
       final sphereBody = oimo.RigidBody(
         shapes: [sphereShape],
         mass: 5,
-        position: vmath.Vector3(-size * 2 * Math.sin(i), size * 2 * 7, size * 2 * Math.cos(i)),
+        position: vmath.Vector3(-size * 2 * math.sin(i), size * 2 * 7, size * 2 * math.cos(i)),
       );
       demo.addRigidBody(sphereBody);
       bodies.add(sphereBody);

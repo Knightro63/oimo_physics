@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:vector_math/vector_math.dart';
-import 'math.dart';
 
 extension Vec3 on Vector3{
   /// Subtract [a] from [b]
@@ -8,14 +7,6 @@ extension Vec3 on Vector3{
     x = a.x - b.x;
     y = a.y - b.y;
     z = a.z - b.z;
-    return this;
-  }
-  /// Add [v] scaled by [s] thos this vector
-  Vector3 addScaledVector (Vector3 v,double s ) {
-    x += v.x * s;
-    y += v.y * s;
-    z += v.z * s;
-
     return this;
   }
   /// Test if all the positions are zero e.g(x=y=z=0)
@@ -38,18 +29,6 @@ extension Vec3 on Vector3{
     y -= v.y * s;
     z -= v.z * s;
 
-    return this;
-  }
-  Vector3 multiplyScalar (double scalar ) {
-    if (Math.isFinite( scalar )) {
-      x *= scalar;
-      y *= scalar;
-      z *= scalar;
-    } else {
-      x = 0;
-      y = 0;
-      z = 0;
-    }
     return this;
   }
   /// Apply a 3x3 Matrix to this vector

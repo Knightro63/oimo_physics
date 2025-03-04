@@ -14,6 +14,13 @@
 *.iws
 .idea/
 
+*/macos
+*/web
+*/ios
+*/android
+*/linux
+*/windows
+
 # Visual Studio Code related
 .classpath
 .project
